@@ -2,7 +2,7 @@
 /*
  Plugin Name: User Badges
  Plugin URI: http://wordpress.org/plugins/user-badges/
- Description: Create your own badges for WordPress users. 
+ Description: Create your own badges for WordPress users. You can manually assign badges or configure automatic assignment of predefined badges to to users.
  Version: 1.0
  Author: Daniel Powney
  Author URI: http://danielpowney.com
