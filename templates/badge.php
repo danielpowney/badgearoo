@@ -1,0 +1,1 @@
+<img src="<?php echo $url; ?>" title="<?php echo $description; ?>" />

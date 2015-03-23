@@ -1,0 +1,11 @@
+@CHARSET "ISO-8859-1";
+
+table.badges .column-cb, table.badges .column-enabled, table.badges .column-actions {
+	width: 10%;
+}
+table.badges .column-badge, table.badges .column-name {
+	width: 15%;
+}
+table.badges .column-description {
+	width: 40%;
+}

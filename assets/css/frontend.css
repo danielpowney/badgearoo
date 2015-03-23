@@ -1,0 +1,9 @@
+.user-badges-widget h1, .user-badges-widget h2, .user-badges-widget h3, .user-badges-widget h4, .user-badges-widget h5, .user-badges-widget h6 {
+	display: inline;
+}
+.user-badges-widget img {
+	margin-right: 10px;
+}
+.user-badges-widget .badges {
+	margin-top: 10px;
+}
