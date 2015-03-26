@@ -5,11 +5,11 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 }
 
 /**
- * UB_Badges_Table class
+ * UB_Actions_Table class
  * 
  * @author dpowney
  */
-class UB_Badges_Table extends WP_List_Table {
+class UB_Actions_Table extends WP_List_Table {
 
 	/**
 	 * Constructor
@@ -17,8 +17,8 @@ class UB_Badges_Table extends WP_List_Table {
 	function __construct() {
 		
 		parent::__construct( array(
-				'singular'		=> __( 'Badge', 'user-badges' ),
-				'plural' 		=> __( 'Badges', 'user-badges' ),
+				'singular'		=> __( 'Action', 'user-badges' ),
+				'plural' 		=> __( 'Actions', 'user-badges' ),
 				'ajax'			=> false
 		) );
 	}
@@ -46,14 +46,14 @@ class UB_Badges_Table extends WP_List_Table {
 		
 		$columns = array(
 				'cb' 			=> '<input type="checkbox" />',
-				'badge'			=> __( 'Badge' , 'user-badges' ),
+				'id'			=> __( 'Action ID', 'user-badges' ),
 				'name'			=> __( 'Name', 'user-badges'  ),
-				'description'	=> __( 'Description', 'user-badges'  ),
+				'source'		=> __( 'Source', 'user-badges'  ),
 				'enabled'		=> __( 'Enabled', 'user-badges'  ),
-				'actions'		=> __( 'Actions', 'user-badges' )
+				'created_dt'	=> __( 'Created Date', 'user-badges'  ),
 		);
 		
-		return apply_filters( 'ub_badges_table_columns', $columns );
+		return apply_filters( 'ub_actions_table_columns', $columns );
 	}
 
 	/**
@@ -72,7 +72,7 @@ class UB_Badges_Table extends WP_List_Table {
 		$sortable = $this->get_sortable_columns();
 		$this->_column_headers = array( $columns, $hidden, $sortable );
 
-		$query = 'SELECT * FROM ' . $wpdb->prefix . UB_BADGES_TABLE_NAME;
+		$query = 'SELECT * FROM ' . $wpdb->prefix . UB_ACTIONS_TABLE_NAME;
 		
 		$this->items = $wpdb->get_results( $query, ARRAY_A );
 	}
@@ -89,8 +89,8 @@ class UB_Badges_Table extends WP_List_Table {
 			case 'cb' :
 				return $item[ $column_name ];
 				break;
-			case 'badge' :
-				echo '<img src="' . $item[ 'url' ] . '" />';
+			case 'id' :
+				echo $item[ 'id' ];
 				break;
 			case 'name' : 
 				echo $item[ 'name' ];
@@ -98,11 +98,11 @@ class UB_Badges_Table extends WP_List_Table {
 			case 'description' :
 				echo $item[ 'description'];
 				break;
+			case 'created_dt' :
+				echo mysql2date( get_option( 'date_format' ), $item[ 'created_dt'] );
+				break;
 			case 'enabled' :
 				echo ( $item[ 'enabled' ] == 1 ) ? '<span class="dashicons dashicons-yes"></span>' . __( 'Yes', 'user-badges' ) : '<span class="dashicons dashicons-no"></span>';
-				break;
-			case 'actions' :
-				echo '<a href="#" id="" class="">' . __( 'Edit', 'user-badges' ) . '</a>';
 				break;
 			default:
 				echo $item[ $column_name ];
@@ -119,7 +119,7 @@ class UB_Badges_Table extends WP_List_Table {
 		$row_id = $item['name'];
 		
 		return sprintf(
-				'<input type="checkbox" name="delete[]" value="%s" />', $row_id
+				'<input type="checkbox" name="cb[]" value="%s" />', $row_id
 		);
 	}
 
@@ -131,7 +131,8 @@ class UB_Badges_Table extends WP_List_Table {
 	function get_bulk_actions() {
 		
 		$bulk_actions = array(
-				'delete'    => __( 'Delete', 'user-badges' )
+				'enable'    => __( 'Enable', 'user-badges' ),
+				'disable'    => __( 'Disable', 'user-badges' )
 		);
 		
 		return $bulk_actions;
@@ -142,18 +143,30 @@ class UB_Badges_Table extends WP_List_Table {
 	 */
 	function process_bulk_action() {
 		
-		if ( $this->current_action() === 'delete' ) {
-			global $wpdb;
-
-			$checked = ( is_array( $_REQUEST['delete'] ) ) ? $_REQUEST['delete'] : array( $_REQUEST['delete'] );
+		global $wpdb;
+		
+		if ( $this->current_action() === 'enable' ) {
 			
-			foreach( $checked as $name ) {
+			$checked = ( is_array( $_REQUEST['cb'] ) ) ? $_REQUEST['cb'] : array( $_REQUEST['cb'] );
+			
+			foreach( $checked as $id ) {
 				
-				User_Badges::instance()->api->delete_badge( $name );
-				
+				// TODO check API result
+				User_Badges::instance()->api->enable_actions( $id );
 			}
 			
-			echo '<div class="updated"><p>' . __( 'Badge(s) deleted successfully.', 'user-badges' ) . '</p></div>';
+			echo '<div class="updated"><p>' . __( 'Action(s) enabled successfully.', 'user-badges' ) . '</p></div>';
+		} else if ( $this->current_action() === 'disable' ) {
+			
+			$checked = ( is_array( $_REQUEST['cb'] ) ) ? $_REQUEST['cb'] : array( $_REQUEST['cb'] );
+			
+			foreach( $checked as $id ) {
+			
+				// TODO check API result
+				User_Badges::instance()->api->disable_action( $id );
+			}
+				
+			echo '<div class="updated"><p>' . __( 'Action(s) disabled successfully.', 'user-badges' ) . '</p></div>';
 		}
 	}
 }

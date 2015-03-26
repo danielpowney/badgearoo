@@ -7,7 +7,11 @@
  * @param unknown $old_status
  * @param unknown $post
  */
-function ub_on_all_post_status_transitions( $new_status, $old_status, $post ) {
+function ub_has_published_post( $new_status, $old_status, $post = null ) {
+	
+	if ( $post == null ) {
+		return;
+	}
 	
 	// get post type
 	$post_type = $post->post_type;
@@ -37,18 +41,16 @@ function ub_on_all_post_status_transitions( $new_status, $old_status, $post ) {
 			// b) exception for admin given badges
 		}
 		
-		$user_has_published_post = apply_filters( 'ub_user_has_published_post', 
+		return apply_filters( 'ub_user_has_published_post', 
 				$user_has_published_post, $user_id, $post_type );
-		
-		if ( $user_has_published_post == true ) {
-			User_Badges::instance()->api->add_user_badge( __( 'User Published Post', 'user-badges' ), $user_id );
-		}
 	}
 }
-add_action(  'transition_post_status',  'ub_on_all_post_status_transitions', 10, 2 );
 
-
-// TODO
-// 1. if user has been active for 1 year (can we check if they've logged in)
-// 2. if user has commented on a post, return true
-// 3. How to handle admin awarded badges and ad-hoc badges for plugin add-ons
+function ub_handle_condition_check_success( $action, $params ) {
+	
+	switch ( $action ) {
+		case UB_WP_PUBLISH_POST_ACTION :
+			User_Badges::instance()->api->add_user_badge( 1, 1 );
+		break;
+	}
+}

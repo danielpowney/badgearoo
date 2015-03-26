@@ -8,4 +8,3 @@
 class UB_Settings {
 
 }
-?>

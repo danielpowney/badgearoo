@@ -1,14 +1,5 @@
 
 jQuery(document).ready(function($) {
-
-	$("#add-new-badge-header").click(function() {
-		$("#add-new-badge-btn").show();
-		$("#add-edit-badge-form").show("slow", function() {} );
-	});
-	
-	$("#add-new-badge-btn").click(function() {
-		$("#form-submitted").val("true");
-	});
 	
 	/**
 	 * Displays the media uploader for selecting an image.
@@ -59,7 +50,7 @@ jQuery(document).ready(function($) {
 	        var json = file_frame.state().get("selection").first().toJSON();
 	 
 	        // After that, set the properties of the image and display it
-	        //jQuery("#preview").attr("src", json.url ).show().parent().removeClass("hidden");
+	        //jQuery("#badge-image-preview").attr("src", json.url ).show().parent().removeClass("hidden");
 	        
 	        // Store the image's information into the meta data fields
 	        jQuery(field).val( json.url );
@@ -70,12 +61,12 @@ jQuery(document).ready(function($) {
 	 
 	}
 	
-	jQuery("#upload-btn").on("click", function(evt) {
+	jQuery("#badge-image-upload-btn").on("click", function(evt) {
         // Stop the anchor's default behavior
         evt.preventDefault();
 
         // Display the media uploader
-        renderMediaUploader( '#url' );
+        renderMediaUploader( '#badge-image-url' );
     });
 
 });

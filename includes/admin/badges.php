@@ -1,72 +1,50 @@
 <?php
-/**
- * 
- */
-function ub_badges_page() {
-	
-	if ( isset( $_POST['form-submitted'] ) && $_POST['form-submitted'] === "true" ) {
-		
-		// TODO check permission
-		
-		$name = isset( $_POST['name'] ) ? trim( $_POST['name'] ) : null;
-		$description = isset( $_POST['description'] ) ? trim( $_POST['description'] ) : null;
-		$enabled = true;
-		$url = isset( $_POST['url'] ) ? $_POST['url'] : null;
-		
-		if ( $name == null || $description == null || $url == null ) {
-			echo '<div class="error"><p>' . __( 'Name, description and URL are requied', 'user-badges' ) . '</p></div>';
-		} else {
-			User_Badges::instance()->api->add_new_badge( $name, $description, $url, $enabled );
-			echo '<div class="updated"><p>' . __( 'Badge added successfully', 'user-badges' ) . '</p></div>';
-		}
-	}
-	
-	?>
-	<div class="wrap">
-		<h2><?php _e( 'Badges', 'user-badges' ); ?><a class="add-new-h2" id="add-new-badge-header" href="#"><?php _e( 'Add New', 'user-badges' ); ?></a></h2>
-		
-		<form method="post" id="add-edit-badge-form" style="display: none;">
-			<table class="form-table">
-				<tbody>
-					<tr valign="top">
-						<th scope="row"><?php _e( 'Name', 'user-badges' ); ?></th>
-						<td>
-							<input type="text" class="regular-text" id="name" name="name" value="" placeholder="Enter a name..." required maxlength="100" />	
-						</td>
-					</tr>
-					<tr valign="top">
-						<th scope="row"><?php _e( 'Description', 'user-badges' ); ?></th>
-						<td>
-							<input type="text" class="regular-text" id="description" name="description" value="" placeholder="Enter a description..." required maxlength="400" />	
-						</td>
-					</tr>
-					<tr valign="top">
-						<th scope="row"><?php _e( 'Badge Icon', 'user-badges' ); ?></th>
-						<td>
-							<input type="url" id="url" name="url" value="" class="regular-text" />
-							<input type="submit" name="upload-btn" id="upload-btn" class="button" value="<?php _e('Upload', 'user-badges' ); ?>">
-						</td>
-					</tr>
-					
-				</tbody>
-			</table>
-				
-			<p>
-				<input style="display: none;" id="add-new-badge-btn" class="button button-primary" value="<?php _e( 'Add New Badge', 'user-badges' ); ?>" type="submit" />
-				<input style="display: none;" id="update-badge-btn" class="button button-primary" value="<?php _e( 'Update Badge', 'user-badges' ); ?>" type="submit" />
-			</p>
-				
-			<input type="hidden" id="form-submitted" name="form-submitted" value="false" />
-			<input type="hidden" id="previous-badge-name" name="previous-badge-name" value="" />
-		</form>
 
-		<form method="post" id="ub-badges-table-form">
-			<?php 
-			$badges_table = new UB_Badges_Table();
-			$badges_table->prepare_items();
-			$badges_table->display();
-			?>
-		</form>
-	</div>
-	<?php
+function ub_manage_badge_posts_columns( $posts_columns ) {
+	$post_columns_new_order['badge'] = __( 'Badge Image', 'user-badges' );
+	$post_columns_new_order['title'] = $posts_columns['title'];
+	$post_columns_new_order['categories'] = $posts_columns['categories'];
+	$post_columns_new_order['description'] = __( 'Description', 'user-badges' );
+	$post_columns_new_order['date'] = $posts_columns['date'];
+
+	return $post_columns_new_order;
 }
+add_filter( 'manage_badge_posts_columns', 'ub_manage_badge_posts_columns', 5, 1  );
+
+function ub_manage_badge_posts_custom_column( $column_name, $post_id ){
+
+	switch ( $column_name ){
+
+		case 'badge':
+			$attachment_img = wp_get_attachment_image_src( get_post_thumbnail_id( $post_id ) );
+			echo '<img src="' . $attachment_img[0] . '" widht="' . $attachment_img[1] . '" height="' . $attachment_img[2] . '" />';
+			break;
+
+		case 'description':
+			$post = get_post( $post_id );
+			echo $post->post_excerpt;
+			break;
+	}
+}
+add_action( 'manage_badge_posts_custom_column', 'ub_manage_badge_posts_custom_column', 5, 2 );
+
+
+function ub_badge_posts_table_sorting( $columns ) {
+	$columns['description'] = 'description';
+	return $columns;
+}
+add_filter( 'manage_edit-badge_sortable_columns', 'ub_badge_posts_table_sorting' );
+
+function ub_badge_posts_column_orderby( $vars ) {
+	if ( isset( $vars['orderby'] ) && ( 'type' == $vars['orderby'] || 'description' == $vars['orderby'] ) ) {
+		$vars = array_merge( $vars, array(
+				'meta_key' => 'ub_badge_type',
+				'orderby' => 'meta_value'
+		) );
+	}
+
+	return $vars;
+}
+add_filter( 'request', 'ub_badge_posts_column_orderby' );
+
+// See here http://www.smashingmagazine.com/2013/12/05/modifying-admin-post-lists-in-wordpress/

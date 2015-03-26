@@ -15,7 +15,8 @@ function ub_user_badges_column( $custom_column, $column_name, $user_id  ) {
         $badges = User_Badges::instance()->api->get_user_badges( $user_id );
         
         foreach ( $badges as $badge ) {
-        	$column_content .= '<img src="' . $badge->url . '" title="' . $badge->description . '"/>';
+        	$attachment_img = wp_get_attachment_image_src( get_post_thumbnail_id( $badge->id ) );
+        	$column_content .= '<img src="' . $attachment_img[0] . '" widht="' . $attachment_img[1] . '" height="' . $attachment_img . '" title="' . $badge->description . '" />';
         }	
     }
     return $column_content;
