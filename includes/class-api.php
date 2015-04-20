@@ -39,6 +39,14 @@ interface UB_API {
 	 * @param unknown $user_id
 	 */
 	public function delete_user_badge( $badge_id, $user_id );
+	
+	/**
+	 * Records a user action
+	 * 
+	 * @param unknown $action
+	 * @param unknown $user_id
+	 */
+	public function add_user_action( $action, $user_id );
 }
 
 /**
@@ -149,5 +157,17 @@ class UB_API_Impl implements UB_API {
 				array( 'badge_id' => $badge_id, 'user_id' => $user_id ), 
 				array( '%d', '%d' )
 		);
+	}
+	
+	/**
+	 * (non-PHPdoc)
+	 * @see UB_API::add_user_action()
+	 */
+	public function add_user_action( $action, $user_id ) {
+		
+		global $wpdb;
+		
+		$wpdb->insert( $wpdb->prefix . UB_USER_ACTIONS_TABLE_NAME, array( 'user_id' => $user_id, 'action' => $action ), array( '%d', '%s') );
+		
 	}
 }

@@ -1,5 +1,203 @@
-
 jQuery(document).ready(function($) {
+	
+	// Metabox toggle
+	jQuery(".if-js-closed").removeClass("if-js-closed").addClass("closed");
+	postboxes.add_postbox_toggles( 'user-badges');
+	
+	jQuery(".ub-step-list").sortable({
+		items: '.ub-step',
+		opacity: '0.6',
+		cursor: 'move',
+		axis: 'y',
+		update : function() {
+			var order = jQuery(this).sortable('serialize')
+		},
+		stop: function(event, ui) {
+	        
+	        var steps = new Array();
+	        
+	        jQuery(".ub-step-list li").each(function() {    
+
+                //get the id
+                var id  = jQuery(this).attr("id");
+	        });
+
+	    }
+	});
+	jQuery(".ub-step-list").disableSelection();
+	
+	/**
+	 * Add new condition
+	 */
+	jQuery("#add-condition").on("click", function(e) {
+		var data = {
+				action : "add_condition",
+				nonce : ub_admin_data.ajax_nonce
+		};
+	
+		jQuery.post(ub_admin_data.ajax_url, data, function(response) {
+			var jsonResponse = jQuery.parseJSON(response);
+			
+			jQuery("#postbox-container #normal-sortables").append(jsonResponse.html);
+			
+			jQuery(".postbox .hndle, .postbox .handlediv , .postbox a.dismiss, .hide-postbox-tog").unbind("click.postboxes");
+			postboxes.add_postbox_toggles('user-badges');
+			
+			// delete condition
+			jQuery("div#condition-" + jsonResponse.data.conditionId + " .delete-condition-btn").on("click", function(e) {
+				var parts = jQuery(this).closest(".postbox")[0].id.split("-"); 
+				var conditionId = parts[1]; // condition-X
+				
+				deleteCondition(conditionId);
+			});
+			
+			// add step
+			jQuery("div#condition-" + jsonResponse.data.conditionId + " .add-step-btn").on("click", function(e) {
+				
+				var parts = jQuery(this).closest(".postbox")[0].id.split("-"); 
+				var conditionId = parts[1]; // condition-X
+				
+				addStep(conditionId);
+			});
+		});
+	});
+	
+	/**
+	 * Add step
+	 */
+	jQuery(".add-step-btn").on("click", function(e) {
+		
+		var parts = jQuery(this).closest(".postbox")[0].id.split("-"); 
+		var conditionId = parts[1]; // condition-X
+		
+		addStep(conditionId);
+	});
+	
+	/**
+	 * Add step
+	 */
+	function addStep(conditionId) {
+		
+		var data = {
+				action : "add_step",
+				nonce : ub_admin_data.ajax_nonce,
+				conditionId : conditionId
+		};
+	
+		jQuery.post(ub_admin_data.ajax_url, data, function(response) {
+			var jsonResponse = jQuery.parseJSON(response);
+			
+			//var conditionId = jsonResponse.data.conditionId;
+			jQuery(".ub-step-list").append(jsonResponse.html);
+			
+			// Change step action name
+			jQuery("li#step-" + jsonResponse.data.stepId + " select.action-name").on("change", function(e) {
+				var parts = jQuery(this).closest("li")[0].id.split("-"); 
+				var stepId = parts[1]; // step-X
+				
+				changeStepAction(stepId);
+			});
+			
+			//Click delete step
+			jQuery("li#step-" + jsonResponse.data.stepId + " a.delete-step").on("click", function(e) {
+				var parts = jQuery(this).closest("li")[0].id.split("-"); 
+				var stepId = parts[1]; // step-X
+				
+				deleteStep(stepId);
+			});
+		});
+	};
+	
+	/**
+	 * Change step action name
+	 */
+	jQuery("select.action-name").on("change", function(e) {
+		var parts = jQuery(this).closest("li")[0].id.split("-"); 
+		var stepId = parts[1]; // step-X
+		
+		changeStepAction(stepId);
+	});
+	
+	/**
+	 * Click delete step
+	 */
+	jQuery("a.delete-step").on("click", function(e) {
+		var parts = jQuery(this).closest("li")[0].id.split("-"); 
+		var stepId = parts[1]; // step-X
+		
+		deleteStep(stepId);
+	});
+	
+	/**
+	 * Click delete condition
+	 */
+	jQuery(".delete-condition-btn").on("click", function(e) {
+		var parts = jQuery(this).closest(".postbox")[0].id.split("-"); 
+		var conditionId = parts[1]; // condition-X
+		
+		deleteCondition(conditionId);
+	});
+	
+	/**
+	 * Deletes step and empties HTML if success
+	 */
+	function deleteStep(stepId) {
+		
+		var data = {
+				action : "delete_step",
+				nonce : ub_admin_data.ajax_nonce,
+				stepId : stepId
+		};
+	
+		jQuery.post(ub_admin_data.ajax_url, data, function(response) {
+			var jsonResponse = jQuery.parseJSON(response);
+			
+			if (jsonResponse.success == true ) {
+				jQuery("li#step-" + stepId).remove();
+			}
+		});
+	}
+	
+	/**
+	 * Deletes conditions and empties HTML if success
+	 */
+	function deleteCondition(conditionId) {
+		
+		var data = {
+				action : "delete_condition",
+				nonce : ub_admin_data.ajax_nonce,
+				conditionId : conditionId
+		};
+	
+		jQuery.post(ub_admin_data.ajax_url, data, function(response) {
+			var jsonResponse = jQuery.parseJSON(response);
+			
+			if (jsonResponse.success == true ) {
+				jQuery("div#condition-" + conditionId).remove();
+			}
+		});
+	}
+	
+	/**
+	 * Change step action
+	 */
+	function changeStepAction(stepId) {
+		
+		var newActionName = jQuery("li#step-" + stepId + " select.action-name").find("option:selected").val();
+		
+		var data = {
+				action : "step_meta",
+				nonce : ub_admin_data.ajax_nonce,
+				actionName : newActionName,
+				stepId : stepId
+		};
+	
+		jQuery.post(ub_admin_data.ajax_url, data, function(response) {
+			var jsonResponse = jQuery.parseJSON(response);
+
+			jQuery("li#step-" + stepId + " .step-meta").html(jsonResponse.html);
+		});
+	}
 	
 	/**
 	 * Displays the media uploader for selecting an image.

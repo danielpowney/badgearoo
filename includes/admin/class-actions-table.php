@@ -46,11 +46,10 @@ class UB_Actions_Table extends WP_List_Table {
 		
 		$columns = array(
 				'cb' 			=> '<input type="checkbox" />',
-				'id'			=> __( 'Action ID', 'user-badges' ),
 				'name'			=> __( 'Name', 'user-badges'  ),
+				'description'	=> __( 'Description', 'user-badges'  ),
 				'source'		=> __( 'Source', 'user-badges'  ),
-				'enabled'		=> __( 'Enabled', 'user-badges'  ),
-				'created_dt'	=> __( 'Created Date', 'user-badges'  ),
+				'enabled'		=> __( 'Enabled', 'user-badges'  )
 		);
 		
 		return apply_filters( 'ub_actions_table_columns', $columns );
@@ -72,7 +71,7 @@ class UB_Actions_Table extends WP_List_Table {
 		$sortable = $this->get_sortable_columns();
 		$this->_column_headers = array( $columns, $hidden, $sortable );
 
-		$query = 'SELECT * FROM ' . $wpdb->prefix . UB_ACTIONS_TABLE_NAME;
+		$query = 'SELECT * FROM ' . $wpdb->prefix . UB_ACTION_TABLE_NAME;
 		
 		$this->items = $wpdb->get_results( $query, ARRAY_A );
 	}
@@ -86,20 +85,10 @@ class UB_Actions_Table extends WP_List_Table {
 	function column_default( $item, $column_name ) {
 		
 		switch( $column_name ) {
-			case 'cb' :
-				return $item[ $column_name ];
-				break;
-			case 'id' :
-				echo $item[ 'id' ];
-				break;
-			case 'name' : 
-				echo $item[ 'name' ];
-				break;
 			case 'description' :
-				echo $item[ 'description'];
-				break;
-			case 'created_dt' :
-				echo mysql2date( get_option( 'date_format' ), $item[ 'created_dt'] );
+			case 'source' :
+			case 'name' : 
+				echo $item[ $column_name ];
 				break;
 			case 'enabled' :
 				echo ( $item[ 'enabled' ] == 1 ) ? '<span class="dashicons dashicons-yes"></span>' . __( 'Yes', 'user-badges' ) : '<span class="dashicons dashicons-no"></span>';

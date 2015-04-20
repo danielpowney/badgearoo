@@ -11,10 +11,12 @@
  Domain Path: languages
  */
 
-//define( 'UB_ACTIONS_TABLE_NAME', 'ub_actions' ); // stores actions e.g. publishes a post
+define( 'UB_ACTION_TABLE_NAME', 'ub_action' ); // stores predefined actions e.g. publishes a post
 define( 'UB_USER_ACTIONS_TABLE_NAME', 'ub_user_actions' ); // stores what actions a user has done
 define( 'UB_USER_BADGES_TABLE_NAME', 'ub_user_badges' ); // stores badges assigned to users
-define( 'UB_CONDITIONS_TABLE_NAME', 'ub_conditions' ); // stores what conditions need to be met in order to earn badges/points
+define( 'UB_CONDITION_TABLE_NAME', 'ub_condition' );
+define( 'UB_CONDITION_STEP_META_TABLE_NAME', 'ub_condition_step_meta' );
+define( 'UB_CONDITION_STEP_TABLE_NAME', 'ub_condition_step' );
 
 // WordPress predefined actions
 define( 'UB_WP_PUBLISH_POST_ACTION', 'wp_publish_post' );
@@ -22,6 +24,38 @@ define( 'UB_WP_SUBMIT_COMMENT_ACTION', 'wp_submit_comment' );
 define( 'UB_WP_LOGIN_ACTION', 'wp_login' );
 define( 'UB_WP_REGISTER_ACTION', 'wp_register' );
 
+// Plugin actions
+define( 'UB_MIN_POINTS_ACTION', 'ub_min_points' );
+
+global $ub_actions;
+
+$ub_actions = apply_filters( 'ub_actions_init', array(
+		UB_WP_PUBLISH_POST_ACTION => array(
+				'description' => __( 'User publishes a post.', 'user-badges' ),
+				'source' =>	__( 'Wordpress', 'user-badges' ),
+				'enabled' => null
+		),
+		UB_WP_SUBMIT_COMMENT_ACTION => array(
+				'description' => __( 'User submits a comment.', 'user-badges' ),
+				'source' =>	__( 'Wordpress', 'user-badges' ),
+				'enabled' => null
+		),
+		UB_WP_LOGIN_ACTION => array(
+				'description' => __( 'User logs in.', 'user-badges' ),
+				'source' =>	__( 'Wordpress', 'user-badges' ),
+				'enabled' => null
+		),
+		UB_WP_REGISTER_ACTION => array( 
+				'description' => __( 'Register user.', 'user-badges' ),
+				'source' =>	__( 'Wordpress', 'user-badges' ),
+				'enabled' => null
+		),
+		UB_MIN_POINTS_ACTION => array(
+				'description' => __( 'Minimum points.', 'user-badges' ),
+				'source' =>	__( 'User Badges', 'user-badges' ),
+				'enabled' => null
+		)
+) );
 
 /**
  * User_Badges plugin class
@@ -42,10 +76,6 @@ class User_Badges {
 	
 	public $api = null;
 	
-	public $actions = array();
-	
-	public $conditions = array();
-	
 	/**
 	 * Constants
 	 */
@@ -59,7 +89,7 @@ class User_Badges {
 	// slugs
 	ABOUT_PAGE_SLUG = 'ub_about',
 	BADGES_PAGE_SLUG = 'ub_badges',
-	ACTIONS_PAGE_SLUG = 'ub_actions',
+	CONDITIONS_PAGE_SLUG = 'ub_conditions',
 	SETTINGS_PAGE_SLUG = 'ub_settings';
 	
 	/**
@@ -71,6 +101,18 @@ class User_Badges {
 		if ( ! isset( self::$instance )	&& ! ( self::$instance instanceof User_Badges ) ) {
 	
 			self::$instance = new User_Badges;
+			
+			global $wpdb;
+
+			$results = $wpdb->get_results( 'SELECT * FROM ' . $wpdb->prefix . UB_ACTION_TABLE_NAME );
+			
+			global $ub_actions;
+	
+			foreach ( $results as $row ) {
+				if ( isset( $ub_actions[$row->name] ) && $ub_actions[$row->name]->enabled == null ) {
+					$ub_actions[$row->name]['enabled'] = ( $row->enabled == 1 ) ? true : false;
+				}
+			}
 			
 			self::$instance->includes();
 			
@@ -95,20 +137,6 @@ class User_Badges {
 			add_action( 'after_setup_theme', array( self::$instance, 'add_image_sizes') );
 	
 			self::$instance->add_ajax_callbacks();
-			
-			/* self::$instance->actions = apply_filters( 'ub_actions_init', array(
-					new UB_Action( UB_WP_PUBLISH_POST_ACTION,  		__( 'User publishes a post.', 'user-badges' ), 		'WP' ),
-					new UB_Action( UB_WP_SUBMIT_COMMENT_ACTION,  	__( 'User submits a comment.', 'user-badges' ), 	'WP' ),
-					new UB_Action( UB_WP_LOGIN_ACTION,  			__( 'User logs in.', 'user-badges' ), 				'WP' ),
-					new UB_Action( UB_WP_REGISTER_ACTION,  	__( 'Register user.', 'user-badges' ), 				'WP' )
-			) );
-			
-			self::$instance->conditions[UB_WP_PUBLISH_POST_ACTION] = new UB_Condition( 'ub_has_published_post', UB_WP_PUBLISH_POST_ACTION );
-			self::$instance->conditions = apply_filters( 'ub_conditions_init', self::$instance->conditions );
-			add_action( 'transition_post_status',  array( User_Badges::instance()->conditions[UB_WP_PUBLISH_POST_ACTION], 'check' ), 1, 3 );
-
-			// TODO This needs to be configurable in WP-admin
-			add_action( 'ub_condition_check_success', 'ub_handle_condition_check_success', 10, 2 ); */
 		}
 	
 		return User_Badges::$instance;
@@ -124,11 +152,12 @@ class User_Badges {
 		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'class-utils.php';
 		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'class-api.php';
 		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'class-settings.php';
-		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'conditions.php';
+		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'actions.php';
 		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'template-functions.php';
 		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'misc-functions.php';
 		
 		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'class-badge.php';
+		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'class-step.php';
 		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'class-action.php';
 		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'class-condition.php';
 		
@@ -137,7 +166,7 @@ class User_Badges {
 			require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'about.php';
 			require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'settings.php';
 			require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'badges.php';
-			require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'actions.php';
+			require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'conditions.php';
 			require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'class-actions-table.php';
 			require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'users.php';
 		}
@@ -151,19 +180,37 @@ class User_Badges {
 		global $wpdb;
 		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 		
-		/* $actions_query = 'CREATE TABLE ' . $wpdb->prefix . UB_ACTIONS_TABLE_NAME . ' (
-				name varchar(100) NOT NULL,
-				description varchar(100) NOT NULL,
+		$action_query = 'CREATE TABLE ' . $wpdb->prefix . UB_ACTION_TABLE_NAME . ' (
+				name varchar(50) NOT NULL,
+				description varchar(50) NOT NULL,
 				source varchar(100) NOT NULL,
 				enabled tinyint(1) DEFAULT 1,
 				created_dt datetime DEFAULT CURRENT_TIMESTAMP,
 				PRIMARY KEY  (name)
 		) ENGINE=InnoDB AUTO_INCREMENT=1;';
 		
-		dbDelta( $actions_query ); */
+		dbDelta( $action_query );
+		
+		global $ub_actions;
+		
+		foreach ( $ub_actions as $action_name => $action) {
+			
+			$results = $wpdb->replace(
+					$wpdb->prefix . UB_ACTION_TABLE_NAME,
+					array(
+							'name' => $action_name,
+							'description' => $action['description'],
+							'source' => $action['source']
+					), array(
+							'%s', '%s', '%s'
+					)
+			);
+				
+			$generated_id = $wpdb->insert_id;
+		}
 		
 		$user_badges_query = 'CREATE TABLE ' . $wpdb->prefix . UB_USER_BADGES_TABLE_NAME . ' (
-				badge_id varchar(100) NOT NULL,
+				badge_id bigint(20) NOT NULL,
 				user_id bigint(20) NOT NULL,
 				created_dt datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
 				PRIMARY KEY  (badge_id, user_id)
@@ -174,13 +221,45 @@ class User_Badges {
 		$user_actions_query = 'CREATE TABLE ' . $wpdb->prefix . UB_USER_ACTIONS_TABLE_NAME . ' (
 				id  bigint(20) NOT NULL AUTO_INCREMENT,
 				user_id bigint(20) NOT NULL,
-				action varchar(100) NOT NULL,
+				action varchar(50) NOT NULL,
 				created_dt datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
 				PRIMARY KEY  (id)
 		) ENGINE=InnoDB AUTO_INCREMENT=1;';
 		
 		dbDelta( $user_actions_query );
+			
+		$condition_query = 'CREATE TABLE ' . $wpdb->prefix . UB_CONDITION_TABLE_NAME . ' (
+				id  bigint(20) NOT NULL AUTO_INCREMENT,
+				name varchar(255) NOT NULL,
+				points bigint(20) DEFAULT 0,
+				badge_id varchar(50),
+				created_dt datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+				status varchar(50),
+				PRIMARY KEY  (id)
+		) ENGINE=InnoDB AUTO_INCREMENT=1;';
 		
+		dbDelta( $condition_query );
+		
+		$condition_step_query = 'CREATE TABLE ' . $wpdb->prefix . UB_CONDITION_STEP_TABLE_NAME . ' (
+				id  bigint(20) NOT NULL AUTO_INCREMENT,
+				condition_id bigint(20) NOT NULL,
+				label varchar(50),
+				action_name varchar(50) NOT NULL,
+				created_dt datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+				PRIMARY KEY  (id)
+		) ENGINE=InnoDB AUTO_INCREMENT=1;';
+		
+		dbDelta( $condition_step_query );
+		
+		$condition_step_meta_query = 'CREATE TABLE ' . $wpdb->prefix . UB_CONDITION_STEP_META_TABLE_NAME . ' (
+				meta_id  bigint(20) NOT NULL AUTO_INCREMENT,
+				step_id  bigint(20) NOT NULL,
+				meta_key varchar(255),
+				meta_value longtext,
+				PRIMARY KEY  (meta_id)
+		) ENGINE=InnoDB AUTO_INCREMENT=1;';
+		
+		dbDelta( $condition_step_meta_query );
 	}
 	
 	/**
@@ -213,8 +292,7 @@ class User_Badges {
 	public function add_admin_menus() {
 		
 		add_dashboard_page( __( 'About User Badges', 'user-badges' ), '', 'manage_options', User_Badges::ABOUT_PAGE_SLUG, 'ub_about_page' );
-		add_users_page( __( 'Badges', 'user-badges' ), __( 'Badges', 'user-badges' ), 'manage_options', User_Badges::BADGES_PAGE_SLUG, 'ub_badges_page' );
-		add_submenu_page( 'edit.php?post_type=badge', __( 'Actions', 'user-badges' ), __( 'Actions', 'user-badges' ), 'manage_options', User_Badges::ACTIONS_PAGE_SLUG, 'ub_actions_page' );
+		add_submenu_page( 'edit.php?post_type=badge', __( 'Conditions', 'user-badges' ), __( 'Conditions', 'user-badges' ), 'manage_options', User_Badges::CONDITIONS_PAGE_SLUG, 'ub_conditions_page' );
 		add_submenu_page( 'edit.php?post_type=badge', __( 'Settings', 'user-badges' ), __( 'Settings', 'user-badges' ), 'manage_options', User_Badges::SETTINGS_PAGE_SLUG, 'ub_settings_page' );
 	}
 	
@@ -226,6 +304,7 @@ class User_Badges {
 	public function admin_assets() {
 		
 		wp_enqueue_script( 'jquery' );
+		wp_enqueue_script( 'jquery-ui-sortable' );
 		
 		$config_array = array(
 				'ajax_url' => admin_url( 'admin-ajax.php' ),
@@ -237,7 +316,9 @@ class User_Badges {
 
 		wp_enqueue_style( 'ub-admin-style', plugins_url( 'assets' . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'admin.css', __FILE__ ) );
 		
-		
+		wp_enqueue_script ( 'common' );
+		wp_enqueue_script( 'wp-lists' );
+		wp_enqueue_script( 'postbox' );
 		wp_enqueue_media();
 	}
 	
@@ -257,6 +338,14 @@ class User_Badges {
 	 * Register AJAX actions
 	 */
 	public function add_ajax_callbacks() {
+		
+		if ( is_admin() ) {
+			add_action( 'wp_ajax_add_condition', 'ub_add_condition' );
+			add_action( 'wp_ajax_delete_condition', 'ub_delete_condition' );
+			add_action( 'wp_ajax_add_step', 'ub_add_step' );
+			add_action( 'wp_ajax_delete_step', 'ub_delete_step' );
+			add_action( 'wp_ajax_step_meta', 'ub_step_meta' );
+		}
 		
 	}
 	
@@ -327,13 +416,12 @@ class User_Badges {
 function ub_activate_plugin() {
 
 	if ( is_admin() && ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) ) {
-		add_option(User_Badges::DO_ACTIVATION_REDIRECT_OPTION, true);
+		//add_option(User_Badges::DO_ACTIVATION_REDIRECT_OPTION, true);
 		User_Badges::activate_plugin();
 	}
 
 }
 register_activation_hook( __FILE__, 'ub_activate_plugin' );
-
 
 /**
  * Uninstall plugin

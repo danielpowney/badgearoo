@@ -9,3 +9,44 @@ table.badges .column-badge, table.badges .column-name {
 table.badges .column-description {
 	width: 40%;
 }
+
+
+.ub-condition .ub-step {
+	margin-bottom: 9px;
+	border: 1px solid #e5e5e5;
+	background: #f9f9f9;
+	padding: 9px 15px;
+	cursor: move;
+	display: block;
+}
+.ub-condition .ub-step 
+.ub-step input {
+	padding: 3px 5px;
+	vertical-align: bottom;
+}
+
+.ub-condition .form-table, .ub-condition .ub-step-list {
+	margin-right: 10px;
+	width: auto;
+	margin: 0px;
+	padding: 0px;
+	display: block;
+}
+
+.ub-condition td {
+	vertical-align: top;
+}
+
+
+ .ub-step .step-meta, .ub-step .step-meta .step-meta-value {
+	display: inline-block;
+	vertical-align: middle;
+}
+ .ub-step .step-action, .ub-step .step-meta .step-meta-value {
+ 	margin-right: 10px;
+ }
+
+.ub-step a {
+	color: #0074a2 !important;
+	text-decoration: underline !important;
+}
