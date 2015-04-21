@@ -345,6 +345,7 @@ class User_Badges {
 			add_action( 'wp_ajax_add_step', 'ub_add_step' );
 			add_action( 'wp_ajax_delete_step', 'ub_delete_step' );
 			add_action( 'wp_ajax_step_meta', 'ub_step_meta' );
+			add_action( 'wp_ajax_save_condition', 'ub_save_condition' );
 		}
 		
 	}

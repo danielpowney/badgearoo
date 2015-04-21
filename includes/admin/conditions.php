@@ -17,23 +17,16 @@ function ub_conditions_page() {
 							<div id="postbox-container" class="postbox-container">
 								<div id="normal-sortables" class="meta-box-sortables ui-sortable">
 									<?php 
-									
-									global $wpdb;
-									
-									$results = $wpdb->get_results( 'SELECT * FROM ' . $wpdb->prefix . UB_CONDITION_TABLE_NAME );
+									$conditions = User_Badges::instance()->api->get_conditions();
 									
 									if ( count( $results ) == 0 ) {
 										$name = __( 'New Condition' );
-										$created_dt = current_time('mysql');
-										
-										$wpdb->insert( $wpdb->prefix . UB_CONDITION_TABLE_NAME , array( 'name' => $name, 'created_dt' => $created_dt ), array( '%s', '%s' ) );
-										$condition_id = $wpdb->insert_id;
-										
-										ub_display_condition_meta_box( new UB_Condition( $condition_id, $name, null, 0, $created_dt, null, false, false ) );
-									} else {
-										foreach ( $results as $row ) {
-											ub_display_condition_meta_box( new UB_Condition( $row->id, $row->name, $row->badge_id, $row->points, $row->created_dt, $row->status, false, true  ) );
-										}
+										$condition = User_Badges::instance()->api->add_condition( $name );
+										array_push( $conditions, $condition)
+									}
+									
+									foreach ( $conditions as $condition ) {
+										ub_display_condition_meta_box( $condition );
 									}
 									?>
 								</div>
@@ -59,7 +52,7 @@ function ub_display_condition_meta_box( $condition ) {
 		<div class="handlediv" title="Click to toggle"><br /></div>
 		<h3 class="hndle ui-sortable-handle"><span><?php echo esc_html( $condition->name ); ?></span></h3>
 		<div class="inside">
-			<form method="post" class="condition-form">
+			<form method="post" class="condition">
 				<table class="ub-condition">
 					<tr>
 						<td>
@@ -72,7 +65,7 @@ function ub_display_condition_meta_box( $condition ) {
 									<tr>
 										<th scope="row"><?php _e( 'Badge', 'user-badges' ); ?></th>
 										<td>
-											<select name="badges">
+											<select name="badgeId">
 												<option value=""><?php _e( 'No badge', 'user-badges' ); ?></option>
 												<?php 
 												global $wpdb;
@@ -102,14 +95,11 @@ function ub_display_condition_meta_box( $condition ) {
 									$created_dt = current_time('mysql');
 									$label = __( 'New Step', 'user-badges' );
 									
-									$wpdb->insert( $wpdb->prefix . UB_CONDITION_STEP_TABLE_NAME , 
-											array( 'condition_id' => $condition->condition_id, 'label' => $label, 'created_dt' => $created_dt ), 
-											array( '%s', '%s', '%s')
-									);
-									$step_id = $wpdb->insert_id;
+									$step = User_Badges::instance()->api->add_step( $condition->condition_id, $label, $created_dt );
 									
-									ub_display_step( new UB_Step( $step_id, $condition->condition_id, $label, null, $created_dt ) );
+									array_push( $condition->steps, $step );
 								}
+								
 								foreach ( $condition->steps as $step ) {
 									ub_display_step( $step );
 								}
@@ -121,7 +111,7 @@ function ub_display_condition_meta_box( $condition ) {
 				</table>
 			
 				<p>
-					<input type="button" class="button button-primary save-condition-btn" value="<?php _e( 'Save Changes', 'user-badges' ); ?>" />
+					<input type="submit" class="button button-primary save-condition-btn" value="<?php _e( 'Save Changes', 'user-badges' ); ?>" />
 					<input type="button" class="button button-secondary delete-condition-btn" value="<?php _e( 'Delete', 'user-badges' ); ?>" />
 				</p>
 				
@@ -147,7 +137,7 @@ function ub_display_step( $step ) {
 		<label for="label"><?php _e( 'Label', 'user-badges' ); ?></label>
 		<input type="text" maxlength="50" name="label" value="<?php echo $step->label; ?>" class="regular-text" />
 		
-		<select name="action-name-<?php echo $step->step_id; ?>" class="action-name">
+		<select name="action-name" class="action-name">
 			<option value=""><?php _e( 'Please select an action.', 'user-badges' ); ?>
 			<?php
 			global $wpdb;
@@ -177,7 +167,7 @@ function ub_display_step( $step ) {
  * @param unknown $step_id
  * @param unknown $action
  */
-function ub_step_meta_count_action( $step_id, $action  ) {
+function ub_step_meta_count( $step_id, $action  ) {
 	if ( $action == UB_WP_LOGIN_ACTION || $action == UB_WP_PUBLISH_POST_ACTION || $action == UB_WP_SUBMIT_COMMENT_ACTION ) { 
 		?>
 		<span class="step-meta-value">
@@ -186,7 +176,7 @@ function ub_step_meta_count_action( $step_id, $action  ) {
 		<?php
 	}
 }
-add_action( 'ub_step_meta', 'ub_step_meta_count_action', 10, 2 );
+add_action( 'ub_step_meta', 'ub_step_meta_count', 10, 2 );
 
 /**
  * Shows a points step meta
@@ -194,7 +184,7 @@ add_action( 'ub_step_meta', 'ub_step_meta_count_action', 10, 2 );
  * @param unknown $step_id
  * @param unknown $action
  */
-function ub_step_meta_points_action( $step_id, $action  ) {
+function ub_step_meta_points( $step_id, $action  ) {
 	if ( $action == UB_MIN_POINTS_ACTION ) {
 		?>
 		<span class="step-meta-value">
@@ -203,7 +193,7 @@ function ub_step_meta_points_action( $step_id, $action  ) {
 		<?php
 	}
 }
-add_action( 'ub_step_meta', 'ub_step_meta_points_action', 10, 2 );
+add_action( 'ub_step_meta', 'ub_step_meta_points', 10, 2 );
 
 /**
  * Returns HTML for a new condition
@@ -359,6 +349,26 @@ function ub_step_meta() {
 		echo json_encode( array(
 				'html' => $html
 		) );
+	}
+	
+	die();
+}
+
+function ub_save_condition() {
+	
+	$ajax_nonce = $_POST['nonce'];
+	if ( wp_verify_nonce( $ajax_nonce, User_Badges::ID.'-nonce' ) ) {
+		
+		$conditition_id = $_POST['condition_id'];
+		$name = $_POST['name'];
+		$badgeId = $_POST['badgeId'];
+		$points = $_POST['points'];
+		
+		$steps = $_POST['steps'];
+		
+		// sanitize data
+		
+		// save data
 	}
 	
 	die();

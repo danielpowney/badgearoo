@@ -27,9 +27,52 @@ jQuery(document).ready(function($) {
 	jQuery(".ub-step-list").disableSelection();
 	
 	/**
-	 * Add new condition
+	 * Add condition
+	 */
+	jQuery("form.condition").submit(function(e) {
+		
+		e.preventDefault();
+		
+		var parts = jQuery(this).closest(".postbox")[0].id.split("-"); 
+		var conditionId = parts[1]; // condition-X
+		
+		var steps = [];
+		jQuery.each( jQuery("#condition-" + conditionId + " li.ub-step"), function(index, value) {
+			
+			var parts = value.id.split("-")
+			var stepId = parts[1];
+			
+			var step = {
+					stepId : stepId,
+					label : jQuery("li#step-" + stepId + " input[name=label]").val(),
+					actionName : jQuery("li#step-" + stepId + " select[name=action-name]").find("option:selected").val()
+					// TODO step meta
+			};
+			
+			steps.push(step);
+			
+		});
+		
+		var data = {
+				action : "save_condition",
+				nonce : ub_admin_data.ajax_nonce,
+				name : jQuery("#condition-" + conditionId + " input[name=name]").val(),
+				badgeId : jQuery("#condition-" + conditionId + " select[name=badgeId]").find("option:selected").val(),
+				points : jQuery("#condition-" + conditionId + " input[name=points]").val(),
+				steps : steps,
+				
+		};
+	
+		jQuery.post(ub_admin_data.ajax_url, data, function(response) {
+			var jsonResponse = jQuery.parseJSON(response);
+		});
+	});
+	
+	/**
+	 * Add condition
 	 */
 	jQuery("#add-condition").on("click", function(e) {
+		
 		var data = {
 				action : "add_condition",
 				nonce : ub_admin_data.ajax_nonce
@@ -63,7 +106,7 @@ jQuery(document).ready(function($) {
 	});
 	
 	/**
-	 * Add step
+	 * Click add step
 	 */
 	jQuery(".add-step-btn").on("click", function(e) {
 		
@@ -74,44 +117,9 @@ jQuery(document).ready(function($) {
 	});
 	
 	/**
-	 * Add step
-	 */
-	function addStep(conditionId) {
-		
-		var data = {
-				action : "add_step",
-				nonce : ub_admin_data.ajax_nonce,
-				conditionId : conditionId
-		};
-	
-		jQuery.post(ub_admin_data.ajax_url, data, function(response) {
-			var jsonResponse = jQuery.parseJSON(response);
-			
-			//var conditionId = jsonResponse.data.conditionId;
-			jQuery(".ub-step-list").append(jsonResponse.html);
-			
-			// Change step action name
-			jQuery("li#step-" + jsonResponse.data.stepId + " select.action-name").on("change", function(e) {
-				var parts = jQuery(this).closest("li")[0].id.split("-"); 
-				var stepId = parts[1]; // step-X
-				
-				changeStepAction(stepId);
-			});
-			
-			//Click delete step
-			jQuery("li#step-" + jsonResponse.data.stepId + " a.delete-step").on("click", function(e) {
-				var parts = jQuery(this).closest("li")[0].id.split("-"); 
-				var stepId = parts[1]; // step-X
-				
-				deleteStep(stepId);
-			});
-		});
-	};
-	
-	/**
 	 * Change step action name
 	 */
-	jQuery("select.action-name").on("change", function(e) {
+	jQuery("select[name=action-name]").on("change", function(e) {
 		var parts = jQuery(this).closest("li")[0].id.split("-"); 
 		var stepId = parts[1]; // step-X
 		
@@ -137,6 +145,41 @@ jQuery(document).ready(function($) {
 		
 		deleteCondition(conditionId);
 	});
+	
+	/**
+	 * Add step
+	 */
+	function addStep(conditionId) {
+		
+		var data = {
+				action : "add_step",
+				nonce : ub_admin_data.ajax_nonce,
+				conditionId : conditionId
+		};
+	
+		jQuery.post(ub_admin_data.ajax_url, data, function(response) {
+			var jsonResponse = jQuery.parseJSON(response);
+			
+			//var conditionId = jsonResponse.data.conditionId;
+			jQuery(".ub-step-list").append(jsonResponse.html);
+			
+			// Change step action name
+			jQuery("li#step-" + jsonResponse.data.stepId + " select[name=action-name]").on("change", function(e) {
+				var parts = jQuery(this).closest("li")[0].id.split("-"); 
+				var stepId = parts[1]; // step-X
+				
+				changeStepAction(stepId);
+			});
+			
+			//Click delete step
+			jQuery("li#step-" + jsonResponse.data.stepId + " a.delete-step").on("click", function(e) {
+				var parts = jQuery(this).closest("li")[0].id.split("-"); 
+				var stepId = parts[1]; // step-X
+				
+				deleteStep(stepId);
+			});
+		});
+	}
 	
 	/**
 	 * Deletes step and empties HTML if success
@@ -183,7 +226,7 @@ jQuery(document).ready(function($) {
 	 */
 	function changeStepAction(stepId) {
 		
-		var newActionName = jQuery("li#step-" + stepId + " select.action-name").find("option:selected").val();
+		var newActionName = jQuery("li#step-" + stepId + " select[name=action-name]").find("option:selected").val();
 		
 		var data = {
 				action : "step_meta",
