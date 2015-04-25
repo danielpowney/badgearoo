@@ -231,7 +231,7 @@ class UB_API_Impl implements UB_API {
 				), ARRAY_N );
 			}
 		
-			return new Badge( 
+			return new UB_Badge( 
 					$badge_id,
 					$post->post_title,
 					$post->post_excerpt,
