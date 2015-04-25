@@ -12,6 +12,7 @@ class UB_Badge {
 	public $description = null;
 	public $created_dt = null;
 	public $users = array();
+	public $url = null;
 	
 	/**
 	 * Constructor
@@ -22,5 +23,7 @@ class UB_Badge {
 		$this->description = $description;
 		$this->created_dt = $created_dt;
 		$this->users = $users;
+		
+		$this->url = wp_get_attachment_url( get_post_thumbnail_id( $id ) );
 	}
 }
