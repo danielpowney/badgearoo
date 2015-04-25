@@ -40,9 +40,31 @@ class UB_Condition {
 		$this->created_dt = $created_dt;
 		$this->status = $status;
 	}
+	
 	/**
 	 * Checks if condition is met
 	 */
-	public function check() {
+	public function check( $user_id ) {
+		
+		$condition_result = true;
+		foreach ( $this->steps as $step ) {
+				
+			if ( $step->action_name == null ) {
+				$condition_result = false; // not setup correctly
+				break;
+			}
+		
+			$step_result = apply_filters( 'ub_condition_step_check_' . $step->action_name, true, $step, $user_id );
+			
+			if ( $step_result == false ) { // if any step is false, condition is not met
+				$condition_result = false;
+				break;
+			}
+		}
+		
+		// if you get this far, condition has been met
+		if ( $condition_result == true && count( $this->steps ) > 0 && $this->badge_id != 0 ) {
+			User_Badges::instance()->api->add_user_badge( $this->badge_id, $user_id );
+		}
 	}
 }

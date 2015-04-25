@@ -19,10 +19,10 @@ function ub_conditions_page() {
 									<?php 
 									$conditions = User_Badges::instance()->api->get_conditions();
 									
-									if ( count( $results ) == 0 ) {
+									if ( count( $conditions ) == 0 ) {
 										$name = __( 'New Condition' );
 										$condition = User_Badges::instance()->api->add_condition( $name );
-										array_push( $conditions, $condition)
+										array_push( $conditions, $condition);
 									}
 									
 									foreach ( $conditions as $condition ) {
@@ -68,10 +68,10 @@ function ub_display_condition_meta_box( $condition ) {
 											<select name="badgeId">
 												<option value=""><?php _e( 'No badge', 'user-badges' ); ?></option>
 												<?php 
-												global $wpdb;
-												$badges = $wpdb->get_results( 'SELECT * FROM ' . $wpdb->posts . ' WHERE post_type = "badge" AND post_status = "publish"' );
+												
+												$badges = User_Badges::instance()->api->get_badges();
 												foreach ( $badges as $badge ) {
-													?><option value="<?php echo $badge->ID; ?>" <?php if ( $condition->badge_id == $badge-ID ) echo 'selected'; ?>><?php echo esc_html( stripslashes( $badge->post_title ) ); ?></option><?php
+													?><option value="<?php echo $badge->id; ?>" <?php if ( $condition->badge_id == $badge->id ) echo 'selected'; ?>><?php echo esc_html( stripslashes( $badge->name ) ); ?></option><?php
 												}
 												?>
 											</select>
@@ -92,10 +92,9 @@ function ub_display_condition_meta_box( $condition ) {
 							<ul class="ub-step-list">
 								<?php
 								if ( count( $condition->steps ) == 0 ) {
-									$created_dt = current_time('mysql');
 									$label = __( 'New Step', 'user-badges' );
 									
-									$step = User_Badges::instance()->api->add_step( $condition->condition_id, $label, $created_dt );
+									$step = User_Badges::instance()->api->add_step( $condition->condition_id, $label );
 									
 									array_push( $condition->steps, $step );
 								}
@@ -140,8 +139,9 @@ function ub_display_step( $step ) {
 		<select name="action-name" class="action-name">
 			<option value=""><?php _e( 'Please select an action.', 'user-badges' ); ?>
 			<?php
-			global $wpdb;
-			$actions = $wpdb->get_results( 'SELECT * FROM ' . $wpdb->prefix . UB_ACTION_TABLE_NAME . ' WHERE enabled = 1' );
+			
+			$actions = User_Badges::instance()->api->get_actions();
+			
 			foreach ( $actions as $action ) {
 				?><option value="<?php echo $action->name; ?>" <?php if ( $step->action_name == $action->name ) echo 'selected'; ?>><?php echo esc_html( stripslashes( $action->description ) ); ?></option><?php
 			}
@@ -169,9 +169,10 @@ function ub_display_step( $step ) {
  */
 function ub_step_meta_count( $step_id, $action  ) {
 	if ( $action == UB_WP_LOGIN_ACTION || $action == UB_WP_PUBLISH_POST_ACTION || $action == UB_WP_SUBMIT_COMMENT_ACTION ) { 
+		$count = User_Badges::instance()->api->get_step_meta_value( $step_id, 'count' );
 		?>
 		<span class="step-meta-value">
-			<input name="count" type="number" value="" class="small-text" />&nbsp;<?php _e( 'time(s)', 'user-badges' ); ?>
+			<input name="count" type="number" value="<?php echo $count; ?>" class="small-text" />&nbsp;<?php _e( 'time(s)', 'user-badges' ); ?>
 		</span>
 		<?php
 	}
@@ -186,9 +187,10 @@ add_action( 'ub_step_meta', 'ub_step_meta_count', 10, 2 );
  */
 function ub_step_meta_points( $step_id, $action  ) {
 	if ( $action == UB_MIN_POINTS_ACTION ) {
+		$points = User_Badges::instance()->api->get_step_meta_value( $step_id, 'points' );
 		?>
 		<span class="step-meta-value">
-			<input name="points" type="number" value="" class="small-text" />&nbsp;<?php _e( 'points', 'user-badges' ); ?>
+			<input name="points" type="number" value="<?php echo $points; ?>" class="small-text" />&nbsp;<?php _e( 'points', 'user-badges' ); ?>
 		</span>
 		<?php
 	}
@@ -208,12 +210,7 @@ function ub_add_condition() {
 		global $wpdb;	
 		
 		$name = __( 'New Condition' );
-		$created_dt = current_time('mysql');
-		
-		$wpdb->insert( $wpdb->prefix . UB_CONDITION_TABLE_NAME , array( 'name' => $name, 'created_dt' => $created_dt ), array( '%s', '%s' ) );
-		$condition_id = $wpdb->insert_id;
-		
-		$condition = new UB_Condition( $condition_id, $name, null, 0, $created_dt, null, false, false  );
+		$condition = User_Badges::instance()->api->add_condition( $name );
 		
 		ub_display_condition_meta_box( $condition );
 	
@@ -222,7 +219,7 @@ function ub_add_condition() {
 	
 		echo json_encode( array(
 				'html' => $html,
-				'data' => array( 'conditionId' => $condition_id )
+				'data' => array( 'conditionId' => $condition->condition_id )
 		) );
 	}
 	
@@ -240,18 +237,9 @@ function ub_add_step() {
 		ob_start();
 		
 		$label = __( 'New Step' );
-		$created_dt = current_time('mysql');
 		$condition_id = $_POST['conditionId'];
 		
-		global $wpdb;
-		
-		$wpdb->insert( $wpdb->prefix . UB_CONDITION_STEP_TABLE_NAME , 
-				array( 'label' => $label, 'condition_id' => $condition_id, 'created_dt' => $created_dt ), 
-				array( '%s', '%d', '%s' )
-		);
-		$step_id = $wpdb->insert_id;
-		
-		$step = new UB_Step( $step_id, $condition_id, $label, null, $created_dt );
+		$step = User_Badges::instance()->api->add_step( $condition_id, $label );
 	
 		ub_display_step( $step );
 	
@@ -260,7 +248,7 @@ function ub_add_step() {
 	
 		echo json_encode( array(
 				'html' => $html,
-				'data' => array( 'stepId' => $step_id )
+				'data' => array( 'stepId' => $step->step_id )
 		) );
 	}
 	
@@ -276,12 +264,7 @@ function ub_delete_step() {
 	if ( wp_verify_nonce( $ajax_nonce, User_Badges::ID.'-nonce' ) ) {
 		$step_id = $_POST['stepId'];
 
-		global $wpdb;
-
-		$wpdb->delete( $wpdb->prefix . UB_CONDITION_STEP_TABLE_NAME ,
-				array( 'id' => $step_id ),
-				array( '%d' )
-		);
+		User_Badges::instance()->api->delete_step( $step_id );
 
 		echo json_encode( array(
 				'success' => true
@@ -300,22 +283,8 @@ function ub_delete_condition() {
 	if ( wp_verify_nonce( $ajax_nonce, User_Badges::ID.'-nonce' ) ) {
 		$condition_id = $_POST['conditionId'];
 
-		global $wpdb;
-
-		$wpdb->delete( $wpdb->prefix . UB_CONDITION_TABLE_NAME ,
-				array( 'id' => $condition_id ),
-				array( '%d' )
-		);
+		User_Badges::instance()->api->delete_condition( $condition_id );
 		
-		$steps = $wpdb->get_col( $wpdb->prepare( 'SELECT id FROM ' . $wpdb->prefix . UB_CONDITION_STEP_TABLE_NAME . ' WHERE condition_id = %d', $condition_id ) );
-		
-		$wpdb->delete( $wpdb->prefix . UB_CONDITION_STEP_TABLE_NAME ,
-				array( 'condition_id' => $condition_id ),
-				array( '%d' )
-		);
-		
-		$wpdb->query( 'DELETE FROM ' . $wpdb->prefix . UB_CONDITION_STEP_META_TABLE_NAME . ' WHERE step_id IN ( ' . implode(',', $steps ) . ')' );
-
 		echo json_encode( array(
 				'success' => true
 		) );
@@ -327,9 +296,6 @@ function ub_delete_condition() {
 
 /**
  * Returns HTML for step meta
- * 
- * @param unknown $step_id
- * @param unknown $action_name
  */
 function ub_step_meta() {
 	
@@ -354,21 +320,44 @@ function ub_step_meta() {
 	die();
 }
 
+/**
+ * Saves a condition including steps and step meta values
+ */
 function ub_save_condition() {
 	
 	$ajax_nonce = $_POST['nonce'];
 	if ( wp_verify_nonce( $ajax_nonce, User_Badges::ID.'-nonce' ) ) {
 		
-		$conditition_id = $_POST['condition_id'];
+		$condition_id = intval( $_POST['conditionId'] );
 		$name = $_POST['name'];
-		$badgeId = $_POST['badgeId'];
-		$points = $_POST['points'];
+		$badge_id = intval( $_POST['badgeId'] );
+		$points = intval( $_POST['points'] );
 		
-		$steps = $_POST['steps'];
+		$condition = new UB_Condition( $condition_id, $name, $badge_id, $points, null, '', false, false );
 		
-		// sanitize data
+		if ( is_array( $_POST['steps'] ) ) {
+			foreach ( $_POST['steps'] as $step ) {
+				$step_id = intval( $step['stepId'] );
+				$action_name = $step['actionName']; // do we need to check action_name is valid?
+				$label = $step['label'];
+				
+				$step_meta = array();
+				if ( is_array( $step['stepMeta'] )) {
+					foreach ( $step['stepMeta'] as $meta ) {
+						array_push( $step_meta, array( 'key' => $meta['key'], 'value' => $meta['value'] ) );
+					}
+				}
+				array_push( $condition->steps, new UB_Step( $step_id, $condition_id, $label, $action_name, null, $step_meta ) );
+			}
+		}
 		
-		// save data
+		User_Badges::instance()->api->save_condition( $condition );
+		
+		echo json_encode( array(
+				'success' => true,
+				'message' => __('Condition saved.'),
+				'data' => array( 'name' => esc_html( $name ) )
+		) );
 	}
 	
 	die();

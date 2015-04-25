@@ -27,7 +27,7 @@ jQuery(document).ready(function($) {
 	jQuery(".ub-step-list").disableSelection();
 	
 	/**
-	 * Add condition
+	 * Click Save Changes
 	 */
 	jQuery("form.condition").submit(function(e) {
 		
@@ -36,37 +36,72 @@ jQuery(document).ready(function($) {
 		var parts = jQuery(this).closest(".postbox")[0].id.split("-"); 
 		var conditionId = parts[1]; // condition-X
 		
+		saveCondition(conditionId);
+	});
+	
+	/**
+	 * Saves a condition
+	 */
+	function saveCondition(conditionId) {
+		
 		var steps = [];
 		jQuery.each( jQuery("#condition-" + conditionId + " li.ub-step"), function(index, value) {
 			
 			var parts = value.id.split("-")
 			var stepId = parts[1];
 			
+			var stepMeta = [];
+			jQuery.each( jQuery("li#step-" + stepId + " .step-meta input, li#step-" + stepId + " .step-meta select," +
+					"li#step-" + stepId + " .step-meta textarea"), function(index, value) {
+				
+				var value = "";
+				var name = jQuery(this).attr("name");
+				if (jQuery(this).is(":checkbox")) {
+					value = jQuery(this).is(':checked');
+				} else {
+					value = jQuery(this).val();
+				}
+				
+				if ( value && value.length > 0 ) {
+					stepMeta.push({
+						key : name,
+						value : value
+					});
+				}
+			});
+			
 			var step = {
 					stepId : stepId,
 					label : jQuery("li#step-" + stepId + " input[name=label]").val(),
-					actionName : jQuery("li#step-" + stepId + " select[name=action-name]").find("option:selected").val()
-					// TODO step meta
+					actionName : jQuery("li#step-" + stepId + " select[name=action-name]").find("option:selected").val(),
+					stepMeta : ( stepMeta.length > 0 ) ? stepMeta : null
 			};
 			
 			steps.push(step);
-			
 		});
 		
 		var data = {
 				action : "save_condition",
 				nonce : ub_admin_data.ajax_nonce,
+				conditionId : conditionId,
 				name : jQuery("#condition-" + conditionId + " input[name=name]").val(),
 				badgeId : jQuery("#condition-" + conditionId + " select[name=badgeId]").find("option:selected").val(),
 				points : jQuery("#condition-" + conditionId + " input[name=points]").val(),
-				steps : steps,
-				
+				steps : steps
 		};
 	
 		jQuery.post(ub_admin_data.ajax_url, data, function(response) {
 			var jsonResponse = jQuery.parseJSON(response);
+			
+			// remove any previous message
+			jQuery("div#condition-" + conditionId + " div.updated").remove();
+			
+			if (jsonResponse.success == true) {
+				jQuery("<div class=\"updated\" style=\"margin: 10px 0 10px;\"><p>" + jsonResponse.message + "</p></div>").insertBefore("div#condition-" + conditionId + " form");
+				jQuery("div#condition-" + conditionId + " h3 span").html(jsonResponse.data.name);
+			}
 		});
-	});
+	};
 	
 	/**
 	 * Add condition
@@ -101,6 +136,25 @@ jQuery(document).ready(function($) {
 				var conditionId = parts[1]; // condition-X
 				
 				addStep(conditionId);
+			});
+			
+			// delete step
+			jQuery("div#condition-" + jsonResponse.data.conditionId + " a.delete-step").on("click", function(e) {
+				var parts = jQuery(this).closest("li")[0].id.split("-"); 
+				var stepId = parts[1]; // step-X
+				
+				deleteStep(stepId);
+			});
+			
+			// save condition
+			jQuery("div#condition-" + jsonResponse.data.conditionId + " form.condition").submit(function(e) {
+				
+				e.preventDefault();
+				
+				var parts = jQuery(this).closest(".postbox")[0].id.split("-"); 
+				var conditionId = parts[1]; // condition-X
+				
+				saveCondition(conditionId);
 			});
 		});
 	});
