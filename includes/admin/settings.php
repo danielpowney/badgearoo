@@ -40,7 +40,7 @@ function ub_settings_page() {
 						<?php 
 						foreach ( $action_sources as $source ) {?>
 							<tr>
-								<th scope="row">WordPress Core</th>
+								<th scope="row"><?php echo $source; ?></th>
 								<td>
 									<?php
 									$actions = $wpdb->get_results( 'SELECT * FROM ' . $wpdb->prefix . UB_ACTION_TABLE_NAME . ' WHERE source = "' . $source . '"' );

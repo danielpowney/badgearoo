@@ -58,7 +58,7 @@ jQuery(document).ready(function($) {
 				var name = jQuery(this).attr("name");
 				if (jQuery(this).is(":checkbox")) {
 					value = jQuery(this).is(':checked');
-				} else {
+				} else { // input, select, textarea
 					value = jQuery(this).val();
 				}
 				
@@ -85,7 +85,8 @@ jQuery(document).ready(function($) {
 				nonce : ub_admin_data.ajax_nonce,
 				conditionId : conditionId,
 				name : jQuery("#condition-" + conditionId + " input[name=name]").val(),
-				badgeId : jQuery("#condition-" + conditionId + " select[name=badgeId]").find("option:selected").val(),
+				enabled : jQuery("#condition-" + conditionId + " input[name=enabled]").is(':checked'),
+				badges : jQuery("#condition-" + conditionId + " input[name=badges]").val(),
 				points : jQuery("#condition-" + conditionId + " input[name=points]").val(),
 				steps : steps
 		};
@@ -138,6 +139,25 @@ jQuery(document).ready(function($) {
 				addStep(conditionId);
 			});
 			
+			jQuery("div#condition-" + jsonResponse.data.conditionId + " .addBadgeBtn").on("click", function(e) {
+				var parts = jQuery(this).closest(".postbox")[0].id.split("-"); 
+				var conditionId = parts[1]; // condition-X
+				
+				addBadge(conditionId);
+			});
+			
+			jQuery("div#condition-" + jsonResponse.data.conditionId + " .ntdelbutton").on("click", function(e) {
+				var parts = jQuery(this).closest(".postbox")[0].id.split("-"); 
+				var conditionId = parts[1]; // condition-X
+				
+				parts = jQuery(this)[0].name.split("-");
+				var badgeId = parts[1];
+				
+				jQuery(this).parent().remove();
+				
+				deleteBadge(conditionId, badgeId);
+			});
+			
 			// delete step
 			jQuery("div#condition-" + jsonResponse.data.conditionId + " a.delete-step").on("click", function(e) {
 				var parts = jQuery(this).closest("li")[0].id.split("-"); 
@@ -162,7 +182,7 @@ jQuery(document).ready(function($) {
 	/**
 	 * Click add step
 	 */
-	jQuery(".add-step-btn").on("click", function(e) {
+	jQuery("form.condition .add-step-btn").on("click", function(e) {
 		
 		var parts = jQuery(this).closest(".postbox")[0].id.split("-"); 
 		var conditionId = parts[1]; // condition-X
@@ -170,10 +190,29 @@ jQuery(document).ready(function($) {
 		addStep(conditionId);
 	});
 	
+	jQuery("form.condition .addBadgeBtn").on("click", function(e) {
+		var parts = jQuery(this).closest(".postbox")[0].id.split("-"); 
+		var conditionId = parts[1]; // condition-X
+		
+		addBadge(conditionId);
+	});
+	
+	jQuery("form.condition .ntdelbutton").on("click", function(e) {
+		var parts = jQuery(this).closest(".postbox")[0].id.split("-"); 
+		var conditionId = parts[1]; // condition-X
+		
+		parts = jQuery(this)[0].name.split("-");
+		var badgeId = parts[1];
+		
+		jQuery(this).parent().remove();
+		
+		deleteBadge(conditionId, badgeId);
+	});
+	
 	/**
 	 * Change step action name
 	 */
-	jQuery("select[name=action-name]").on("change", function(e) {
+	jQuery("form.condition select[name=action-name]").on("change", function(e) {
 		var parts = jQuery(this).closest("li")[0].id.split("-"); 
 		var stepId = parts[1]; // step-X
 		
@@ -183,7 +222,7 @@ jQuery(document).ready(function($) {
 	/**
 	 * Click delete step
 	 */
-	jQuery("a.delete-step").on("click", function(e) {
+	jQuery("form.condition a.delete-step").on("click", function(e) {
 		var parts = jQuery(this).closest("li")[0].id.split("-"); 
 		var stepId = parts[1]; // step-X
 		
@@ -193,12 +232,50 @@ jQuery(document).ready(function($) {
 	/**
 	 * Click delete condition
 	 */
-	jQuery(".delete-condition-btn").on("click", function(e) {
+	jQuery("form.condition .delete-condition-btn").on("click", function(e) {
 		var parts = jQuery(this).closest(".postbox")[0].id.split("-"); 
 		var conditionId = parts[1]; // condition-X
 		
 		deleteCondition(conditionId);
 	});
+	
+	/**
+	 * Adds a badge
+	 */
+	function addBadge(conditionId) {
+
+		var selectedOption = jQuery("div#condition-" + conditionId + " select[name=addBadge]").find("option:selected");
+		
+		var badgeId = selectedOption.val();
+		var badgeName = selectedOption.text();
+		
+		var html = "<span><a class=\"badge badgeId-" + badgeId + " ntdelbutton\">X</a>&nbsp;" + badgeName + "</span>";
+		
+		var badges = jQuery("div#condition-" + conditionId + " input[name=badges]").val().split();
+		badges.push(badgeId);
+		jQuery("div#condition-" + conditionId + " input[name=badges]").val(badges.join(","));
+		
+		jQuery("div#condition-" + conditionId + " .tagchecklist").append(html);
+	}
+	
+	/**
+	 * Deletes a badge
+	 */
+	function deleteBadge(conditionId, badgeId) {
+		
+		var badges = jQuery("div#condition-" + conditionId + " input[name=badges]").val().split(",");
+
+		for (var index = 0; index< badges.length; index++) {
+			if (badges[index] == badgeId) {
+				if (badgeId == badges[index]) { // found, remove one
+					badges.splice( index, 1 );
+					break;
+				}
+			}
+		}
+		
+		jQuery("div#condition-" + conditionId + " input[name=badges]").val(badges.join(","));	
+	}
 	
 	/**
 	 * Add step
@@ -215,7 +292,7 @@ jQuery(document).ready(function($) {
 			var jsonResponse = jQuery.parseJSON(response);
 			
 			//var conditionId = jsonResponse.data.conditionId;
-			jQuery(".ub-step-list").append(jsonResponse.html);
+			jQuery("div#condition-" + conditionId + " .ub-step-list").append(jsonResponse.html);
 			
 			// Change step action name
 			jQuery("li#step-" + jsonResponse.data.stepId + " select[name=action-name]").on("change", function(e) {

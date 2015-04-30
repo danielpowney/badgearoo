@@ -37,6 +37,10 @@ table.badges .column-description {
 	vertical-align: top;
 }
 
+.ub-condition .tagchecklist {
+	margin-top: 10px;
+}
+
 
  .ub-step .step-meta, .ub-step .step-meta .step-meta-value {
 	display: inline-block;

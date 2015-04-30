@@ -23,7 +23,6 @@ class UB_Badge {
 		$this->description = $description;
 		$this->created_dt = $created_dt;
 		$this->users = $users;
-		
 		$this->url = wp_get_attachment_url( get_post_thumbnail_id( $id ) );
 	}
 }

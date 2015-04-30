@@ -12,11 +12,12 @@
  */
 
 define( 'UB_ACTION_TABLE_NAME', 'ub_action' ); // stores predefined actions e.g. publishes a post
-define( 'UB_USER_ACTIONS_TABLE_NAME', 'ub_user_actions' ); // stores what actions a user has done
-define( 'UB_USER_BADGES_TABLE_NAME', 'ub_user_badges' ); // stores badges assigned to users
+define( 'UB_USER_ACTION_TABLE_NAME', 'ub_user_action' ); // stores what actions a user has done
+define( 'UB_USER_ASSIGNMENT_TABLE_NAME', 'ub_user_assignment' ); // stores badges/points assigned to users
 define( 'UB_CONDITION_TABLE_NAME', 'ub_condition' );
 define( 'UB_CONDITION_STEP_META_TABLE_NAME', 'ub_condition_step_meta' );
 define( 'UB_CONDITION_STEP_TABLE_NAME', 'ub_condition_step' );
+define( 'UB_USER_ACTION_META_TABLE_NAME', 'ub_user_action_meta' );
 
 // WordPress predefined actions
 define( 'UB_WP_PUBLISH_POST_ACTION', 'wp_publish_post' );
@@ -208,44 +209,51 @@ class User_Badges {
 			$generated_id = $wpdb->insert_id;
 		}
 		
-		$user_badges_query = 'CREATE TABLE ' . $wpdb->prefix . UB_USER_BADGES_TABLE_NAME . ' (
-				badge_id bigint(20) NOT NULL,
-				user_id bigint(20) NOT NULL,
-				created_dt datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-				PRIMARY KEY  (badge_id, user_id)
-		) ENGINE=InnoDB AUTO_INCREMENT=1;';
-		
-		dbDelta( $user_badges_query );
-		
-		$user_actions_query = 'CREATE TABLE ' . $wpdb->prefix . UB_USER_ACTIONS_TABLE_NAME . ' (
+		$user_assignment_query = 'CREATE TABLE ' . $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME . ' (
 				id  bigint(20) NOT NULL AUTO_INCREMENT,
 				user_id bigint(20) NOT NULL,
-				action varchar(50) NOT NULL,
+				condition_id bigint(20),
+				type varchar(20) NOT NULL,
+				value bigint(20) NOT NULL,
+				created_dt datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+				expiry_dt datetime,
+				PRIMARY KEY  (id)
+		) ENGINE=InnoDB AUTO_INCREMENT=1;';
+		
+		dbDelta( $user_assignment_query );
+		
+		$user_action_query = 'CREATE TABLE ' . $wpdb->prefix . UB_USER_ACTION_TABLE_NAME . ' (
+				id  bigint(20) NOT NULL AUTO_INCREMENT,
+				user_id bigint(20) NOT NULL,
+				action_name varchar(50) NOT NULL,
 				created_dt datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
 				PRIMARY KEY  (id)
 		) ENGINE=InnoDB AUTO_INCREMENT=1;';
 		
-		dbDelta( $user_actions_query );
+		dbDelta( $user_action_query );
 			
 		$condition_query = 'CREATE TABLE ' . $wpdb->prefix . UB_CONDITION_TABLE_NAME . ' (
-				id  bigint(20) NOT NULL AUTO_INCREMENT,
+				condition_id  bigint(20) NOT NULL AUTO_INCREMENT,
 				name varchar(255) NOT NULL,
 				points bigint(20) DEFAULT 0,
-				badge_id varchar(50),
+				badges longtext,
 				created_dt datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-				status varchar(50),
-				PRIMARY KEY  (id)
+				enabled bigint(20) DEFAULT 1,
+				assignment_expiry varchar(20),
+				PRIMARY KEY  (condition_id)
 		) ENGINE=InnoDB AUTO_INCREMENT=1;';
+		
+		// TODO expiry? e.g. 1 year, 1 month
 		
 		dbDelta( $condition_query );
 		
 		$condition_step_query = 'CREATE TABLE ' . $wpdb->prefix . UB_CONDITION_STEP_TABLE_NAME . ' (
-				id  bigint(20) NOT NULL AUTO_INCREMENT,
+				step_id  bigint(20) NOT NULL AUTO_INCREMENT,
 				condition_id bigint(20) NOT NULL,
 				label varchar(50),
 				action_name varchar(50) NOT NULL,
 				created_dt datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-				PRIMARY KEY  (id)
+				PRIMARY KEY  (step_id)
 		) ENGINE=InnoDB AUTO_INCREMENT=1;';
 		
 		dbDelta( $condition_step_query );
@@ -259,6 +267,16 @@ class User_Badges {
 		) ENGINE=InnoDB AUTO_INCREMENT=1;';
 		
 		dbDelta( $condition_step_meta_query );
+		
+		$user_actions_meta_query = 'CREATE TABLE ' . $wpdb->prefix . UB_USER_ACTION_META_TABLE_NAME . ' (
+				meta_id bigint(20) NOT NULL AUTO_INCREMENT,
+				user_action_id bigint(20) NOT NULL,
+				meta_key varchar(255),
+				meta_value longtext,
+				PRIMARY KEY  (meta_id)
+		) ENGINE=InnoDB AUTO_INCREMENT=1;';
+		
+		dbDelta( $user_actions_meta_query );
 	}
 	
 	/**
@@ -440,6 +458,3 @@ function ub_plugin_init() {
 	return User_Badges::instance();
 }
 ub_plugin_init();
-
-
-ub_check_conditions( 'wp_submit_comment', 1);

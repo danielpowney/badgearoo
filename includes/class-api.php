@@ -11,10 +11,12 @@ interface UB_API {
 	/**
 	 * Adds a badge to a user if they do not have it already
 	 * 
-	 * @param unknown $badge_id
-	 * @param unknown $user_id
+	 * @param int condition_id
+	 * @param int $user_id
+	 * @param string $type
+	 * @param int $value
 	 */
-	public function add_user_badge( $badge_id, $user_id );
+	public function add_user_assignment( $condition_id, $user_id = 0, $type = 'badge', $value = 0 );
 	
 	/**
 	 * Gets badges by user id
@@ -33,20 +35,12 @@ interface UB_API {
 	public function get_badge( $badge_id, $load_users );
 	
 	/**
-	 * Deletes a badge associated to a specific user
-	 * 
-	 * @param unknown $badge_id
-	 * @param unknown $user_id
-	 */
-	public function delete_user_badge( $badge_id, $user_id );
-	
-	/**
 	 * Records a user action
 	 * 
 	 * @param unknown $action
 	 * @param unknown $user_id
 	 */
-	public function add_user_action( $action, $user_id );
+	public function add_user_action( $action_name, $user_id, $meta = array() );
 	
 	/**
 	 * Adds a step
@@ -82,21 +76,17 @@ interface UB_API {
 	 * Gets conditions
 	 * 
 	 * @param unknown $filters
-	 * @param string $load_badge
-	 * @param string $load_steps
 	 * @return conditions
 	 */
-	public function get_conditions( $filters = array(), $load_badge = false, $load_steps = true );
+	public function get_conditions( $filters = array() );
 	
 	/**
 	 * Get a condition by id
 	 * 
 	 * @param unknown $condition_id
-	 * @param string $load_badge
-	 * @param string $load_steps
 	 * @return condition
 	 */
-	public function get_condition( $condition_id, $load_badge = false, $load_steps = true );
+	public function get_condition( $condition_id );
 	
 	/**
 	 * Gets badges
@@ -145,6 +135,15 @@ interface UB_API {
 	 * @return value
 	 */
 	public function get_step_meta_value( $step_id, $meta_key );
+
+	/**
+	 * Adds user action meta
+	 * 
+	 * @param unknown $action_name
+	 * @param unknown $meta_key
+	 * @param unknown $meta_value
+	 */
+	public function add_user_action_meta( $action_name, $meta_key, $meta_value = '' );
 }
 
 /**
@@ -157,24 +156,78 @@ class UB_API_Impl implements UB_API {
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see UB_API::add_user_badge()
+	 * @see UB_API::add_user_assignment()
 	 */
-	public function add_user_badge( $badge_id, $user_id ) {
-
-		// TODO check if user already has badge, if they do, do nothing. If they don't, add action 
-		// 'ub_new_user_badge'. This could be used for e-mail comms
+	public function add_user_assignment( $condition_id = null, $user_id = 0, $type = 'badge', $value = 0 ) {
+		
+		if ( $user_id == 0 || ( $type != 'points' && $type != 'badge' ) || $value == 0 ) {
+			return;
+		}
 		
 		global $wpdb;
 		
-		$wpdb->replace(
-				$wpdb->prefix . UB_USER_BADGES_TABLE_NAME,
-				array(
-						'badge_id' => $badge_id,
+		$row = null;
+		if ( $condition_id ) {
+			$query = 'SELECT value FROM ' . $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME . ' WHERE condition_id = ' . esc_sql( $condition_id ) . ' AND type = "' . esc_sql( $type ) . '"';
+			
+			if ( $type == 'badge' ) {
+				
+			}
+			$row = $wpdb->get_row( $query );
+		}
+		
+		if ( $row ) { // > 0
+						
+			$result = $wpdb->update( $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME,
+					array( 'created_dt' => current_time( 'mysql' ), 'value' => $value ),
+					array( 'condition_id' => $condition_id, 'type' => $type ),
+					array( '%s', '%d' ),
+					array( '%d', '%s' )
+			);
+			
+			if ( $type == 'points' && $row->value != $value ) { // subtract previous points from usermeta and the add new points
+				
+				$total_points = get_user_meta( $user_id, 'ub_points', true );
+				if ( strlen( $total_points ) == 0 || ! is_numeric( $total_points ) ) {
+					$total_points = 0;
+				} else {
+					$total_points = intval( $total_points );
+				}
+				
+				$total_points = $total_points - intval( $row->value ) + intval( $value );
+				update_user_meta( $user_id, 'ub_points', $total_points );
+			}
+			
+			do_action( 'ub_update_user_assignment', $condition_id, $user_id, $type, $value );
+			
+		} else {
+			$wpdb->insert( $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME , 
+					array(
+						'condition_id' => $condition_id,
 						'user_id' => $user_id,
-						'created_dt' => current_time( 'mysql' )
-				),
-				array( '%d', '%d', '%s' )
-		);
+						'created_dt' => current_time( 'mysql' ),
+						'type' => $type,
+						'value' => $value
+					), 
+					array( '%d', '%d', '%s', '%s', '%d' )
+			);
+			
+			if ( $type == 'points' ) {
+				
+				$total_points = get_user_meta( $user_id, 'ub_points', true );
+				if ( strlen( $total_points ) == 0 || ! is_numeric( $total_points ) ) {
+					$total_points = 0;
+				} else {
+					$total_points = intval( $total_points );
+				}
+				
+				$total_points += intval( $value );
+				update_user_meta( $user_id, 'ub_points', $total_points );
+			}
+			
+			do_action( 'ub_add_user_assignment', $condition_id, $user_id, $type, $value );
+			
+		}
 	}
 	
 	/**
@@ -187,10 +240,10 @@ class UB_API_Impl implements UB_API {
 		
 		global $wpdb;
 		
-		$user_badges_results = $wpdb->get_results( $wpdb->prepare( "
-				SELECT      *
-				FROM        " . $wpdb->prefix . UB_USER_BADGES_TABLE_NAME . "
-				WHERE       user_id = %d",
+		$user_badges_results = $wpdb->get_results( $wpdb->prepare( '
+				SELECT      badge_id
+				FROM        ' . $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME . '
+				WHERE       user_id = %d AND type = "badge"',
 				$user_id
 		) );
 		
@@ -223,10 +276,10 @@ class UB_API_Impl implements UB_API {
 			
 			if ( $load_users ) {
 				
-				$users = $wpdb->get_results( $wpdb->prepare( "
+				$users = $wpdb->get_results( $wpdb->prepare( '
 						SELECT      user_id
-						FROM        " . $wpdb->prefix . UB_USER_BADGES_TABLE_NAME . "
-						WHERE       badge_id = %d",
+						FROM        ' . $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME . '
+						WHERE       value = %d AND type = "badge"',
 						$badge_id
 				), ARRAY_N );
 			}
@@ -245,30 +298,25 @@ class UB_API_Impl implements UB_API {
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see UB_API::delete_user_badge()
-	 */
-	public function delete_user_badge( $badge_id, $user_id ) {
-
-		global $wpdb;
-		
-		$wpdb->delete( $wpdb->prefix . UB_USER_BADGES_TABLE_NAME, 
-				array( 'badge_id' => $badge_id, 'user_id' => $user_id ), 
-				array( '%d', '%d' )
-		);
-	}
-	
-	/**
-	 * (non-PHPdoc)
 	 * @see UB_API::add_user_action()
 	 */
-	public function add_user_action( $action, $user_id ) {
+	public function add_user_action( $action_name, $user_id, $meta = array() ) {
 		
 		global $wpdb;
 		
-		$wpdb->insert( $wpdb->prefix . UB_USER_ACTIONS_TABLE_NAME, array( 'user_id' => $user_id, 'action' => $action ), array( '%d', '%s') );	
-
-		echo ( function_exists( 'ub_check_conditions' ) );
-		ub_check_conditions( $action, $user_id );
+		$wpdb->insert( $wpdb->prefix . UB_USER_ACTION_TABLE_NAME, array( 'user_id' => $user_id, 'action_name' => $action_name ), array( '%d', '%s') );	
+		$user_action_id = $wpdb->insert_id;
+		
+		foreach ( $meta as $meta_key => $meta_value )  {
+			
+			$wpdb->insert( $wpdb->prefix . UB_USER_ACTION_META_TABLE_NAME, 
+					array( 'user_action_id' => $user_action_id, 'meta_key' => $meta_key, 'meta_value' => $meta_value ), 
+					array( '%d', '%s', '%s')
+			);
+				
+		}
+		
+		ub_check_conditions( $action_name, $user_id );
 	}
 	
 	/**
@@ -299,17 +347,17 @@ class UB_API_Impl implements UB_API {
 		
 		$created_dt = current_time('mysql');
 		
-		$wpdb->insert( $wpdb->prefix . UB_CONDITION_TABLE_NAME , array( 'name' => $name, 'created_dt' => $created_dt ), array( '%s', '%s' ) );
+		$wpdb->insert( $wpdb->prefix . UB_CONDITION_TABLE_NAME , array( 'name' => $name, 'created_dt' => $created_dt, 'enabled' => true ), array( '%s', '%s', '%d' ) );
 		$condition_id = $wpdb->insert_id;
 		
-		return new UB_Condition( $condition_id, $name, null, 0, $created_dt, null, false, false );
+		return new UB_Condition( $condition_id, $name, array(), 0, $created_dt, true, null );
 	}
 	
 	/**
 	 * (non-PHPdoc)
 	 * @see UB_API::get_conditions()
 	 */
-	public function get_conditions( $filters = array(), $load_badge = false, $load_steps = true ) {
+	public function get_conditions( $filters = array() ) {
 		global $wpdb;
 		
 		$query = 'SELECT * FROM ' . $wpdb->prefix . UB_CONDITION_TABLE_NAME;
@@ -318,7 +366,8 @@ class UB_API_Impl implements UB_API {
 		
 		$conditions = array();
 		foreach ( $results as $row ) {
-			array_push( $conditions, new UB_Condition( $row->id, $row->name, $row->badge_id, $row->points, $row->created_dt, $row->status, $load_badge, $load_steps ) );
+			$badges = ( strlen( trim ( $row->badges ) ) == 0 ) ? array() : preg_split( '/[\s,]+/', $row->badges );
+			array_push( $conditions, new UB_Condition( $row->condition_id, $row->name, $badges, $row->points, $row->created_dt, $row->enabled, $row->assignment_expiry ) );
 		}
 		
 		return $conditions;
@@ -328,15 +377,16 @@ class UB_API_Impl implements UB_API {
 	 * (non-PHPdoc)
 	 * @see UB_API::get_conditions()
 	 */
-	public function get_condition( $condition_id, $load_badge = false, $load_steps = true ) {
+	public function get_condition( $condition_id ) {
 		global $wpdb;
 	
-		$query = 'SELECT * FROM ' . $wpdb->prefix . UB_CONDITION_TABLE_NAME . ' WHERE id = ' . intval( $condition_id );
+		$query = 'SELECT * FROM ' . $wpdb->prefix . UB_CONDITION_TABLE_NAME . ' WHERE condition_id = ' . intval( $condition_id );
 	
 		$row = $wpdb->get_row( $query );
 	
 		if ( $row != null ) {
-			return new UB_Condition( $row->id, $row->name, $row->badge_id, $row->points, $row->created_dt, $row->status, $load_badge, $load_steps );
+			$badges = ( strlen( trim ( $row->badges ) ) == 0 ) ? array() : preg_split( '/[\s,]+/', $row->badges );
+			return new UB_Condition( $row->condition_id, $row->name, $badges, $row->points, $row->created_dt, $row->enabled, $row->assignment_expiry );
 		}
 		
 		return null;
@@ -362,10 +412,10 @@ class UB_API_Impl implements UB_API {
 			
 			$users = null;
 			if ( $load_users == true ) {
-				$users = $wpdb->get_results( $wpdb->prepare( "
+				$users = $wpdb->get_results( $wpdb->prepare( '
 							SELECT      user_id
-							FROM        " . $wpdb->prefix . UB_USER_BADGES_TABLE_NAME . "
-							WHERE       badge_id = %d",
+							FROM        ' . $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME . '
+							WHERE       value = %d AND type = "badge"',
 						$row->ID
 				), ARRAY_N );
 			}
@@ -415,7 +465,7 @@ class UB_API_Impl implements UB_API {
 		global $wpdb;
 		
 		$wpdb->delete( $wpdb->prefix . UB_CONDITION_STEP_TABLE_NAME ,
-				array( 'id' => $step_id ),
+				array( 'step_id' => $step_id ),
 				array( '%d' )
 		);
 	}
@@ -428,11 +478,11 @@ class UB_API_Impl implements UB_API {
 		global $wpdb;
 		
 		$wpdb->delete( $wpdb->prefix . UB_CONDITION_TABLE_NAME ,
-				array( 'id' => $condition_id ),
+				array( 'condition_id' => $condition_id ),
 				array( '%d' )
 		);
 		
-		$steps = $wpdb->get_col( $wpdb->prepare( 'SELECT id FROM ' . $wpdb->prefix . UB_CONDITION_STEP_TABLE_NAME . ' WHERE condition_id = %d', $condition_id ) );
+		$steps = $wpdb->get_col( $wpdb->prepare( 'SELECT step_id FROM ' . $wpdb->prefix . UB_CONDITION_STEP_TABLE_NAME . ' WHERE condition_id = %d', $condition_id ) );
 		
 		$wpdb->delete( $wpdb->prefix . UB_CONDITION_STEP_TABLE_NAME ,
 				array( 'condition_id' => $condition_id ),
@@ -440,6 +490,8 @@ class UB_API_Impl implements UB_API {
 		);
 		
 		$wpdb->query( 'DELETE FROM ' . $wpdb->prefix . UB_CONDITION_STEP_META_TABLE_NAME . ' WHERE step_id IN ( ' . implode(',', $steps ) . ')' );
+
+		$wpdb->query( 'DELETE FROM ' . $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME . ' WHERE condition_id = ' . $condition_id );
 	}
 	
 	/**
@@ -450,12 +502,22 @@ class UB_API_Impl implements UB_API {
 		
 		global $wpdb;
 		
+		// TODO serialize badges?
+		
 		$result = $wpdb->update( $wpdb->prefix . UB_CONDITION_TABLE_NAME , 
-				array( 'name' => $condition->name, 'badge_id' => $condition->badge_id, 'points' => $condition->points ),
-				array( 'id' => $condition->condition_id ),
-				array( '%s', '%d', '%d' ),
+				array( 
+						'name' => $condition->name,
+						'badges' => implode(',', $condition->badges ),
+						'points' => $condition->points,
+						'enabled' => $condition->enabled,
+						'assignment_expiry' => $condition->assignment_expiry
+				),
+				array( 'condition_id' => $condition->condition_id ),
+				array( '%s', '%s', '%d', '%d', '%s' ),
 				array( '%d' ) 
 		);
+		
+		// TODO recalculate points usermeta in case condition points has been updated
 		
 		foreach ( $condition->steps as $step ) {
 			$this->save_step( $step );
@@ -472,7 +534,7 @@ class UB_API_Impl implements UB_API {
 		
 		$wpdb->update( $wpdb->prefix . UB_CONDITION_STEP_TABLE_NAME ,
 				array( 'label' => $step->label, 'action_name' => $step->action_name ),
-				array( 'id' => $step->step_id ),
+				array( 'step_id' => $step->step_id ),
 				array( '%s', '%s' ),
 				array( '%d' )
 		);
@@ -519,5 +581,20 @@ class UB_API_Impl implements UB_API {
 		}
 		
 		return $value;
+	}
+	
+	/**
+	 * (non-PHPdoc)
+	 * @see UB_API::add_user_action_meta($action_name, $meta_key, $meta_value)
+	 */
+	public function add_user_action_meta( $user_action_id, $meta_key, $meta_value = '' ) {
+		global $wpdb;
+		
+		// TODO replace if id exists
+		
+		$wpdb->insert( $wpdb->prefix . UB_USER_ACTION_META_TABLE_NAME ,
+				array( 'user_action_id' => $user_action_id, 'meta_key' => $meta_key, 'meta_value' => $meta_value ),
+				array( '%s', '%s', '%s')
+		);
 	}
 }
