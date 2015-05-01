@@ -14,7 +14,6 @@ function ub_user_badges_column( $custom_column, $column_name, $user_id  ) {
 			
     if  ( $column_name == 'badges' ) {
         $badges = User_Badges::instance()->api->get_user_badges( $user_id );
-        
         $count = count( $badges );
         if ( $count == 0 ) {
         	$column_content .= __('None', 'user-badges' );
@@ -22,7 +21,6 @@ function ub_user_badges_column( $custom_column, $column_name, $user_id  ) {
         	$index = 0;
 	        foreach ( $badges as $badge ) {
 	        	$attachment_img = wp_get_attachment_image_src( get_post_thumbnail_id( $badge->id ) );
-	        	//$column_content .= '<div style="display: inline-block; text-align: center; margin-right: 10px;"><img src="' . $attachment_img[0] . '" widht="' . $attachment_img[1] . '" height="' . $attachment_img . '" title="' . $badge->description . '" /><br />';
 	        	$column_content .= '<a href="' . get_edit_post_link( $badge->id ) . '">' . $badge->name . '</a>';
 	        	
 	        	if ( $index < $count-1 ) {
@@ -70,7 +68,6 @@ function ub_show_user_profile( $user ) {
 				</th>
 				<td>
 					<input type="number" name="points" value="<?php echo $points; ?>" class="small-text" />
-					TODO show how points are assigned
 				</td>
 			</tr>
 			<tr>
@@ -79,20 +76,22 @@ function ub_show_user_profile( $user ) {
 				</th>
 				<td>
 					<?php 
-					global $wpdb;
-	
-					$query = 'SELECT * FROM ' . $wpdb->posts . ' WHERE post_type = "badge"';
-					$results = $wpdb->get_results( $query );
+					$badges = User_Badges::instance()->api->get_badges();
 					
-					$selected = $wpdb->get_col( 'SELECT badge_id FROM ' . $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME . ' WHERE type = "badge" AND user_id = ' . $user->ID );
+					$user_badges = User_Badges::instance()->api->get_user_badges( $user->ID );
 					
+					$selected = array();
+					foreach ( $user_badges as $user_badge ) {
+						array_push($selected, $user_badge->id );
+					}
+								
 					$index = 0;
-					$count = count( $results );
-					foreach ( $results as $row ) {
-						$is_selected = in_array( $row->ID, $selected );
+					$count = count( $user_badges );
+					foreach ( $badges as $badge ) {
+						$is_selected = in_array( $badge->id, $selected );
 						?>
-						<input type="checkbox" name="badges[]" value="<?php echo $row->ID; ?>"<?php if ( $is_selected  == true) { echo 'checked'; } ?> />
-						<label><a href="<?php echo get_edit_post_link( $row->ID ); ?>"><?php echo $row->post_title; ?></a></label>
+						<input type="checkbox" name="badges[]" value="<?php echo $badge->id; ?>"<?php if ( $is_selected  == true) { echo 'checked'; } ?> />
+						<label><a href="<?php echo get_edit_post_link( $badge->id ); ?>"><?php echo $badge->name; ?></a></label>
 						<?php 
 						if ( $index < $count-1 ) {
 							echo '<br />';
@@ -114,16 +113,45 @@ add_action( 'edit_user_profile', 'ub_show_user_profile' );
  */
 function ub_update_user_profile( $user_id ) {
 	
-	$points = isset( $_POST['points'] ) && is_numeric( $_POST['points'] ) ? intval( $_POST['points'] ) : 0;
-	
-	$total_points = get_user_meta( $user_id, 'ub_points', true );
-	if ( strlen( $total_points ) == 0 || ! is_numeric( $total_points ) ) {
-		$total_points = 0;
-	} else {
-		$total_points = intval( $total_points );
-	}
+	if ( current_user_can( 'edit_user', $user_id ) ) {
 		
-	$total_points += $points;
-	update_user_meta( $user_id, 'ub_points', $total_points );
+		$points = isset( $_POST['points'] ) && is_numeric( $_POST['points'] ) ? intval( $_POST['points'] ) : 0;
+		
+		$total_points = get_user_meta( $user_id, 'ub_points', true );
+		if ( strlen( $total_points ) == 0 || ! is_numeric( $total_points ) ) {
+			$total_points = 0;
+		} else {
+			$total_points = intval( $total_points );
+		}
+			
+		// Override all other points
+		// Add points diff as a user assingment with no condition id (so we know it was by an admin)
+		if ( $total_points > 0 ) {
+			$diff_points = $points - $total_points;
+			User_Badges::instance()->api->add_user_assignment( null, $user_id, 'points', $diff_points, null );
+		}
+		
+		update_user_meta( $user_id, 'ub_points', $points );
+		
+		$badges = isset( $_POST['badges'] ) && is_array( $_POST['badges'] ) ? $_POST['badges'] : array();
+		
+		$current_badges = User_Badges::instance()->api->get_user_badges( $user_id );
+		
+		$temp_badges = array();
+		foreach ( $current_badges as $current_badge ) {
+			if ( ! in_array( $current_badge->id, $badges ) ) {
+				User_Badges::instance()->api->delete_user_assignment( null, $user_id, $type = 'badge', $current_badge->id );
+			}
+			
+			array_push( $temp_badges, $current_badge->id );
+		}
+		
+		foreach ( $badges as $badge => $badge_id ) {
+			if ( ! in_array( $badge_id, $temp_badges ) ) {
+				User_Badges::instance()->api->add_user_assignment( null, $user_id, $type = 'badge', $badge_id );
+			}
+		}
+	}
 }
-add_action( 'edit_user_profile_update', 'ub_update_user_profile' );
+add_action( 'edit_user_profile_update', 'ub_update_user_profile', 1 );
+add_action( 'personal_options_update', 'ub_update_user_profile', 1 );

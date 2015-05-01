@@ -1,5 +1,4 @@
 <?php
-
 global $ub_actions;
 
 /**
@@ -15,17 +14,18 @@ function ub_transition_post_status( $new_status, $old_status, $post = null ) {
 		return;
 	}
 	
-	// get post type
 	$post_type = $post->post_type;
+	$post_types = get_post_types( array( 'public' => true ), 'names' );
 	
-	if ( $post_type == 'post' && $old_status != 'publish'  &&  $new_status == 'publish' ) {
+	if ( in_array($post_type, $post_types) && $old_status != 'publish' && $new_status == 'publish' ) {
 		
 		// get user id
 		$user_id = $post->post_author;
 		
-		User_Badges::instance()->api->add_user_action( UB_WP_PUBLISH_POST_ACTION, $user_id, array( 'post_type' => $post_type ) );
-		
-		// how to check post type?
+		User_Badges::instance()->api->add_user_action( UB_WP_PUBLISH_POST_ACTION, $user_id, array( 
+				'post_type' => $post_type ,
+				'post_id' => $post->ID 
+		) );
 	}
 }
 if ( isset( $ub_actions[UB_WP_PUBLISH_POST_ACTION] ) && $ub_actions[UB_WP_PUBLISH_POST_ACTION]['enabled'] == true ) {
@@ -92,21 +92,58 @@ function ub_condition_step_check_count( $step_result, $step, $user_id, $action_n
 		return $step_result;
 	}
 
-	$value = User_Badges::instance()->api->get_step_meta_value( $step->step_id, 'count' );
-
+	$meta_count = User_Badges::instance()->api->get_step_meta_value( $step->step_id, 'count' );
+	
 	global $wpdb;
-	$count = $wpdb->get_var( 'SELECT COUNT(*) FROM ' . $wpdb->prefix . UB_USER_ACTION_TABLE_NAME . ' WHERE action_name = "' . esc_sql( $step->action_name ) . '" and user_id = ' . $user_id );
+	$query = 'SELECT COUNT(*) FROM ' . $wpdb->prefix . UB_USER_ACTION_TABLE_NAME . ' WHERE action_name = "' 
+			. esc_sql( $step->action_name ) . '" and user_id = ' . $user_id;
+	
+	$db_count = $wpdb->get_var( $query );
 
-	if ( intval( $count ) < intval( $value ) ) {
+	if ( intval( $db_count ) < intval( $meta_count ) ) {
 		return false;
 	}
 
 	return $step_result;
 }
 
+/**
+ * Checks count for the WP publish post user action
+ *
+ * @param unknown $step_result
+ * @param unknown $step
+ * @param int $user_id
+ * @param string $action_name
+ * @return boolean
+ */
+function ub_condition_step_check_publish_post( $step_result, $step, $user_id, $action_name ) {
+	
+	if ( $step_result == false ) { // no need to continue
+		return $step_result;
+	}
+	
+	$meta_count = User_Badges::instance()->api->get_step_meta_value( $step->step_id, 'count' );
+	$meta_post_type = User_Badges::instance()->api->get_step_meta_value( $step->step_id, 'post_type' );
+	
+	global $wpdb;
+	$query = 'SELECT COUNT(*) FROM ' . $wpdb->prefix . UB_USER_ACTION_TABLE_NAME 
+			. ' ua INNER JOIN ' . $wpdb->prefix . UB_USER_ACTION_META_TABLE_NAME 
+			. ' uam ON uam.user_action_id = ua.id WHERE ua.action_name = "'
+			. esc_sql( $action_name ) . '" AND ua.user_id = ' . $user_id 
+			. ' AND uam.meta_key = "post_type" AND uam.meta_value = "' . esc_sql( $meta_post_type ) . '"';
+	
+	$db_count = $wpdb->get_var( $query );
+	
+	if ( intval( $db_count ) < intval( $meta_count ) ) {
+		return false;
+	}
+	
+	return $step_result;
+}
+
 add_filter( 'ub_condition_step_check_wp_submit_comment', 'ub_condition_step_check_count', 10, 4 );
 add_filter( 'ub_condition_step_check_wp_login', 'ub_condition_step_check_count', 10, 4 );
-add_filter( 'ub_condition_step_check_wp_publish_post', 'ub_condition_step_check_count', 10, 4 );
+add_filter( 'ub_condition_step_check_wp_publish_post', 'ub_condition_step_check_publish_post', 10, 4 );
 add_filter( 'ub_condition_step_check_wp_register', 'ub_condition_step_check_count', 10, 4 );
 
 /**
@@ -126,7 +163,9 @@ function ub_condition_step_check_points( $step_result, $step, $user_id, $action_
 
 	$value = User_Badges::instance()->api->get_step_meta_value( $step->step_id, 'points' );
 
-	$points = $wpdb->get_var( 'SELECT COUNT(*) FROM ' . $wpdb->prefix . UB_USER_ACTION_TABLE_NAME . ' WHERE action_name = "' . esc_sql( $action ) . '" and user_id = ' . $user_id );
+	global $wpdb;
+	
+	$points = $wpdb->get_var( 'SELECT COUNT(*) FROM ' . $wpdb->prefix . UB_USER_ACTION_TABLE_NAME . ' WHERE action_name = "' . esc_sql( $action ) . '" AND user_id = ' . $user_id );
 
 	if ( intval( $points ) < intval( $value ) ) {
 		return false;
@@ -134,43 +173,8 @@ function ub_condition_step_check_points( $step_result, $step, $user_id, $action_
 
 	return $step_result;
 }
-add_filter( 'ub_condition_step_check_ub_min_points', 'ub_condition_step_check_points', 10, 3 );
+add_filter( 'ub_condition_step_check_ub_min_points', 'ub_condition_step_check_points', 10, 4 );
 
-/**
- * Checks points for user
- *
- * @param unknown $step_result
- * @param unknown $step
- * @return unknown
- */
-function ub_condition_step_check_post_type( $step_result, $step, $user_id, $action_name ) {
-
-	if ( $step_result == false ) { // no need to continue
-		return $step_result;
-	}
-
-	$value = User_Badges::instance()->api->get_step_meta_value( $step->step_id, 'post_type' );
-
-	$post_types = $wpdb->get_col( 'SELECT uam.post_type AS post_type FROM ' . $wpdb->prefix . UB_USER_ACTION_META_TABLE_NAME . ' uam, ' 
-			. $wpdb->prefix . UB_USER_ACTION_TABLE_NAME  . ' ua WHERE ua.action_name = "' . esc_sql( $action_name ) 
-			. '" and ua.user_id = ' . $user_id . ' WHERE uam.user_action_id = ua.id');
-	
-	foreach ( $post_types as $post_type ) {
-		
-		if ( $post_type && strlen( $value ) > 0 ) {
-			$step_result = false;
-			break;
-		}
-		
-		if ( $post_type != $value ) {
-			$step_result = false;
-			break;
-		}
-	}
-	
-	return $step_result;
-}
-add_filter( 'ub_condition_step_check_ub_post_type', 'ub_condition_step_check_post_type', 10, 4 );
 
 /**
  * Checks whether conditions have been met given a new action has been performed

@@ -9,7 +9,7 @@
 interface UB_API {
 	
 	/**
-	 * Adds a badge to a user if they do not have it already
+	 * Adds assignment (e.g. badge, points) to a user if they do not have it already
 	 * 
 	 * @param int condition_id
 	 * @param int $user_id
@@ -17,6 +17,16 @@ interface UB_API {
 	 * @param int $value
 	 */
 	public function add_user_assignment( $condition_id, $user_id = 0, $type = 'badge', $value = 0 );
+	
+	/**
+	 * Deletes assignment (e.g. badge, points) from a user
+	 *
+	 * @param int condition_id
+	 * @param int $user_id
+	 * @param string $type
+	 * @param int $value
+	 */
+	public function delete_user_assignment( $condition_id = null, $user_id = 0, $type = 'badge', $value = 0 );
 	
 	/**
 	 * Gets badges by user id
@@ -168,21 +178,29 @@ class UB_API_Impl implements UB_API {
 		
 		$row = null;
 		if ( $condition_id ) {
-			$query = 'SELECT value FROM ' . $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME . ' WHERE condition_id = ' . esc_sql( $condition_id ) . ' AND type = "' . esc_sql( $type ) . '"';
+			$query = 'SELECT DISTINCT(value) FROM ' . $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME . ' WHERE condition_id = ' . esc_sql( $condition_id ) . ' AND type = "' . esc_sql( $type ) . '"';
 			
 			if ( $type == 'badge' ) {
-				
+				$query .= ' AND value = ' . $value;
 			}
 			$row = $wpdb->get_row( $query );
 		}
 		
 		if ( $row ) { // > 0
+			
+			$where = array( 'condition_id' => $condition_id, 'type' => $type );
+			$where_format = array( '%d', '%s' );
+			
+			if ( $type = 'badge' ) {
+				$where['value'] = $value;
+				array_push( $where_format, '%d' );
+			}
 						
 			$result = $wpdb->update( $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME,
 					array( 'created_dt' => current_time( 'mysql' ), 'value' => $value ),
-					array( 'condition_id' => $condition_id, 'type' => $type ),
+					$where,
 					array( '%s', '%d' ),
-					array( '%d', '%s' )
+					$where_format
 			);
 			
 			if ( $type == 'points' && $row->value != $value ) { // subtract previous points from usermeta and the add new points
@@ -232,6 +250,30 @@ class UB_API_Impl implements UB_API {
 	
 	/**
 	 * (non-PHPdoc)
+	 * @see UB_API::delete_user_assignment()
+	 */
+	public function delete_user_assignment( $condition_id = null, $user_id = 0, $type = 'badge', $value = 0 ) {
+		
+		global $wpdb;
+		
+		$where = array( 'user_id' => $user_id, 'type' => $type );
+		$where_format = array( '%d', '%s' );
+		
+		if ( $type = 'badge' ) {
+			$where['value'] = $value;
+			array_push( $where_format, '%d' );
+		}
+		
+		if ( isset( $condition_id ) ) {
+			$where['condition_id'] = $value;
+			array_push( $where_format, '%d' );
+		}
+	
+		$result = $wpdb->delete( $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME, $where, $where_format );
+	}
+	
+	/**
+	 * (non-PHPdoc)
 	 * @see UB_API::get_user_badges()
 	 */
 	public function get_user_badges( $user_id ) {
@@ -241,7 +283,7 @@ class UB_API_Impl implements UB_API {
 		global $wpdb;
 		
 		$user_badges_results = $wpdb->get_results( $wpdb->prepare( '
-				SELECT      badge_id
+				SELECT      value AS badge_id
 				FROM        ' . $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME . '
 				WHERE       user_id = %d AND type = "badge"',
 				$user_id

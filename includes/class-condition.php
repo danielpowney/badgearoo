@@ -53,7 +53,7 @@ class UB_Condition {
 					$condition_result = false; // not setup correctly
 					break;
 				}
-			
+				
 				$step_result = apply_filters( 'ub_condition_step_check_' . $step->action_name, true, $step, $user_id, $step->action_name );
 				
 				if ( $step_result == false ) { // if any step is false, condition is not met
