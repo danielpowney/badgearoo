@@ -18,7 +18,7 @@
 		foreach ( $user_rows as $user_row ) {
 			?>
 			<tr class="user-row">
-				<td><b><?php echo $rank; ?></b></td>
+				<td class="rank"><?php echo $rank; ?></td>
 				<td class="user-meta">
 				
 					<?php

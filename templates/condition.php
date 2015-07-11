@@ -10,7 +10,7 @@
 	}
 	
 	if ( $show_steps && count( $steps ) > 0 ) { ?>
-		<b><?php _e( 'Required steps:', 'user_badges' ); ?></b>
+		<label><?php _e( 'Required steps:', 'user_badges' ); ?></label>
 		
 		<ul class="ub-steps">
 			<?php
@@ -24,7 +24,7 @@
 	<?php }
 	
 	if ( $show_badges && count( $badges ) > 0 ) { ?>
-		<b><?php _e( 'Badges:', 'user_badges' ); ?></b>
+		<label><?php _e( 'Badges:', 'user_badges' ); ?></label>
 		
 		<ul class="ub-badges">
 			<?php

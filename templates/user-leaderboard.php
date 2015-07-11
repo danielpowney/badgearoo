@@ -6,7 +6,7 @@
 
 <div class="user-leaderboard <?php if ( isset( $class ) ) { echo esc_attr( $class ); } ?>">
 
-	<h3><?php _e( 'Leaderboard', 'user-badges' ); ?></h3>
+	<h2><?php _e( 'Leaderboard', 'user-badges' ); ?></h2>
 	
 	<?php
 	if ( count( $user_rows ) == 0 ) {
