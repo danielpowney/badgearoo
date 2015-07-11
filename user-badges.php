@@ -110,7 +110,7 @@ class User_Badges {
 			global $ub_actions;
 	
 			foreach ( $results as $row ) {
-				if ( isset( $ub_actions[$row->name] ) && $ub_actions[$row->name]->enabled == null ) {
+				if ( isset( $ub_actions[$row->name] ) && $ub_actions[$row->name]['enabled'] == null ) {
 					$ub_actions[$row->name]['enabled'] = ( $row->enabled == 1 ) ? true : false;
 				}
 			}
@@ -345,8 +345,16 @@ class User_Badges {
 	 * @since 0.1
 	 */
 	public function assets() {
+		
+		$config_array = array(
+				'ajax_url' => admin_url( 'admin-ajax.php' ),
+				'ajax_nonce' => wp_create_nonce( User_Badges::ID.'-nonce' )
+		);
 
 		wp_enqueue_style( 'ub-frontend-style', plugins_url( 'assets' . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'frontend.css', __FILE__ ) );
+		
+		wp_enqueue_script( 'ub-frontend-script', plugins_url('assets' . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'frontend.js', __FILE__), array('jquery'), User_Badges::VERSION, true );
+		wp_localize_script( 'ub-frontend-script', 'ub_frontend_data', $config_array );
 		
 		
 	}
@@ -364,6 +372,9 @@ class User_Badges {
 			add_action( 'wp_ajax_step_meta', 'ub_step_meta' );
 			add_action( 'wp_ajax_save_condition', 'ub_save_condition' );
 		}
+		
+		add_action( 'wp_ajax_user_leaderboard_filter', 'ub_user_leaderboard_filter' );
+		add_action( 'wp_ajax_nopriv_user_leaderboard_filter', 'ub_user_leaderboard_filter' );
 		
 	}
 	

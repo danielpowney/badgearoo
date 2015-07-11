@@ -1,9 +1,53 @@
 .user-badges-widget h1, .user-badges-widget h2, .user-badges-widget h3, .user-badges-widget h4, .user-badges-widget h5, .user-badges-widget h6 {
 	display: inline;
 }
-.user-badges-widget img {
-	margin-right: 10px;
+.user-badges-widget img, .ub-condition .ub-badges .ub-badge img {
+	margin-right: 5px;
 }
 .user-badges-widget .badges {
 	margin-top: 10px;
+}
+
+.ub-badge-summary .ub-users .ub-user {
+	display: inline-block;
+	text-align: center;
+	margin-top: 10px;
+}
+.ub-badge-summary .ub-users-count {
+	margin-bottom: 10px;
+}
+.ub-badge-summary .ub-badge-main {
+	text-align: left;
+	margin-bottom: 20px;
+}
+.ub-badge-summary .ub-badge-main h2, .ub-badge-summary .ub-badge-main img {
+	margin-top: 0px;
+	margin-bottom: 0px;
+	display: inline-block;
+	vertical-align: middle;
+}
+.ub-badge-summary  .ub-badge-description, .ub-badge-summary .ub-users-count {
+	display: block;
+	margin-top: 10px;
+}
+
+.user-leaderboard table {
+	width: auto;
+}
+.user-leaderboard form, .user-leaderboard form input, .user-leaderboard form select {
+	margin-bottom: 10px;
+}
+.user-leaderboard form input {
+	max-width: 180px;
+}
+.user-leaderboard td.ub-badges, .user-leaderboard td.ub-points {
+	text-align: center;
+	
+}
+
+.user-leaderboard td.ub-badges .ub-badge {
+	display: inline-block;
+}
+.user-leaderboard td {
+	vertical-align: middle;
 }

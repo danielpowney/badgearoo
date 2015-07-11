@@ -458,3 +458,89 @@ function ub_save_condition() {
 	
 	die();
 }
+
+
+/**
+ * Ratings e.g. 10 people selected 1, 4 selected 2 etc... and 853 selected 5 stars.
+ *
+
+// Item 1 votes
+$ratings[0][1] = 10;
+$ratings[0][2] = 4;
+$ratings[0][3] = 1;
+$ratings[0][4] = 72;
+$ratings[0][5] = 853;       // z0mg, lots of people think this is 5 star material!
+
+// Item 2 votes - it's 50:50, rating should be 3
+$ratings[1][1] = 1000;
+$ratings[1][2] = 1;
+$ratings[1][3] = 1;
+$ratings[1][4] = 1;
+$ratings[1][5] = 1000;
+
+// Item 3 votes - should also be 3
+$ratings[2][1] = 1000;
+$ratings[2][2] = 1000;
+$ratings[2][3] = 1000;
+$ratings[2][4] = 1000;
+$ratings[2][5] = 1000;
+
+// Item 4 votes - obviously the best thing ever
+$ratings[3][1] = 0;
+$ratings[3][2] = 0;
+$ratings[3][3] = 0;
+$ratings[3][4] = 0;
+$ratings[3][5] = 99999999999;
+
+foreach($ratings as $rating)
+{
+	$total_votes = $rating[1] + $rating[2] + $rating[3] + $rating[4] + $rating[5];
+
+	$weight[1] = $rating[1] / $total_votes;
+	$weight[2] = $rating[2] / $total_votes;
+	$weight[3] = $rating[3] / $total_votes;
+	$weight[4] = $rating[4] / $total_votes;
+	$weight[5] = $rating[5] / $total_votes;
+
+	// 1.0 == $weight[5] + $weight[4] + $weight[3] + $weight[2] + $weight[1];
+
+	$yay = 1 * $weight[1];
+	$yay += 2 * $weight[2];
+	$yay += 3 * $weight[3];
+	$yay += 4 * $weight[4];
+	$yay += 5 * $weight[5];
+
+	echo $yay;
+	echo "<br />";
+}
+
+/*
+ RESULTS
+ 4.1472951561793
+ 2.4925205800884
+ 1
+ 5
+ *
+ 
+// avg is 3/4
+$avg_num_votes = 5.0;
+$avg_rating = 4.2;
+
+$this_num_votes = 1.0;
+$this_rating = 5.0;
+
+echo '<br />' . '( ' . ($avg_num_votes * $avg_rating) . ' + ' . ($this_num_votes * $this_rating) . ' ) / ' . ($avg_num_votes + $this_num_votes);
+
+$bayesian_rating = ( ($avg_num_votes * $avg_rating) + ($this_num_votes * $this_rating) ) / ($avg_num_votes + $this_num_votes);
+
+echo "<br /><br />" . $bayesian_rating;
+
+
+echo md5(serialize(
+		array( 
+				'result_result' => array(),
+				'filters' => array( 'rating_item_ids' => '1,2,3', 'user_roles' => 'administrator' ),
+				'post_id' => null,
+				'rating_form_id' => null				
+		)
+));*/

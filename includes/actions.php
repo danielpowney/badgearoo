@@ -77,6 +77,17 @@ if ( isset( $ub_actions[UB_WP_REGISTER_ACTION] ) && $ub_actions[UB_WP_REGISTER_A
 }
 
 
+
+/*
+ * bbPress
+ * - create X number of topics
+ * - has bbPress moderator user role
+ * - closed X number of topic
+ * - replied to a topic X times
+ * 
+ * Show badges & points underneath user profile
+ */
+
 /**
  * Checks count for user actions
  *

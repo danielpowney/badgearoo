@@ -276,18 +276,42 @@ class UB_API_Impl implements UB_API {
 	 * (non-PHPdoc)
 	 * @see UB_API::get_user_badges()
 	 */
-	public function get_user_badges( $user_id ) {
+	public function get_user_badges( $user_id, $filters = array() ) {
 		
-		$badges_list = array();
+		
+		extract( wp_parse_args( $filters, array(
+				'to_date' => null,
+				'from_date' => null
+		) ) );
 		
 		global $wpdb;
 		
-		$user_badges_results = $wpdb->get_results( $wpdb->prepare( '
-				SELECT      value AS badge_id
+		$query = 'SELECT	value AS badge_id
 				FROM        ' . $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME . '
-				WHERE       user_id = %d AND type = "badge"',
-				$user_id
-		) );
+				WHERE       user_id = %d AND type = "badge"';
+		$added_to_query = true;
+		
+		if ( $to_date ) {
+			if ( $added_to_query ) {
+				$query .= ' AND';
+			}
+		
+			$query .= ' created_dt <= "' . esc_sql( $to_date ) . '"';
+			$added_to_query = true;
+		}
+		
+		if ( $from_date ) {
+			if ( $added_to_query ) {
+				$query .= ' AND';
+			}
+		
+			$query .= ' created_dt >= "' . esc_sql( $from_date ) . '"';
+			$added_to_query = true;
+		}
+
+		$user_badges_results = $wpdb->get_results( $wpdb->prepare( $query, $user_id ) );
+		
+		$badges_list = array();
 		
 		foreach ( $user_badges_results as $row ) {
 			
@@ -311,12 +335,14 @@ class UB_API_Impl implements UB_API {
 		}
 		
 		$post = get_post( $badge_id );
-		
+
 		if ( $post != null ) {
 			
 			$users = array();
 			
 			if ( $load_users ) {
+				
+				global $wpdb;
 				
 				$users = $wpdb->get_results( $wpdb->prepare( '
 						SELECT      user_id
@@ -324,6 +350,8 @@ class UB_API_Impl implements UB_API {
 						WHERE       value = %d AND type = "badge"',
 						$badge_id
 				), ARRAY_N );
+				
+				$wpdb->show_errors();
 			}
 		
 			return new UB_Badge( 
