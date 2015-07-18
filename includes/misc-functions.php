@@ -17,13 +17,18 @@ function ub_get_the_author_badges( $value, $user_id = false ) {
 
 	$value = '';
 
-	if (count( $badges ) > 0 ) {
+	if ( count( $badges ) > 0 ) {
 
 		foreach ( $badges as $badge ) {
 			
 			ub_get_template_part( 'badge', null, true, array(
-					'url' => $badge->url,
-					'description'=> $badge->description
+					'logo_type' => $badge->logo_type,
+					'logo_html' => $badge->logo_html,
+					'logo_image' => $badge->logo_image,
+					'title' => $badge->title,
+					'content'=> $badge->content,
+					'excerpt'=> $badge->excerpt,
+					'show_title' => true
 			) );
 
 		}

@@ -91,7 +91,8 @@ class User_Badges {
 	ABOUT_PAGE_SLUG = 'ub_about',
 	BADGES_PAGE_SLUG = 'ub_badges',
 	CONDITIONS_PAGE_SLUG = 'ub_conditions',
-	SETTINGS_PAGE_SLUG = 'ub_settings';
+	SETTINGS_PAGE_SLUG = 'ub_settings',
+	ASSIGNMENTS_PAGE_SLUG = 'ub_assignments';
 	
 	/**
 	 *
@@ -169,7 +170,11 @@ class User_Badges {
 			require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'badges.php';
 			require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'class-actions-table.php';
 			require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'users.php';
+			require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'class-assignments-table.php';
+			require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'assignments.php';
+				
 		}
+		
 	}
 	
 	/**
@@ -216,7 +221,7 @@ class User_Badges {
 				type varchar(20) NOT NULL,
 				value bigint(20) NOT NULL,
 				created_dt datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-				expiry_dt datetime,
+				expiry_dt datetime DEFAULT NULL,
 				PRIMARY KEY  (id)
 		) ENGINE=InnoDB AUTO_INCREMENT=1;';
 		
@@ -310,6 +315,7 @@ class User_Badges {
 		
 		add_dashboard_page( __( 'About User Badges', 'user-badges' ), '', 'manage_options', User_Badges::ABOUT_PAGE_SLUG, 'ub_about_page' );
 		add_submenu_page( 'edit.php?post_type=badge', __( 'Conditions', 'user-badges' ), __( 'Conditions', 'user-badges' ), 'manage_options', User_Badges::CONDITIONS_PAGE_SLUG, 'ub_conditions_page' );
+		add_submenu_page( 'edit.php?post_type=badge', __( 'Assignments', 'user-badges' ), __( 'Assignments', 'user-badges' ), 'manage_options', User_Badges::ASSIGNMENTS_PAGE_SLUG, 'ub_assignments_page' );
 		add_submenu_page( 'edit.php?post_type=badge', __( 'Settings', 'user-badges' ), __( 'Settings', 'user-badges' ), 'manage_options', User_Badges::SETTINGS_PAGE_SLUG, 'ub_settings_page' );
 	}
 	
@@ -371,6 +377,7 @@ class User_Badges {
 			add_action( 'wp_ajax_delete_step', 'ub_delete_step' );
 			add_action( 'wp_ajax_step_meta', 'ub_step_meta' );
 			add_action( 'wp_ajax_save_condition', 'ub_save_condition' );
+			add_action( 'wp_ajax_change_assignment_type', 'ub_change_assignment_type' );
 		}
 		
 		add_action( 'wp_ajax_user_leaderboard_filter', 'ub_user_leaderboard_filter' );
@@ -423,7 +430,7 @@ class User_Badges {
 						'read_post' => 'read_badge',
 				),*/
 				'hierarchical' => false,
-				'supports' => array( 'title', 'excerpt', 'thumbnail' ),
+				'supports' => array( 'title', 'editor', 'excerpt' ),
 				'slug' => ( empty( $slug ) ) ? 'badge' : $slug,
 				'taxonomies' => array( 'category' )
 		) );

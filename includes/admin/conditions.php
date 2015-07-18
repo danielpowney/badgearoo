@@ -27,7 +27,7 @@ function ub_conditions_page() {
 									
 									foreach ( $conditions as $condition ) {
 										ub_display_condition_meta_box( $condition );
-										$condition->check(1);
+										$condition->check(1); // FIXME?
 									}
 									?>
 								</div>
@@ -51,7 +51,12 @@ function ub_display_condition_meta_box( $condition ) {
 	?>
 	<div <?php if ( isset( $condition->condition_id ) ) echo 'id="condition-' . $condition->condition_id . '"'; ?> class="postbox">
 		<div class="handlediv" title="Click to toggle"><br /></div>
-		<h3 class="hndle ui-sortable-handle"><span><?php echo esc_html( $condition->name ); ?></span><?php ub_condition_status( $condition ); ?></h3>
+		<h3 class="hndle ui-sortable-handle">
+			<span>
+				<?php printf( __( 'Condition %d - %s', 'user-badges' ), $condition->condition_id, esc_html( $condition->name ) ); ?>
+			</span>
+			<?php ub_condition_status( $condition ); ?>
+		</h3>
 		<div class="inside">
 			<form method="post" class="condition">
 				<table class="ub-condition">
@@ -71,17 +76,8 @@ function ub_display_condition_meta_box( $condition ) {
 										<th scope="row"><?php _e( 'Badges', 'user-badges' ); ?></th>
 										<td>
 											<?php 
-											$badges = User_Badges::instance()->api->get_badges( array() );
+											ub_dropdown_badges( array( 'name' => 'addBadge', 'echo' => true ) );
 											?>
-											<select name="addBadge">
-												<?php
-												foreach ( $badges as $badge ) {
-													?>
-													<option value="<?php echo $badge->id; ?>"><?php echo $badge->name; ?></option>
-													<?php
-												}
-												?>
-											</select>
 											<input type="button" class="button secondary addBadgeBtn" value="Add Badge" />
 											<p class="description"><?php _e( 'Allocate badges to users'); ?></p>
 											
@@ -90,7 +86,7 @@ function ub_display_condition_meta_box( $condition ) {
 													foreach ( $condition->badges as $badge_id ) {
 														$badge = User_Badges::instance()->api->get_badge( $badge_id );
 														?>
-														<span><a name="badgeId-<?php echo $badge->id; ?>" class="ntdelbutton">X</a>&nbsp;<?php echo $badge->name; ?></span>
+														<span><a name="badgeId-<?php echo $badge->id; ?>" class="ntdelbutton">X</a>&nbsp;<?php echo $badge->title; ?></span>
 														<?php 
 													} 
 													?>
@@ -147,8 +143,11 @@ function ub_display_condition_meta_box( $condition ) {
 
 /**
  * Returns status of condition
+ * 
+ * @param condition
+ * @param echo
  */
-function ub_condition_status( $condition ) {
+function ub_condition_status( $condition, $echo = true ) {
 
 	$incomplete = false;
 	$messages = array();
@@ -168,17 +167,30 @@ function ub_condition_status( $condition ) {
 		array_push( $messages, __( 'Condition must have steps.', 'user-badges' ) );
 	}
 
+	$action_not_found = false;
 	foreach ( $condition->steps as $step ) {
 		if ( $step->action_name == null ) {
 			$incomplete = true;
-			array_push( $messages, __( 'Each step must have an action.', 'user-badges' ) );
+			$action_not_found = true;
 			break;
 		}
 	}
 	
-	if ( $incomplete == true ) {
-		echo '<span style="font-weight: 600; color: #555;"> - ' . __( 'Incomplete', 'user-badges' ) . '</span>';
+	if ( $action_not_found ) {
+		array_push( $messages, __( 'Each step must have an action.', 'user-badges' ) );
 	}
+	
+	$html = null;
+	
+	if ( $incomplete == true ) {
+		$html = '<span style="font-weight: 600; color: #555;"> - ' . __( 'Incomplete', 'user-badges' ) . '</span>';
+	}
+	
+	if ( $echo ) {
+		echo $html;
+	}
+	
+	return $html;
 }
 
 /**
@@ -421,6 +433,8 @@ function ub_save_condition() {
 		$enabled = ( isset( $_POST['enabled'] ) && $_POST['enabled'] == 'true' ) ? true : false;
 		$assignment_expiry = null; // TODO
 		
+		$badges = array_filter( $badges ); // removes empty array elements if they are there
+		
 		if ( $condition_id != null ) {
 			
 			$condition = new UB_Condition( $condition_id, $name, $badges, $points, null, $enabled, $assignment_expiry );
@@ -446,8 +460,11 @@ function ub_save_condition() {
 			echo json_encode( array(
 					'success' => true,
 					'message' => __('Condition saved.', 'user-badges' ),
-					'data' => array( 'name' => esc_html( $name ) )
-			) );
+					'data' => array( 
+							'name' => sprintf( __( 'Condition %d - %s', 'user-badges' ), $condition->condition_id, esc_html( $condition->name ) ),
+							'status' => ub_condition_status( $condition, false )
+			) ) );
+			
 		} else {
 			echo json_encode( array(
 					'success' => false,

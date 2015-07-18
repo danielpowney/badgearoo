@@ -16,17 +16,18 @@ interface UB_API {
 	 * @param string $type
 	 * @param int $value
 	 */
-	public function add_user_assignment( $condition_id, $user_id = 0, $type = 'badge', $value = 0 );
+	public function add_user_assignment( $condition_id, $user_id = 0, $type = 'badge', $value = 0, $expiry_dt = null );
 	
 	/**
 	 * Deletes assignment (e.g. badge, points) from a user
 	 *
+	 * @param int assignment_id
 	 * @param int condition_id
 	 * @param int $user_id
 	 * @param string $type
 	 * @param int $value
 	 */
-	public function delete_user_assignment( $condition_id = null, $user_id = 0, $type = 'badge', $value = 0 );
+	public function delete_user_assignment( $assignment_id = null, $condition_id = null, $user_id = 0, $type = 'badge', $value = 0 );
 	
 	/**
 	 * Gets badges by user id
@@ -34,6 +35,13 @@ interface UB_API {
 	 * @param unknown $user_id
 	 */
 	public function get_user_badges( $user_id );
+	
+	/**
+	 * Gets points by user id
+	 * 
+	 * @param unknown $user_id
+	 */
+	public function get_user_points( $user_id );
 	
 	/**
 	 * 
@@ -168,7 +176,7 @@ class UB_API_Impl implements UB_API {
 	 * (non-PHPdoc)
 	 * @see UB_API::add_user_assignment()
 	 */
-	public function add_user_assignment( $condition_id = null, $user_id = 0, $type = 'badge', $value = 0 ) {
+	public function add_user_assignment( $condition_id = null, $user_id = 0, $type = 'badge', $value = 0, $expiry_dt = null ) {
 		
 		if ( $user_id == 0 || ( $type != 'points' && $type != 'badge' ) || $value == 0 ) {
 			return;
@@ -195,53 +203,44 @@ class UB_API_Impl implements UB_API {
 				$where['value'] = $value;
 				array_push( $where_format, '%d' );
 			}
-						
+			
+			$data = array( 'created_dt' => current_time( 'mysql' ), 'value' => $value );
+			$format = array( '%s', '%d' );
+			
+			if ( $expiry_dt ) {
+				$data['expiry_dt'] = $expiry_dt;
+				array_push( $format, '%s' );
+			}
+			
 			$result = $wpdb->update( $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME,
-					array( 'created_dt' => current_time( 'mysql' ), 'value' => $value ),
+					$data,
 					$where,
-					array( '%s', '%d' ),
+					$format,
 					$where_format
 			);
-			
-			if ( $type == 'points' && $row->value != $value ) { // subtract previous points from usermeta and the add new points
-				
-				$total_points = get_user_meta( $user_id, 'ub_points', true );
-				if ( strlen( $total_points ) == 0 || ! is_numeric( $total_points ) ) {
-					$total_points = 0;
-				} else {
-					$total_points = intval( $total_points );
-				}
-				
-				$total_points = $total_points - intval( $row->value ) + intval( $value );
-				update_user_meta( $user_id, 'ub_points', $total_points );
-			}
 			
 			do_action( 'ub_update_user_assignment', $condition_id, $user_id, $type, $value );
 			
 		} else {
-			$wpdb->insert( $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME , 
-					array(
-						'condition_id' => $condition_id,
-						'user_id' => $user_id,
-						'created_dt' => current_time( 'mysql' ),
-						'type' => $type,
-						'value' => $value
-					), 
-					array( '%d', '%d', '%s', '%s', '%d' )
-			);
 			
-			if ( $type == 'points' ) {
-				
-				$total_points = get_user_meta( $user_id, 'ub_points', true );
-				if ( strlen( $total_points ) == 0 || ! is_numeric( $total_points ) ) {
-					$total_points = 0;
-				} else {
-					$total_points = intval( $total_points );
-				}
-				
-				$total_points += intval( $value );
-				update_user_meta( $user_id, 'ub_points', $total_points );
+			$data = array(
+					'condition_id' => $condition_id,
+					'user_id' => $user_id,
+					'created_dt' => current_time( 'mysql' ),
+					'type' => $type,
+					'value' => $value,
+			);
+			$format = array( '%d', '%d', '%s', '%s', '%d' );
+			
+			if ( $expiry_dt ) {
+				$data['expiry_dt'] = $expiry_dt;
+				array_push( $format, '%s' );
 			}
+			
+			$wpdb->insert( $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME, 
+					$data, 
+					$format
+			);
 			
 			do_action( 'ub_add_user_assignment', $condition_id, $user_id, $type, $value );
 			
@@ -252,21 +251,40 @@ class UB_API_Impl implements UB_API {
 	 * (non-PHPdoc)
 	 * @see UB_API::delete_user_assignment()
 	 */
-	public function delete_user_assignment( $condition_id = null, $user_id = 0, $type = 'badge', $value = 0 ) {
+	public function delete_user_assignment( $assignment_id = null, $condition_id = null, $user_id = 0, $type = 'badge', $value = 0 ) {
 		
 		global $wpdb;
 		
-		$where = array( 'user_id' => $user_id, 'type' => $type );
-		$where_format = array( '%d', '%s' );
+		$where = array( );
+		$where_format = array( );
 		
-		if ( $type = 'badge' ) {
-			$where['value'] = $value;
+		if ( $assignment_id ) {
+			
+			$where['id'] = $assignment_id;
 			array_push( $where_format, '%d' );
-		}
-		
-		if ( isset( $condition_id ) ) {
-			$where['condition_id'] = $value;
-			array_push( $where_format, '%d' );
+			
+		} else {
+			
+			if ( $type ) {
+				$where['type'] = $type;
+				array_push( $where_format, '%s' );
+			}
+			
+			if ( $user_id != null && $user_id != 0 ) {
+				$where['user_id'] = $user_id;
+				array_push( $where_format, '%d' );
+			}
+			
+			if ( $type = 'badge' ) {
+				$where['value'] = $value;
+				array_push( $where_format, '%d' );
+			}
+			
+			if ( isset( $condition_id ) ) {
+				$where['condition_id'] = $condition_id;
+				array_push( $where_format, '%d' );
+			}
+			
 		}
 	
 		$result = $wpdb->delete( $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME, $where, $where_format );
@@ -327,6 +345,25 @@ class UB_API_Impl implements UB_API {
 	
 	/**
 	 * (non-PHPdoc)
+	 * @see UB_API::get_user_points()
+	 */
+	public function get_user_points( $user_id ) {
+		
+		global $wpdb;
+		
+		$query = 'SELECT SUM(CASE WHEN type = "points" THEN value ELSE 0 END) AS points FROM wp_ub_user_assignment WHERE user_id = ' . $user_id;
+		
+		$points = $wpdb->get_var( $query );
+		
+		if ( strlen( $points ) == 0 || ! is_numeric( $points ) ) {
+			$points = 0;
+		}
+		
+		return intval( $points );
+	}
+	
+	/**
+	 * (non-PHPdoc)
 	 * @see UB_API::get_badge()
 	 */
 	public function get_badge( $badge_id = 0, $load_users = false ) {
@@ -357,6 +394,7 @@ class UB_API_Impl implements UB_API {
 			return new UB_Badge( 
 					$badge_id,
 					$post->post_title,
+					$post->post_content,
 					$post->post_excerpt,
 					$post->post_date,
 					$users
@@ -493,6 +531,7 @@ class UB_API_Impl implements UB_API {
 			$badge = new UB_Badge(
 					$row->ID,
 					$row->post_title,
+					$row->post_content,
 					$row->post_excerpt,
 					$row->post_date,
 					$users
@@ -574,16 +613,23 @@ class UB_API_Impl implements UB_API {
 		
 		// TODO serialize badges?
 		
+		$data = array( 
+				'name' => $condition->name,
+				'badges' => implode(',', $condition->badges ),
+				'points' => $condition->points,
+				'enabled' => $condition->enabled
+		);
+		$format = array( '%s', '%s', '%d', '%d' );
+		
+		if ( $condition->assignment_expiry ) {
+			$data['assignment_expiry'] = $condition->assignment_expiry;
+			array_push( $format, '%s' );
+		}
+		
 		$result = $wpdb->update( $wpdb->prefix . UB_CONDITION_TABLE_NAME , 
-				array( 
-						'name' => $condition->name,
-						'badges' => implode(',', $condition->badges ),
-						'points' => $condition->points,
-						'enabled' => $condition->enabled,
-						'assignment_expiry' => $condition->assignment_expiry
-				),
+				$data,
 				array( 'condition_id' => $condition->condition_id ),
-				array( '%s', '%s', '%d', '%d', '%s' ),
+				$format,
 				array( '%d' ) 
 		);
 		

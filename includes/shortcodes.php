@@ -24,8 +24,13 @@ function ub_user_badges( $atts) {
 				
 			ob_start();
 			ub_get_template_part( 'badge', null, true, array(
-					'url' => $badge->url,
-					'description'=> $badge->description
+					'logo_type' => $badge->logo_type,
+					'logo_html' => $badge->logo_html,
+					'logo_image' => $badge->logo_image,
+					'title' => $badge->title,
+					'content'=> $badge->content,
+					'excerpt'=> $badge->excerpt,
+					'show_title' => true
 			) );
 			$html .= ob_get_contents();
 			ob_end_clean();
@@ -36,27 +41,6 @@ function ub_user_badges( $atts) {
 	return $html;
 }
 add_shortcode( 'ub_user_badges', 'ub_user_badges' );
-
-/**
- * Helper to sort user points by most points
- *
- * @param unknown_type $a
- * @param unknown_type $b
- */
-function ub_sort_most_points( $a, $b ) {
-	return ( $a['points'] > $b['points'] ) ? -1 : 1;
-}
-
-/**
- * Helper to sort user points by most points
- *
- * @param unknown_type $a
- * @param unknown_type $b
- */
-function ub_badge_count( $a, $b ) {
-	return ( count( $a['badges'] ) > count( $b['badges'] ) ) ? -1 : 1;
-}
-
 
 
 
@@ -92,8 +76,6 @@ function ub_leaderboard( $atts) {
 	}
 	
 	global $wpdb;
-	
-	$results = $wpdb->get_results( 'SELECT user_id, meta_value AS points FROM ' . $wpdb->usermeta . ' WHERE meta_key = "ub_points"' );
 	
 	$user_rows = ub_get_user_leaderboard( );
 	
@@ -140,7 +122,7 @@ function ub_badge_summary( $atts ) {
 	), $atts ) );
 
 	if ( $badge_id == null) {
-		return __( 'Badge not found.', 'user_badges' );;
+		return __( 'Badge not found.', 'user-badges' );;
 	}
 	
 	if ( is_string( $show_description ) ) {
@@ -156,7 +138,7 @@ function ub_badge_summary( $atts ) {
 	$badge = User_Badges::instance()->api->get_badge( $badge_id, ( $show_users || $show_users_count ) );
 	
 	if ( $badge == null) {
-		return __( 'Badge not found.', 'user_badges' );
+		return __( 'Badge not found.', 'user-badges' );
 	}
 
 	$users = array();
@@ -172,9 +154,12 @@ function ub_badge_summary( $atts ) {
 
 	ob_start();
 	ub_get_template_part( 'badge', 'summary', true, array(
-			'name' => $badge->name,
-			'url' => $badge->url,
-			'description'=> $badge->description,
+			'logo_type' => $badge->logo_type,
+			'logo_html' => $badge->logo_html,
+			'logo_image' => $badge->logo_image,
+			'title' => $badge->title,
+			'content'=> $badge->content,
+			'excerpt'=> $badge->excerpt,
 			'users' => $users,
 			'users_count' => count( $badge->users ),
 			'show_users' => $show_users,
@@ -207,7 +192,7 @@ function ub_condition( $atts ) {
 	), $atts ) );
 
 	if ( $condition_id == null) {
-		return __( 'Condition not found.', 'user_badges' );
+		return __( 'Condition not found.', 'user-badges' );
 	}
 	
 	if ( is_string( $show_steps ) ) {
@@ -223,7 +208,7 @@ function ub_condition( $atts ) {
 	$condition = User_Badges::instance()->api->get_condition( $condition_id );
 
 	if ( $condition == null) {
-		return __( 'Condition not found.', 'user_badges' );
+		return __( 'Condition not found.', 'user-badges' );
 	}
 	
 	$badges = array();
@@ -348,6 +333,7 @@ function ub_get_user_leaderboard( $filters = array() ) {
 	$query = 'SELECT user_id, display_name, SUM(CASE WHEN type = "badge" THEN 1 ELSE 0 END) AS count_badges, '
 			. 'SUM(CASE WHEN type = "points" THEN value ELSE 0 END) AS points FROM wp_ub_user_assignment, ' . $wpdb->users
 			. ' u WHERE user_id = u.ID';
+	
 	$added_to_query = true;
 	
 	if ( $to_date ) {

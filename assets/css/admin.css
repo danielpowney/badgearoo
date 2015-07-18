@@ -54,3 +54,16 @@ table.badges .column-description {
 	color: #0074a2 !important;
 	text-decoration: underline !important;
 }
+
+#ub-logo-image-preview {
+	display: block;
+	margin-bottom: 10px;
+}
+#ub_badge_logo_meta_box input[type="radio"] + input[type="radio"] {
+	margin-left: 5px;
+	
+}
+#ub_badge_logo_meta_box #ub-logo-image-container, #ub_badge_logo_meta_box #ub-logo-html-container, 
+#ub_badge_logo_meta_box #ub-logo-type-container {
+	margin-top: 10px
+}

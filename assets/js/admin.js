@@ -99,7 +99,12 @@ jQuery(document).ready(function($) {
 			
 			if (jsonResponse.success == true) {
 				jQuery("<div class=\"updated\" style=\"margin: 10px 0 10px;\"><p>" + jsonResponse.message + "</p></div>").insertBefore("div#condition-" + conditionId + " form");
-				jQuery("div#condition-" + conditionId + " h3 span").html(jsonResponse.data.name);
+				jQuery("div#condition-" + conditionId + " h3 span").remove();
+				var html = '<span>' + jsonResponse.data.name + '</span>';
+				if ( jsonResponse.data.status ) {
+					html += jsonResponse.data.status;
+				}
+				jQuery("div#condition-" + conditionId + " h3").append(html);
 			}
 		});
 	};
@@ -256,6 +261,18 @@ jQuery(document).ready(function($) {
 		jQuery("div#condition-" + conditionId + " input[name=badges]").val(badges.join(","));
 		
 		jQuery("div#condition-" + conditionId + " .tagchecklist").append(html);
+		
+		jQuery("div#condition-" + conditionId + " .badgeId-" + badgeId).on("click", function(e) {
+			var parts = jQuery(this).closest(".postbox")[0].id.split("-"); 
+			var conditionId = parts[1]; // condition-X
+			
+			parts = jQuery(this)[0].name.split("-");
+			var badgeId = parts[1];
+			
+			jQuery(this).parent().remove();
+			
+			deleteBadge(conditionId, badgeId);
+		});
 	}
 	
 	/**
@@ -422,7 +439,10 @@ jQuery(document).ready(function($) {
 	        var json = file_frame.state().get("selection").first().toJSON();
 	 
 	        // After that, set the properties of the image and display it
-	        //jQuery("#badge-image-preview").attr("src", json.url ).show().parent().removeClass("hidden");
+	        
+	        jQuery("#ub-logo-image-preview").remove();
+			
+			jQuery("<img id=\"ub-logo-image-preview\" src=\"" + json.url + "\">").insertBefore("#ub-logo-image-upload-btn");
 	        
 	        // Store the image's information into the meta data fields
 	        jQuery(field).val( json.url );
@@ -433,12 +453,42 @@ jQuery(document).ready(function($) {
 	 
 	}
 	
-	jQuery("#badge-image-upload-btn").on("click", function(evt) {
+	jQuery("#ub-logo-image-upload-btn").on("click", function(evt) {
         // Stop the anchor's default behavior
         evt.preventDefault();
 
         // Display the media uploader
-        renderMediaUploader( '#badge-image-url' );
+        renderMediaUploader( '#ub-logo-image' );
     });
+	
+	jQuery("input[name=\"ub-logo-type\"]:radio").on("change", function(e) {
+		var type = jQuery("input[name=\"ub-logo-type\"]:checked").val();
+		
+		if (type == 'image') {
+			jQuery("#ub-logo-image-container").css('display', 'block');
+			jQuery("#ub-logo-html-container").css('display', 'none');
+		} else if (type == 'html'){
+			jQuery("#ub-logo-html-container").css('display', 'block');
+			jQuery("#ub-logo-image-container").css('display', 'none');
+		} else {
+			jQuery("#ub-logo-html-container").css('display', 'none');
+			jQuery("#ub-logo-image-container").css('display', 'none');
+		}
+	});
+	
+	jQuery("#add-new-assignment-form select#type").on("change", function(e) {
+		
+		var data = {
+				action : "change_assignment_type",
+				nonce : ub_admin_data.ajax_nonce,
+				type : jQuery("#add-new-assignment-form select#type").val()
+		};
+	
+		jQuery.post(ub_admin_data.ajax_url, data, function(response) {
+			var jsonResponse = jQuery.parseJSON(response);
+			
+			jQuery("#add-new-assignment-form #assignment").replaceWith(jsonResponse.data.html);
+		});
+	});
 
 });

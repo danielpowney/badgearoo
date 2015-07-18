@@ -1,13 +1,27 @@
 <div class="<?php echo $class; ?> ub-badge-summary">
 
 	<div class="ub-badge-main">
-		<img src="<?php echo $url; ?>" title="<?php echo $name; ?>" />
-		<h2><?php echo $name; ?></h2>
+		<?php 
+		
+		if ( $logo_type != 'none' ) {
+			ub_get_template_part( 'badge', true, array(
+					'show_title' => false,
+					'logo_type' => $logo_type,
+					'logo_image' => $logo_image,
+					'logo_html' => $logo_html,
+					'excerpt' => $excerpt,
+					'title' => $title,
+					'content' => $content
+			) );
+		}
+		?>
+		
+		<h2><?php echo $title; ?></h2>
 	</div>
 	
-	<div class="ub-badge-description"><?php echo $description; ?></div>
+	<div class="ub-badge-description"><?php echo $content; ?></div>
 	
-	<div class="ub-users-count"><?php printf( __( '%d users have earned this badge.', 'user_badges' ), $users_count ); ?></div>
+	<div class="ub-users-count"><?php printf( __( '%d users have earned this badge.', 'user-badges' ), $users_count ); ?></div>
 	
 	<div class="ub-users">
 		<?php

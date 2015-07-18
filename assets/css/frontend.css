@@ -2,8 +2,13 @@
 	display: inline;
 }
 .user-badges-widget img, .ub-condition .ub-badges .ub-badge img {
-	margin-right: 5px;
+	margin-right: 2px;
 }
+
+.ub-condition, .ub-badge-summary, .user-leaderboard {
+	margin-bottom: 20px;
+}
+
 .user-badges-widget .badges {
 	margin-top: 10px;
 }
@@ -12,7 +17,6 @@
 	font-weight: bold;
 	display: block;
 }
-
 .ub-badge-summary .ub-users .ub-user {
 	display: inline-block;
 	text-align: center;
@@ -63,9 +67,6 @@
 	display: inline;
 }
 
-.user-leaderboard td.ub-badges .ub-badge {
-	display: inline-block;
-}
 .user-leaderboard td {
 	vertical-align: middle;
 }

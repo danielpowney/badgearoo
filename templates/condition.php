@@ -5,12 +5,12 @@
 	<?php
 	if ( $enabled == false ) {
 		?>
-		<p><?php _e( 'This condition is not enabled.', 'user_badges' ); ?></p>
+		<p><?php _e( 'This condition is not enabled.', 'user-badges' ); ?></p>
 		<?php
 	}
 	
 	if ( $show_steps && count( $steps ) > 0 ) { ?>
-		<label><?php _e( 'Required steps:', 'user_badges' ); ?></label>
+		<label><?php _e( 'Required steps:', 'user-badges' ); ?></label>
 		
 		<ul class="ub-steps">
 			<?php
@@ -24,14 +24,24 @@
 	<?php }
 	
 	if ( $show_badges && count( $badges ) > 0 ) { ?>
-		<label><?php _e( 'Badges:', 'user_badges' ); ?></label>
+		<label><?php _e( 'Badges:', 'user-badges' ); ?></label>
 		
 		<ul class="ub-badges">
 			<?php
 			foreach ( $badges as $badge ) {
 				?>
-				<li class="ub-badge">
-					<img src="<?php echo $badge->url; ?>" title="<?php echo $badge->description; ?>" /><?php echo $badge->name; ?>
+				<li class="ub-badge-list">
+					<?php 
+					ub_get_template_part( 'badge', null, true, array(
+							'show_title' => true,
+							'logo_type' => $badge->logo_type,
+							'logo_image' => $badge->logo_image,
+							'logo_html' => $badge->logo_html,
+							'excerpt' => $badge->excerpt,
+							'title' => $badge->title,
+							'content' => $badge->content
+					) );
+					?>
 				</li>
 				<?php
 			}
@@ -42,7 +52,7 @@
 	if ( $show_points && $points > 0 ) {
 		?>
 		<div class="ub-points">
-			<b><?php _e( 'Points: ', 'user_badges' ); ?></b>
+			<b><?php _e( 'Points: ', 'user-badges' ); ?></b>
 			<?php echo $points; ?>
 		</div>
 		<?php
