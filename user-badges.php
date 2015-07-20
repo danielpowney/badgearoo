@@ -153,8 +153,6 @@ class User_Badges {
 					
 				$wpdb->query( $query );
 				
-				echo $query;
-				
 				$wpdb->show_errors();
 			}			
 		}
