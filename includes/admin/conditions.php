@@ -27,7 +27,6 @@ function ub_conditions_page() {
 									
 									foreach ( $conditions as $condition ) {
 										ub_display_condition_meta_box( $condition );
-										$condition->check(1); // FIXME?
 									}
 									?>
 								</div>
@@ -157,9 +156,9 @@ function ub_condition_status( $condition, $echo = true ) {
 		array_push( $messages, __( 'Name required.', 'user-badges' ) );
 	} 
 	
-	if ( count( $condition->badges ) == 0 || $condition->points == 0 ) {
+	if ( count( $condition->badges ) == 0 && $condition->points == 0 ) {
 		$incomplete = true;
-		array_push( $messages, __( 'Badges or points required.', 'user-badges' ) );
+		array_push( $messages, __( 'Badges or points assignment required.', 'user-badges' ) );
 	}
 	
 	if ( count( $condition->steps ) == 0 ) {
@@ -237,7 +236,10 @@ function ub_display_step( $step ) {
  * @param unknown $action
  */
 function ub_step_meta_count( $step_id, $action  ) {
-	if ( $action == UB_WP_LOGIN_ACTION || $action == UB_WP_PUBLISH_POST_ACTION || $action == UB_WP_SUBMIT_COMMENT_ACTION ) { 
+	
+	$step_meta_enabled = apply_filters( 'ub_step_meta_count_enabled', false, $action );
+	
+	if ( $step_meta_enabled ) { 
 		$count = User_Badges::instance()->api->get_step_meta_value( $step_id, 'count' );
 		?>
 		<span class="step-meta-value">
@@ -255,7 +257,10 @@ add_action( 'ub_step_meta', 'ub_step_meta_count', 10, 2 );
  * @param unknown $action
  */
 function ub_step_meta_points( $step_id, $action  ) {
-	if ( $action == UB_MIN_POINTS_ACTION ) {
+	
+	$step_meta_enabled = apply_filters( 'ub_step_meta_points_enabled', false, $action );
+	
+	if ( $step_meta_enabled ) {
 		$points = User_Badges::instance()->api->get_step_meta_value( $step_id, 'points' );
 		?>
 		<span class="step-meta-value">
@@ -273,7 +278,10 @@ add_action( 'ub_step_meta', 'ub_step_meta_points', 10, 2 );
  * @param unknown $action
  */
 function ub_step_meta_post_type( $step_id, $action  ) {
-	if ( $action == UB_WP_PUBLISH_POST_ACTION ) {
+	
+	$step_meta_enabled = apply_filters( 'ub_step_meta_post_type_enabled', false, $action );
+	
+	if ( $step_meta_enabled ) {
 		$value = User_Badges::instance()->api->get_step_meta_value( $step_id, 'post_type' );
 		?>
 		<span class="step-meta-value">
@@ -333,7 +341,7 @@ function ub_add_step() {
 
 		ob_start();
 		
-		$label = __( 'New Step' );
+		$label = __( 'New Step', 'user-badges' );
 		$condition_id = $_POST['conditionId'];
 		
 		$step = User_Badges::instance()->api->add_step( $condition_id, $label );
@@ -459,7 +467,7 @@ function ub_save_condition() {
 			
 			echo json_encode( array(
 					'success' => true,
-					'message' => __('Condition saved.', 'user-badges' ),
+					'message' => __( 'Condition saved.', 'user-badges' ),
 					'data' => array( 
 							'name' => sprintf( __( 'Condition %d - %s', 'user-badges' ), $condition->condition_id, esc_html( $condition->name ) ),
 							'status' => ub_condition_status( $condition, false )
@@ -475,89 +483,3 @@ function ub_save_condition() {
 	
 	die();
 }
-
-
-/**
- * Ratings e.g. 10 people selected 1, 4 selected 2 etc... and 853 selected 5 stars.
- *
-
-// Item 1 votes
-$ratings[0][1] = 10;
-$ratings[0][2] = 4;
-$ratings[0][3] = 1;
-$ratings[0][4] = 72;
-$ratings[0][5] = 853;       // z0mg, lots of people think this is 5 star material!
-
-// Item 2 votes - it's 50:50, rating should be 3
-$ratings[1][1] = 1000;
-$ratings[1][2] = 1;
-$ratings[1][3] = 1;
-$ratings[1][4] = 1;
-$ratings[1][5] = 1000;
-
-// Item 3 votes - should also be 3
-$ratings[2][1] = 1000;
-$ratings[2][2] = 1000;
-$ratings[2][3] = 1000;
-$ratings[2][4] = 1000;
-$ratings[2][5] = 1000;
-
-// Item 4 votes - obviously the best thing ever
-$ratings[3][1] = 0;
-$ratings[3][2] = 0;
-$ratings[3][3] = 0;
-$ratings[3][4] = 0;
-$ratings[3][5] = 99999999999;
-
-foreach($ratings as $rating)
-{
-	$total_votes = $rating[1] + $rating[2] + $rating[3] + $rating[4] + $rating[5];
-
-	$weight[1] = $rating[1] / $total_votes;
-	$weight[2] = $rating[2] / $total_votes;
-	$weight[3] = $rating[3] / $total_votes;
-	$weight[4] = $rating[4] / $total_votes;
-	$weight[5] = $rating[5] / $total_votes;
-
-	// 1.0 == $weight[5] + $weight[4] + $weight[3] + $weight[2] + $weight[1];
-
-	$yay = 1 * $weight[1];
-	$yay += 2 * $weight[2];
-	$yay += 3 * $weight[3];
-	$yay += 4 * $weight[4];
-	$yay += 5 * $weight[5];
-
-	echo $yay;
-	echo "<br />";
-}
-
-/*
- RESULTS
- 4.1472951561793
- 2.4925205800884
- 1
- 5
- *
- 
-// avg is 3/4
-$avg_num_votes = 5.0;
-$avg_rating = 4.2;
-
-$this_num_votes = 1.0;
-$this_rating = 5.0;
-
-echo '<br />' . '( ' . ($avg_num_votes * $avg_rating) . ' + ' . ($this_num_votes * $this_rating) . ' ) / ' . ($avg_num_votes + $this_num_votes);
-
-$bayesian_rating = ( ($avg_num_votes * $avg_rating) + ($this_num_votes * $this_rating) ) / ($avg_num_votes + $this_num_votes);
-
-echo "<br /><br />" . $bayesian_rating;
-
-
-echo md5(serialize(
-		array( 
-				'result_result' => array(),
-				'filters' => array( 'rating_item_ids' => '1,2,3', 'user_roles' => 'administrator' ),
-				'post_id' => null,
-				'rating_form_id' => null				
-		)
-));*/

@@ -19,44 +19,6 @@ define( 'UB_CONDITION_STEP_META_TABLE_NAME', 'ub_condition_step_meta' );
 define( 'UB_CONDITION_STEP_TABLE_NAME', 'ub_condition_step' );
 define( 'UB_USER_ACTION_META_TABLE_NAME', 'ub_user_action_meta' );
 
-// WordPress predefined actions
-define( 'UB_WP_PUBLISH_POST_ACTION', 'wp_publish_post' );
-define( 'UB_WP_SUBMIT_COMMENT_ACTION', 'wp_submit_comment' );
-define( 'UB_WP_LOGIN_ACTION', 'wp_login' );
-define( 'UB_WP_REGISTER_ACTION', 'wp_register' );
-
-// Plugin actions
-define( 'UB_MIN_POINTS_ACTION', 'ub_min_points' );
-
-global $ub_actions;
-
-$ub_actions = apply_filters( 'ub_actions_init', array(
-		UB_WP_PUBLISH_POST_ACTION => array(
-				'description' => __( 'User publishes a post.', 'user-badges' ),
-				'source' =>	__( 'Wordpress', 'user-badges' ),
-				'enabled' => null
-		),
-		UB_WP_SUBMIT_COMMENT_ACTION => array(
-				'description' => __( 'User submits a comment.', 'user-badges' ),
-				'source' =>	__( 'Wordpress', 'user-badges' ),
-				'enabled' => null
-		),
-		UB_WP_LOGIN_ACTION => array(
-				'description' => __( 'User logs in.', 'user-badges' ),
-				'source' =>	__( 'Wordpress', 'user-badges' ),
-				'enabled' => null
-		),
-		UB_WP_REGISTER_ACTION => array( 
-				'description' => __( 'Register user.', 'user-badges' ),
-				'source' =>	__( 'Wordpress', 'user-badges' ),
-				'enabled' => null
-		),
-		UB_MIN_POINTS_ACTION => array(
-				'description' => __( 'Minimum points.', 'user-badges' ),
-				'source' =>	__( 'User Badges', 'user-badges' ),
-				'enabled' => null
-		)
-) );
 
 /**
  * User_Badges plugin class
@@ -76,6 +38,8 @@ class User_Badges {
 	public $settings = null;
 	
 	public $api = null;
+	
+	public $actions = null;
 	
 	/**
 	 * Constants
@@ -104,18 +68,6 @@ class User_Badges {
 	
 			self::$instance = new User_Badges;
 			
-			global $wpdb;
-
-			$results = $wpdb->get_results( 'SELECT * FROM ' . $wpdb->prefix . UB_ACTION_TABLE_NAME );
-			
-			global $ub_actions;
-	
-			foreach ( $results as $row ) {
-				if ( isset( $ub_actions[$row->name] ) && $ub_actions[$row->name]['enabled'] == null ) {
-					$ub_actions[$row->name]['enabled'] = ( $row->enabled == 1 ) ? true : false;
-				}
-			}
-			
 			self::$instance->includes();
 			
 			self::$instance->settings = new UB_Settings();
@@ -139,9 +91,88 @@ class User_Badges {
 			add_action( 'after_setup_theme', array( self::$instance, 'add_image_sizes') );
 	
 			self::$instance->add_ajax_callbacks();
+			
+			add_action( 'plugins_loaded', array( self::$instance, 'setup_actions' ) );
+			
 		}
 	
 		return User_Badges::$instance;
+	}
+	
+	function setup_actions() {
+		
+		self::$instance->actions = (array) apply_filters( 'ub_init_actions', self::$instance->actions );
+		
+		$actions_enabled = (array) get_option( 'ub_actions_enabled' );
+		
+		// Make sure all actions are stored in database
+		// FIXME store in cache, this gets updated on every page load...
+		
+		if ( is_admin() ) {
+			
+			global $wpdb;
+			
+			/*
+			 * Check if any actions are missing
+			 */
+			$query = 'SELECT DISTINCT name FROM ' . $wpdb->prefix . UB_ACTION_TABLE_NAME;
+			
+			$results = $wpdb->get_results( $query );
+			
+			$saved_actions= array();
+			foreach ( $results as $row ) {
+				array_push( $saved_actions, $row->name );
+			}
+			
+			$missing_rows = array();
+			foreach ( self::$instance->actions as $action_name => $action_data ) {
+				
+				if ( ! in_array( $action_name, $saved_actions ) ) {
+						
+					array_push( $missing_rows, ' ( "' . esc_sql( $action_name ) . '", "' . esc_sql( $action_data['description'] ) 
+							. '", "' . esc_sql( $action_data['source'] ) . '" )' );
+				}
+				
+			}
+			
+			$count_missing = count( $missing_rows );
+			if ( $count_missing > 0 ) {
+				$query = 'INSERT INTO ' . $wpdb->prefix . UB_ACTION_TABLE_NAME . ' ( name, description, source ) VALUES';
+			
+				$index = 0;
+				foreach ( $missing_rows as $missing_row ) {
+					
+					$index++;
+					
+					$query .= $missing_row;
+						
+					if ( $index < $count_missing ) {
+						$query .= ', ';
+					}
+				}
+					
+				$wpdb->query( $query );
+				
+				echo $query;
+				
+				$wpdb->show_errors();
+			}			
+		}
+		
+		foreach ( self::$instance->actions as $action_name => $action ) {
+			
+			// Check settings for enabled actions
+			if ( $actions_enabled && isset( $actions_enabled[$action_name] ) 
+					&& is_bool( $actions_enabled[$action_name] ) ) {
+				self::$instance->actions[$action_name]['enabled'] = $actions_enabled[$action_name];
+			} else {
+				self::$instance->actions[$action_name]['enabled'] =  false;
+			}
+			
+		}
+		
+		
+		do_action( 'ub_init_actions_complete', self::$instance->actions );
 	}
 	
 	/**
@@ -162,6 +193,11 @@ class User_Badges {
 		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'class-step.php';
 		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'class-action.php';
 		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'class-condition.php';
+		
+		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'actions' . DIRECTORY_SEPARATOR . 'points.php';
+		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'actions' . DIRECTORY_SEPARATOR . 'wp-core.php';
+		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'actions' . DIRECTORY_SEPARATOR . 'buddypress.php';
+		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'actions' . DIRECTORY_SEPARATOR . 'bbpress.php';
 		
 		if ( is_admin() ) {
 			require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'conditions.php';
@@ -189,30 +225,11 @@ class User_Badges {
 				name varchar(50) NOT NULL,
 				description varchar(50) NOT NULL,
 				source varchar(100) NOT NULL,
-				enabled tinyint(1) DEFAULT 1,
 				created_dt datetime DEFAULT CURRENT_TIMESTAMP,
 				PRIMARY KEY  (name)
 		) ENGINE=InnoDB AUTO_INCREMENT=1;';
 		
 		dbDelta( $action_query );
-		
-		global $ub_actions;
-		
-		foreach ( $ub_actions as $action_name => $action) {
-			
-			$results = $wpdb->replace(
-					$wpdb->prefix . UB_ACTION_TABLE_NAME,
-					array(
-							'name' => $action_name,
-							'description' => $action['description'],
-							'source' => $action['source']
-					), array(
-							'%s', '%s', '%s'
-					)
-			);
-				
-			$generated_id = $wpdb->insert_id;
-		}
 		
 		$user_assignment_query = 'CREATE TABLE ' . $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME . ' (
 				id  bigint(20) NOT NULL AUTO_INCREMENT,

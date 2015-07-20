@@ -421,6 +421,8 @@ class UB_API_Impl implements UB_API {
 					array( 'user_action_id' => $user_action_id, 'meta_key' => $meta_key, 'meta_value' => $meta_value ), 
 					array( '%d', '%s', '%s')
 			);
+			
+			echo 'adding meta ' . $meta_key . '  ' . $meta_value;
 				
 		}
 		

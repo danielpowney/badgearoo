@@ -144,6 +144,16 @@ jQuery(document).ready(function($) {
 				addStep(conditionId);
 			});
 			
+			/**
+			 * Change step action name
+			 */
+			jQuery("div#condition-" + jsonResponse.data.conditionId + " select[name=action-name]").on("change", function(e) {
+				var parts = jQuery(this).closest("li")[0].id.split("-"); 
+				var stepId = parts[1]; // step-X
+				
+				changeStepAction(stepId);
+			});
+			
 			jQuery("div#condition-" + jsonResponse.data.conditionId + " .addBadgeBtn").on("click", function(e) {
 				var parts = jQuery(this).closest(".postbox")[0].id.split("-"); 
 				var conditionId = parts[1]; // condition-X

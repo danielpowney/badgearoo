@@ -110,7 +110,7 @@ add_shortcode( 'ub_leaderboard', 'ub_leaderboard' );
  * @param unknown $atts
  * @return unknown
  */
-function ub_badge_summary( $atts ) {
+function ub_badge( $atts ) {
 
 	extract( shortcode_atts( array(
 			'badge_id' => null,
@@ -172,7 +172,7 @@ function ub_badge_summary( $atts ) {
 
 	return $html;
 }
-add_shortcode( 'ub_badge_summary', 'ub_badge_summary' );
+add_shortcode( 'ub_badge', 'ub_badge' );
 
 
 

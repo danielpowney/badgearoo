@@ -12,25 +12,31 @@ function ub_settings_page() {
 		<?php
 		global $wpdb;
 		
-		$actions_enabled = isset( $_POST['actions-enabled'] ) ?  $_POST['actions-enabled'] : null;
+		$actions_enabled = (array) get_option( 'ub_actions_enabled' );
 		
-		if ( $actions_enabled ) {
-		
-			$results = $wpdb->get_results( 'SELECT * FROM ' . $wpdb->prefix . UB_ACTION_TABLE_NAME );
-			foreach ( $results as $row ) {
-				$enabled = false;
-					
-				if ( in_array( $row->name, $actions_enabled ) ) {
-					$enabled = true;
-				}
-					
-				$wpdb->update( $wpdb->prefix . UB_ACTION_TABLE_NAME, array( 'enabled' => $enabled), array( 'name' => $row->name ), array( '%d' ), array( '%s' ) );
+		// if submit button clicked, update options
+		if ( isset( $_POST['submit'] ) ) {
+			
+			$temp_actions_enabled = array();
+			foreach (  $_POST['actions-enabled'] as $action_name ) {
+				array_push( $temp_actions_enabled, $action_name );
 			}
 			
-			add_settings_error('general', 'settings_updated', __( 'Settings saved.', 'user-badges' ), 'updated');
+			foreach ( $actions_enabled as $action_name => $action_enabled ) {
+				
+				if ( in_array( $action_name, $temp_actions_enabled ) ) {
+					$actions_enabled[$action_name] = true;
+				} else {
+					$actions_enabled[$action_name] = false;
+				}
+			}
+			
+			update_option( 'ub_actions_enabled', $actions_enabled );
+			
+			add_settings_error( 'general', 'settings_updated', __( 'Settings saved.', 'user-badges' ), 'updated');
 		}
 		
-		$action_sources = $wpdb->get_col( 'SELECT source FROM ' . $wpdb->prefix . UB_ACTION_TABLE_NAME . ' GROUP BY source' );
+		$action_sources = $wpdb->get_col( 'SELECT DISTINCT(source) AS source FROM ' . $wpdb->prefix . UB_ACTION_TABLE_NAME );
 		
 		if ( count( $action_sources ) > 0 ) { ?>
 			
@@ -44,13 +50,22 @@ function ub_settings_page() {
 								<td>
 									<?php
 									$actions = $wpdb->get_results( 'SELECT * FROM ' . $wpdb->prefix . UB_ACTION_TABLE_NAME . ' WHERE source = "' . $source . '"' );
+									
 									$index = 0;
 									$count = count( $actions );
 									foreach ( $actions as $action ) {
+										
+										$enabled = false;
+										if ( is_array( $actions_enabled ) && in_array( $action->name, $actions_enabled )
+												&& isset( $actions_enabled[$action->name] ) && $actions_enabled[$action->name] ) {
+											$enabled = true;
+										}
+										
 										?>
-										<input type="checkbox" name="actions-enabled[]" value="<?php echo $action->name; ?>" <?php checked( 1, $action->enabled, true ); ?> />
+										<input type="checkbox" name="actions-enabled[]" value="<?php echo $action->name; ?>"<?php if ( $enabled ) { echo ' checked'; } ?> />
 										<label for="actions-enabled[]"><?php echo $action->description; ?></label>
 										<?php
+										
 										if ( $index < $count ) {
 											echo '<br />';
 										}
