@@ -389,6 +389,32 @@ class UB_Assignments_Table extends WP_List_Table {
 			}
 			
 			echo '<div class="updated"><p>' . __( 'Assignment(s) deleted successfully.', 'user-badges' ) . '</p></div>';
+			
+		} else if ( $this->current_action() === 'unapprove' ) {
+				
+			$checked = ( is_array( $_REQUEST['cb'] ) ) ? $_REQUEST['cb'] : array( $_REQUEST['cb'] );
+				
+			global $wpdb;
+			
+			foreach( $checked as $id ) {
+				$wpdb->update( $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME, array( 'status' => 'unapproved' ), array( 'id' => $id ) );
+				do_action( 'ub_user_assignment_unapproved', $id );
+			}
+				
+			echo '<div class="updated"><p>' . __( 'Assignment(s) deleted successfully.', 'user-badges' ) . '</p></div>';
+			
+		} else if ( $this->current_action() === 'approve' ) {
+				
+			$checked = ( is_array( $_REQUEST['cb'] ) ) ? $_REQUEST['cb'] : array( $_REQUEST['cb'] );
+				
+			global $wpdb;
+			
+			foreach( $checked as $id ) {
+				$wpdb->update( $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME, array( 'status' => 'approved' ), array( 'id' => $id ) );
+				do_action( 'ub_user_assignment_approved', $id );
+			}
+				
+			echo '<div class="updated"><p>' . __( 'Assignment(s) deleted successfully.', 'user-badges' ) . '</p></div>';
 		}
 	}
 }
