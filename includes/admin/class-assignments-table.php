@@ -11,6 +11,11 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
  */
 class UB_Assignments_Table extends WP_List_Table {
 
+	public $total_count = 0;
+	public $approved_count = 0;
+	public $pending_count = 0;
+	public $unapproved_count = 0;
+	
 	/**
 	 * Constructor
 	 */
@@ -21,6 +26,31 @@ class UB_Assignments_Table extends WP_List_Table {
 				'plural' 		=> __( 'Assignments', 'user-badges' ),
 				'ajax'			=> false
 		) );
+	}
+	
+	/**
+	 * Retrieve the view types
+	 *
+	 * @access public
+	 * @since 2.1.7
+	 * @return array $views All the views available
+	 */
+	public function get_views() {
+		$current        = isset( $_GET['status'] ) ? $_GET['status'] : '';
+	
+		$total_count    = '&nbsp;<span class="count">(' . $this->total_count    . ')</span>';
+		$approved_count = '&nbsp;<span class="count">(' . $this->approved_count . ')</span>';
+		$pending_count  = '&nbsp;<span class="count">(' . $this->pending_count  . ')</span>';
+		$unapproved_count = '&nbsp;<span class="count">(' . $this->unapproved_count . ')</span>';
+		
+		$views = array(
+				'all'		=> sprintf( '<a href="%s"%s>%s</a>', remove_query_arg( array( 'status', 'paged' ) ), $current === 'all' || $current == '' ? ' class="current"' : '', __( 'All', 'user-badges' ) . $total_count ),
+				'approved'	=> sprintf( '<a href="%s"%s>%s</a>', add_query_arg( array( 'status' => 'approved', 'paged' => FALSE ) ), $current === 'approved' ? ' class="current"' : '', __( 'Approved', 'user-badges' ) . $approved_count ),
+				'pending'	=> sprintf( '<a href="%s"%s>%s</a>', add_query_arg( array( 'status' => 'pending', 'paged' => FALSE ) ), $current === 'pending' ? ' class="current"' : '', __( 'Pending', 'user-badges' ) . $pending_count ),
+				'unapproved'	=> sprintf( '<a href="%s"%s>%s</a>', add_query_arg( array( 'status' => 'unapproved', 'paged' => FALSE ) ), $current === 'unapproved' ? ' class="current"' : '', __( 'Unapproved', 'user-badges' ) . $unapproved_count )
+		);
+	
+		return apply_filters( 'ub_user_assignment_views', $views );
 	}
 
 	/**
@@ -88,7 +118,8 @@ class UB_Assignments_Table extends WP_List_Table {
 				'type'			=> __( 'Type', 'user-badges'  ),
 				'value'			=> __( 'Assignment', 'user-badges' ),
 				'created_dt' 	=> __( 'Created Dt', 'user-badges' ),
-				'expiry_dt' 	=> __( 'Expiry Dt', 'user-badges' )
+				'expiry_dt' 	=> __( 'Expiry Dt', 'user-badges' ),
+				'status'		=> __( 'Status', 'user-bades' )
 		);
 		
 		return apply_filters( 'ub_assignments_table_columns', $columns );
@@ -122,10 +153,12 @@ class UB_Assignments_Table extends WP_List_Table {
 		if ( isset( $_REQUEST['type'] ) && strlen( trim( $_REQUEST['type'] ) ) > 0 ) {
 			$type = $_REQUEST['type'];
 		}
+		$status = isset( $_REQUEST['status'] ) ? $_REQUEST['status'] : null;
 
 		$query = 'SELECT * FROM ' . $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME;
 		
-		if ( $user_id != 0 || $badge_id != 0 || $type ) {
+		if ( $user_id != 0 || $badge_id != 0 || $type || $status ) {
+			
 			$query .= ' WHERE';
 			$added_to_query = false;
 			
@@ -151,11 +184,84 @@ class UB_Assignments_Table extends WP_List_Table {
 				$query .= ' type = "' . esc_sql( $type ) . '"';
 				$added_to_query = true;
 			}
+			
+			if ( $status ) {
+				if ( $added_to_query ) {
+					$query .= ' AND';
+				}
+					
+				$query .= ' status = "' . esc_sql( $status ) . '"';
+				$added_to_query = true;
+			}
+			
 		}
+		
+		// get counts of each status
+		$this->set_view_counts( array(
+				'user_id' => $user_id,
+				'badge_id' => $badge_id,
+				'type' => $type
+		) );
 		
 		$this->items = $wpdb->get_results( $query, ARRAY_A );
 	}
-
+	
+	/**
+	 * Sets view counts
+	 * 
+	 * @param unknown $query
+	 */
+	function set_view_counts( $params = array() ) {
+		
+		global $wpdb;
+		$query = 'SELECT COUNT(*) FROM ' . $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME;
+		
+		$added_to_query = false;
+		if ( ( isset ( $params['user_id'] ) && $params['user_id'] != 0 ) 
+				|| ( isset ( $params['badge_id'] ) && $params['badge_id'] != 0 ) 
+				|| isset ( $params['type'] ) ) {
+			
+			$query .= ' WHERE';
+				
+			if ( isset ( $params['user_id'] ) && $params['user_id'] != 0 ) {
+				$query .= ' user_id = ' . intval( $params['user_id'] );
+				$added_to_query = true;
+			}
+				
+			if ( isset ( $params['badge_id'] ) && $params['badge_id'] != 0 ) {
+				if ( $added_to_query ) {
+					$query .= ' AND';
+				}
+		
+				$query .= ' badge_id = ' . intval( $params['badge_id'] );
+				$added_to_query = true;
+			}
+				
+			if ( isset( $params['type'] ) ) {
+				if ( $added_to_query ) {
+					$query .= ' AND';
+				}
+					
+				$query .= ' type = "' . esc_sql( $params['type'] ) . '"';
+				$added_to_query = true;
+			}
+				
+		}
+		
+		$this->total_count = intval( $wpdb->get_var( $query ) );
+		
+		if ( ! $added_to_query ) {
+			$query .= ' WHERE';
+		} else {
+			$query .= ' AND';
+		}
+		
+		$this->approved_count = intval( $wpdb->get_var( $query . ' status = "approved"' ) );
+		$this->pending_count = intval( $wpdb->get_var( $query . ' status = "pending"' ) );
+		$this->unapproved_count = intval( $wpdb->get_var( $query . ' status = "unapproved"' ) );
+	
+	}
+	
 	/**
 	 * Default column
 	 * @param unknown_type $item
@@ -205,8 +311,32 @@ class UB_Assignments_Table extends WP_List_Table {
 			case 'created_dt' :
 			case 'expiry_dt' :
 				if ( $item[$column_name] ) {
-					echo date( 'F j, Y', strtotime( $item[$column_name] ) );
+					echo date( 'F j, Y, g:ia', strtotime( $item[$column_name] ) );
 				}
+				break;
+			case 'status' :
+				$row_id = $item['id'];
+				?>
+				<div id="ub-status-text-<?php echo $row_id ?>">
+					<span id="ub-text-approve-<?php echo $row_id; ?>"<?php if ( $item[$column_name] != 'approved' ) { echo ' style="display: none"'; } ?>><?php _e( 'Approved', 'user-badges' ); ?></span>
+					<span id="ub-text-pending-<?php echo $row_id; ?>"<?php if ( $item[$column_name] != 'pending' ) { echo ' style="display: none"'; } ?>><?php _e( 'Pending', 'user-badges' ); ?></span>
+					<span id="ub-text-unapprove-<?php echo $row_id; ?>"<?php if ( $item[$column_name] != 'unapproved' ) { echo ' style="display: none"'; } ?>><?php _e( 'Unapproved', 'user-badges' ); ?></span>
+				</div>
+				<div id="ub-row-actions-<?php echo $row_id; ?>" class="row-actions">
+					<?php 
+					if ( $item[$column_name] == 'approved' ) {
+						?>
+						<a href="#" id="ub-anchor-unapprove-<?php echo $row_id; ?>" class="ub-unapprove"><?php _e( 'Unapprove', 'user-badges' ); ?></a>
+						<?php
+					} else {
+						?>
+						<a href="#" id="ub-anchor-unapprove-<?php echo $row_id; ?>" class="ub-approve"><?php _e( 'Approve', 'user-badges' ); ?></a>
+						<?php
+					}
+					?>
+		
+				</div>
+				<?php 
 				break;
 			default:
 				echo $item[ $column_name ];
@@ -235,7 +365,9 @@ class UB_Assignments_Table extends WP_List_Table {
 	function get_bulk_actions() {
 		
 		$bulk_actions = array(
-				'delete'    => __( 'Delete', 'user-badges' )
+				'delete'    => __( 'Delete', 'user-badges' ),
+				'approve'	=> __( 'Approve', 'user-badges' ),
+				'unapprove'	=> __( 'Unapprove', 'user-badges' )
 		);
 		
 		return $bulk_actions;
@@ -259,4 +391,37 @@ class UB_Assignments_Table extends WP_List_Table {
 			echo '<div class="updated"><p>' . __( 'Assignment(s) deleted successfully.', 'user-badges' ) . '</p></div>';
 		}
 	}
+}
+
+function ub_update_user_assignment_status() {
+	
+	$ajax_nonce = $_POST['nonce'];
+	
+	if ( wp_verify_nonce( $ajax_nonce, User_Badges::ID.'-nonce' ) ) {
+	
+		$assignment_id = ( isset( $_POST['assignmentId'] ) && is_numeric( $_POST['assignmentId'] ) ) ? intval( $_POST['assignmentId'] ) : null;
+		$status = ( $_POST['status'] == 'approve' ) ? 'approved' : 'unapproved';
+			
+		if ( ! $assignment_id ) {
+			die();
+		}
+			
+		global $wpdb;
+			
+		$wpdb->update( $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME, array( 'status' => $status ), array( 'id' => $assignment_id ) );
+			
+		do_action( 'ub_user_assignment_approved', $assignment_id );
+			
+		echo json_encode( array (
+				'data' => array( 
+						'status' => $status,
+						'approve'	=> __( 'Approve', 'user-badges' ),
+						'unapprove'	=> __( 'Unapprove', 'user-badges' )
+				),
+				'assignment_id' => $assignment_id
+		) );
+	}
+	
+	die();
+	
 }

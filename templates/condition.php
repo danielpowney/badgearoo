@@ -50,11 +50,8 @@
 	<?php }
 	
 	if ( $show_points && $points > 0 ) {
-		?>
-		<div class="ub-points">
-			<b><?php _e( 'Points: ', 'user-badges' ); ?></b>
-			<?php echo $points; ?>
-		</div>
-		<?php
+		ub_get_template_part( 'points', null, true, array(
+				'points' => $points
+		) );
 	} ?>
 </div>

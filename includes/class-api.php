@@ -15,6 +15,7 @@ interface UB_API {
 	 * @param int $user_id
 	 * @param string $type
 	 * @param int $value
+	 * @param date $expiry_dt
 	 */
 	public function add_user_assignment( $condition_id, $user_id = 0, $type = 'badge', $value = 0, $expiry_dt = null );
 	
@@ -120,7 +121,7 @@ interface UB_API {
 	 * @param unknown $filters
 	 * @return actions
 	 */
-	public function get_actions( $filters = array( 'enabled' => true ) );
+	public function get_actions( $filters = array( ) );
 	
 	/**
 	 * Saves a condition
@@ -182,19 +183,45 @@ class UB_API_Impl implements UB_API {
 			return;
 		}
 		
+		$general_settings = (array) get_option( 'ub_general_settings' );
+		$assignment_auto_approve = $general_settings['ub_assignment_auto_approve'];
+		
 		global $wpdb;
 		
 		$row = null;
+		
 		if ( $condition_id ) {
-			$query = 'SELECT DISTINCT(value) FROM ' . $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME . ' WHERE condition_id = ' . esc_sql( $condition_id ) . ' AND type = "' . esc_sql( $type ) . '"';
+			
+			$query = 'SELECT ua.id, ua.value, c.recurring, c.expiry_unit, c.expiry_value FROM ' 
+					. $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME . ' ua, ' . $wpdb->prefix . UB_CONDITION_TABLE_NAME . ' c'
+					. ' WHERE ua.condition_id = c.condition_id AND ua.condition_id = ' . esc_sql( $condition_id ) 
+					. ' AND ua.type = "' . esc_sql( $type ) . '"';
 			
 			if ( $type == 'badge' ) {
-				$query .= ' AND value = ' . $value;
+				$query .= ' AND ua.value = ' . $value;
 			}
+			
+			$query .= ' GROUP BY ua.condition_id, ua.type';
+			
 			$row = $wpdb->get_row( $query );
+
+			if ( $expiry_dt == null && $row && $row->expiry_value > 0 
+					&& strlen( $row->expiry_unit ) > 0 ) {
+						
+				$diff = '+' . $row->expiry_value . ' '.  $row->expiry_unit;
+				if ( $row->expiry_value > 1 ) {
+					$diff .= 's';
+				}
+				
+				$expiry_dt = date( 'Y-m-d H:i:s', strtotime( $diff ) );
+			}
 		}
 		
-		if ( $row ) { // > 0
+		/*
+		 * If condition exists and assignment is not recurring, renew assignment.
+		 * Otherwise create a new assignment.
+		 */ 
+		if ( $row && $row->recurring == false ) {
 			
 			$where = array( 'condition_id' => $condition_id, 'type' => $type );
 			$where_format = array( '%d', '%s' );
@@ -204,11 +231,16 @@ class UB_API_Impl implements UB_API {
 				array_push( $where_format, '%d' );
 			}
 			
-			$data = array( 'created_dt' => current_time( 'mysql' ), 'value' => $value );
+			$data = array( 'last_updated_dt' => current_time( 'mysql' ), 'value' => $value );
 			$format = array( '%s', '%d' );
 			
 			if ( $expiry_dt ) {
 				$data['expiry_dt'] = $expiry_dt;
+				array_push( $format, '%s' );
+			}
+			
+			if ( ! $assignment_auto_approve ) {
+				$data['status'] = 'pending';
 				array_push( $format, '%s' );
 			}
 			
@@ -219,21 +251,31 @@ class UB_API_Impl implements UB_API {
 					$where_format
 			);
 			
-			do_action( 'ub_update_user_assignment', $condition_id, $user_id, $type, $value );
+			$assignment_id = $wpdb->insert_id;
+			
+			do_action( 'ub_update_user_assignment', $assignment_id, $condition_id, $user_id, $type, $value );
 			
 		} else {
+			
+			$created_dt = current_time( 'mysql' );
 			
 			$data = array(
 					'condition_id' => $condition_id,
 					'user_id' => $user_id,
-					'created_dt' => current_time( 'mysql' ),
+					'created_dt' => $created_dt,
+					'last_updated_dt' => $created_dt,
 					'type' => $type,
 					'value' => $value,
 			);
-			$format = array( '%d', '%d', '%s', '%s', '%d' );
+			$format = array( '%d', '%d', '%s', '%s', '%s', '%d' );
 			
 			if ( $expiry_dt ) {
 				$data['expiry_dt'] = $expiry_dt;
+				array_push( $format, '%s' );
+			}
+			
+			if ( ! $assignment_auto_approve ) {
+				$data['status'] = 'pending';
 				array_push( $format, '%s' );
 			}
 			
@@ -242,8 +284,9 @@ class UB_API_Impl implements UB_API {
 					$format
 			);
 			
-			do_action( 'ub_add_user_assignment', $condition_id, $user_id, $type, $value );
+			$assignment_id = $wpdb->insert_id;
 			
+			do_action( 'ub_add_user_assignment', $assignment_id, $condition_id, $user_id, $type, $value, $created_dt );
 		}
 	}
 	
@@ -306,7 +349,9 @@ class UB_API_Impl implements UB_API {
 		
 		$query = 'SELECT	value AS badge_id
 				FROM        ' . $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME . '
-				WHERE       user_id = %d AND type = "badge"';
+				WHERE       user_id = %d AND type = "badge"'
+							. ' AND ( NOW() <= expiry_dt OR expiry_dt IS NULL )'
+							. ' AND status = "approved"';
 		$added_to_query = true;
 		
 		if ( $to_date ) {
@@ -326,6 +371,8 @@ class UB_API_Impl implements UB_API {
 			$query .= ' created_dt >= "' . esc_sql( $from_date ) . '"';
 			$added_to_query = true;
 		}
+		
+		
 
 		$user_badges_results = $wpdb->get_results( $wpdb->prepare( $query, $user_id ) );
 		
@@ -351,7 +398,8 @@ class UB_API_Impl implements UB_API {
 		
 		global $wpdb;
 		
-		$query = 'SELECT SUM(CASE WHEN type = "points" THEN value ELSE 0 END) AS points FROM wp_ub_user_assignment WHERE user_id = ' . $user_id;
+		$query = 'SELECT SUM(CASE WHEN type = "points" THEN value ELSE 0 END) AS points FROM wp_ub_user_assignment WHERE user_id = ' 
+				. $user_id . ' AND ( NOW() <= expiry_dt OR expiry_dt IS NULL ) AND status = "approved"';
 		
 		$points = $wpdb->get_var( $query );
 		
@@ -421,8 +469,6 @@ class UB_API_Impl implements UB_API {
 					array( 'user_action_id' => $user_action_id, 'meta_key' => $meta_key, 'meta_value' => $meta_value ), 
 					array( '%d', '%s', '%s')
 			);
-			
-			echo 'adding meta ' . $meta_key . '  ' . $meta_value;
 				
 		}
 		
@@ -477,7 +523,8 @@ class UB_API_Impl implements UB_API {
 		$conditions = array();
 		foreach ( $results as $row ) {
 			$badges = ( strlen( trim ( $row->badges ) ) == 0 ) ? array() : preg_split( '/[\s,]+/', $row->badges );
-			array_push( $conditions, new UB_Condition( $row->condition_id, $row->name, $badges, $row->points, $row->created_dt, $row->enabled, $row->assignment_expiry ) );
+			array_push( $conditions, new UB_Condition( $row->condition_id, $row->name, $badges, $row->points, $row->created_dt, 
+					$row->enabled, $row->expiry_unit, $row->expiry_value, $row->recurring ) );
 		}
 		
 		return $conditions;
@@ -496,7 +543,8 @@ class UB_API_Impl implements UB_API {
 	
 		if ( $row != null ) {
 			$badges = ( strlen( trim ( $row->badges ) ) == 0 ) ? array() : preg_split( '/[\s,]+/', $row->badges );
-			return new UB_Condition( $row->condition_id, $row->name, $badges, $row->points, $row->created_dt, $row->enabled, $row->assignment_expiry );
+			return new UB_Condition( $row->condition_id, $row->name, $badges, $row->points, $row->created_dt, 
+					$row->enabled, $row->expiry_unit, $row->expiry_value, $row->recurring );
 		}
 		
 		return null;
@@ -549,20 +597,19 @@ class UB_API_Impl implements UB_API {
 	 * (non-PHPdoc)
 	 * @see UB_API::get_actions()
 	 */
-	public function get_actions( $filters = array( 'enabled' => true ) ) {
+	public function get_actions( $filters = array( ) ) {
 		global $wpdb;
 		
-		$query = 'SELECT * FROM ' . $wpdb->prefix . UB_ACTION_TABLE_NAME;
-		
-		if ( isset( $filters['enabled'] ) && $filters['enabled'] == true ) {
-			$query .= ' WHERE enabled = 1';			
-		}
+		$query = 'SELECT * FROM ' . $wpdb->prefix . UB_ACTION_TABLE_NAME . ' ORDER BY source';
 		
 		$results = $wpdb->get_results( $query );
 		
 		$actions = array();
 		foreach ( $results as $row ) {
-			array_push( $actions, new UB_Action($row->name, $row->description, $row->source ) );
+			if ( ! isset( $actions[$row->source] ) ) {
+				$actions[$row->source]= array();
+			}
+			array_push( $actions[$row->source], new UB_Action( $row->name, $row->description, $row->source ) );
 		}
 		
 		return $actions;
@@ -619,23 +666,19 @@ class UB_API_Impl implements UB_API {
 				'name' => $condition->name,
 				'badges' => implode(',', $condition->badges ),
 				'points' => $condition->points,
-				'enabled' => $condition->enabled
+				'enabled' => $condition->enabled,
+				'expiry_value' => $condition->expiry_value,
+				'expiry_unit' => $condition->expiry_unit,
+				'recurring' => $condition->recurring,
 		);
-		$format = array( '%s', '%s', '%d', '%d' );
-		
-		if ( $condition->assignment_expiry ) {
-			$data['assignment_expiry'] = $condition->assignment_expiry;
-			array_push( $format, '%s' );
-		}
-		
+		$format = array( '%s', '%s', '%d', '%d', '%d', '%s', '%d' );
+
 		$result = $wpdb->update( $wpdb->prefix . UB_CONDITION_TABLE_NAME , 
 				$data,
 				array( 'condition_id' => $condition->condition_id ),
 				$format,
 				array( '%d' ) 
 		);
-		
-		// TODO recalculate points usermeta in case condition points has been updated
 		
 		foreach ( $condition->steps as $step ) {
 			$this->save_step( $step );

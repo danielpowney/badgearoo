@@ -73,7 +73,7 @@ class User_Badges {
 			self::$instance->settings = new UB_Settings();
 			self::$instance->api = new UB_API_Impl();
 
-			add_action( 'admin_enqueue_scripts', array( self::$instance, 'assets' ) );
+			//add_action( 'admin_enqueue_scripts', array( self::$instance, 'assets' ) );
 			
 			if ( is_admin() && ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) ) {
 	
@@ -106,15 +106,10 @@ class User_Badges {
 		$actions_enabled = (array) get_option( 'ub_actions_enabled' );
 		
 		// Make sure all actions are stored in database
-		// FIXME store in cache, this gets updated on every page load...
-		
-		if ( is_admin() ) {
+		if ( is_admin() && ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) ) {
 			
 			global $wpdb;
 			
-			/*
-			 * Check if any actions are missing
-			 */
 			$query = 'SELECT DISTINCT name FROM ' . $wpdb->prefix . UB_ACTION_TABLE_NAME;
 			
 			$results = $wpdb->get_results( $query );
@@ -127,23 +122,21 @@ class User_Badges {
 			$missing_rows = array();
 			foreach ( self::$instance->actions as $action_name => $action_data ) {
 				
-				if ( ! in_array( $action_name, $saved_actions ) ) {
-						
+				if ( ! in_array( $action_name, $saved_actions ) ) {		
 					array_push( $missing_rows, ' ( "' . esc_sql( $action_name ) . '", "' . esc_sql( $action_data['description'] ) 
 							. '", "' . esc_sql( $action_data['source'] ) . '" )' );
 				}
-				
 			}
 			
 			$count_missing = count( $missing_rows );
 			if ( $count_missing > 0 ) {
+				
 				$query = 'INSERT INTO ' . $wpdb->prefix . UB_ACTION_TABLE_NAME . ' ( name, description, source ) VALUES';
 			
 				$index = 0;
 				foreach ( $missing_rows as $missing_row ) {
 					
 					$index++;
-					
 					$query .= $missing_row;
 						
 					if ( $index < $count_missing ) {
@@ -152,8 +145,6 @@ class User_Badges {
 				}
 					
 				$wpdb->query( $query );
-				
-				$wpdb->show_errors();
 			}			
 		}
 		
@@ -186,16 +177,18 @@ class User_Badges {
 		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'actions.php';
 		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'template-functions.php';
 		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'misc-functions.php';
+		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'notifications.php';
 		
 		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'class-badge.php';
 		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'class-step.php';
 		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'class-action.php';
 		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'class-condition.php';
 		
-		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'actions' . DIRECTORY_SEPARATOR . 'points.php';
-		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'actions' . DIRECTORY_SEPARATOR . 'wp-core.php';
+		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'actions' . DIRECTORY_SEPARATOR . 'common.php';
 		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'actions' . DIRECTORY_SEPARATOR . 'buddypress.php';
 		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'actions' . DIRECTORY_SEPARATOR . 'bbpress.php';
+		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'actions' . DIRECTORY_SEPARATOR . 'woocommerce.php';
+		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'actions' . DIRECTORY_SEPARATOR . 'easy-digital-downloads.php';
 		
 		if ( is_admin() ) {
 			require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'conditions.php';
@@ -236,7 +229,9 @@ class User_Badges {
 				type varchar(20) NOT NULL,
 				value bigint(20) NOT NULL,
 				created_dt datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+				last_updated_dt datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
 				expiry_dt datetime DEFAULT NULL,
+				status varchar(20) NOT NULL DEFAULT "approved",
 				PRIMARY KEY  (id)
 		) ENGINE=InnoDB AUTO_INCREMENT=1;';
 		
@@ -258,8 +253,10 @@ class User_Badges {
 				points bigint(20) DEFAULT 0,
 				badges longtext,
 				created_dt datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-				enabled bigint(20) DEFAULT 1,
-				assignment_expiry varchar(20),
+				enabled tinyint(1) DEFAULT 1,
+				expiry_value smallint(20) DEFAULT 0,
+				expiry_unit varchar(20),
+				recurring tinyint(1) DEFAULT 1,
 				PRIMARY KEY  (condition_id)
 		) ENGINE=InnoDB AUTO_INCREMENT=1;';
 		
@@ -330,7 +327,18 @@ class User_Badges {
 		
 		add_dashboard_page( __( 'About User Badges', 'user-badges' ), '', 'manage_options', User_Badges::ABOUT_PAGE_SLUG, 'ub_about_page' );
 		add_submenu_page( 'edit.php?post_type=badge', __( 'Conditions', 'user-badges' ), __( 'Conditions', 'user-badges' ), 'manage_options', User_Badges::CONDITIONS_PAGE_SLUG, 'ub_conditions_page' );
-		add_submenu_page( 'edit.php?post_type=badge', __( 'Assignments', 'user-badges' ), __( 'Assignments', 'user-badges' ), 'manage_options', User_Badges::ASSIGNMENTS_PAGE_SLUG, 'ub_assignments_page' );
+		
+		global $wpdb;
+		
+		$query = 'SELECT COUNT(*) FROM ' . $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME . ' WHERE status = "pending"';
+		$pending_count = intval( $wpdb->get_var( $query ) );
+		
+		$pending_assignments_counter = '';
+		if ( $pending_count > 0 ) {
+			$pending_assignments_counter = '<span class="awaiting-mod count-' . $pending_count . '"><span class="pending-count">' . $pending_count . '</span></span>';
+		}
+		
+		add_submenu_page( 'edit.php?post_type=badge', __( 'Assignments', 'user-badges' ), __( 'Assignments', 'user-badges' ) . $pending_assignments_counter, 'manage_options', User_Badges::ASSIGNMENTS_PAGE_SLUG, 'ub_assignments_page' );
 		add_submenu_page( 'edit.php?post_type=badge', __( 'Settings', 'user-badges' ), __( 'Settings', 'user-badges' ), 'manage_options', User_Badges::SETTINGS_PAGE_SLUG, 'ub_settings_page' );
 	}
 	
@@ -393,6 +401,9 @@ class User_Badges {
 			add_action( 'wp_ajax_step_meta', 'ub_step_meta' );
 			add_action( 'wp_ajax_save_condition', 'ub_save_condition' );
 			add_action( 'wp_ajax_change_assignment_type', 'ub_change_assignment_type' );
+			add_action( 'wp_ajax_nopriv_update_user_assignment_status', 'ub_update_user_assignment_status' );
+			add_action( 'wp_ajax_update_user_assignment_status', 'ub_update_user_assignment_status' );
+				
 		}
 		
 		add_action( 'wp_ajax_user_leaderboard_filter', 'ub_user_leaderboard_filter' );
@@ -466,7 +477,7 @@ class User_Badges {
 function ub_activate_plugin() {
 
 	if ( is_admin() && ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) ) {
-		//add_option(User_Badges::DO_ACTIVATION_REDIRECT_OPTION, true);
+		add_option(User_Badges::DO_ACTIVATION_REDIRECT_OPTION, true);
 		User_Badges::activate_plugin();
 	}
 

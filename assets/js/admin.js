@@ -88,6 +88,9 @@ jQuery(document).ready(function($) {
 				enabled : jQuery("#condition-" + conditionId + " input[name=enabled]").is(':checked'),
 				badges : jQuery("#condition-" + conditionId + " input[name=badges]").val(),
 				points : jQuery("#condition-" + conditionId + " input[name=points]").val(),
+				recurring : jQuery("#condition-" + conditionId + " input[name=recurring]").is(':checked'),
+				expiryValue : jQuery("#condition-" + conditionId + " input[name=expiry-value]").val(),
+				expiryUnit : jQuery("#condition-" + conditionId + " select[name=expiry-unit]").find("option:selected").val(),
 				steps : steps
 		};
 	
@@ -500,5 +503,60 @@ jQuery(document).ready(function($) {
 			jQuery("#add-new-assignment-form #assignment").replaceWith(jsonResponse.data.html);
 		});
 	});
+	
+	
+	var rowActions = jQuery("#assignments-table-form .row-actions > a");
+	jQuery.each(rowActions, function(index, element) {
+		jQuery(element).click(function(e) { 
+			updateStatus(this);
+		});
+	});
+	
+	function updateStatus(e) {
+		
+		var anchorId = e.id; // e.g. ub-anchor-approve-82
+		var parts = anchorId.split("-"); 
+		var rowId = parts[3]; 
+		
+		var status = jQuery("#" + anchorId).hasClass("ub-approve") ? "approve" : "unapprove";
+		
+		
+		var data =  { 
+				action : "update_user_assignment_status",
+				nonce : ub_admin_data.ajax_nonce,
+				assignmentId : rowId,
+				status : status
+		};
+				
+		jQuery.post(ub_admin_data.ajax_url, data, function(response) {
+			var jsonResponse = jQuery.parseJSON(response);
+			
+			var assignmentId = jsonResponse.assignment_id;
+			var actionId = null;
+			
+			jQuery("#ub-row-actions-" + assignmentId).empty();
+			if (jsonResponse.data.status != "approved") {
+				actionId = "ub-anchor-approve-" + assignmentId;
+				jQuery("#ub-row-actions-" + assignmentId).append("<a href='#' id='" + actionId + "' class='ub-approve'>" + jsonResponse.data.approve + "</a>");
+				jQuery("#ub-text-approve-" + assignmentId).css('display', 'none');
+				jQuery("#ub-text-pending-" + assignmentId).css('display', 'none');
+				jQuery("#ub-text-unapprove-" + assignmentId).css('display', 'block');
+			} else {
+				actionId = "ub-anchor-unapprove-" + assignmentId;
+				jQuery("#ub-row-actions-" + assignmentId).append("<a href='#' id='" + actionId + "' class='ub-unapprove'>" + jsonResponse.data.unapprove + "</a>");
+				jQuery("#ub-text-approve-" + assignmentId).css('display', 'block');
+				jQuery("#ub-text-pending-" + assignmentId).css('display', 'none');
+				jQuery("#ub-text-unapprove-" + assignmentId).css('display', 'none');
+			}
+			
+			jQuery("#" + actionId).click(function(e) { 
+				updateStatus(this);
+			});
+		
+		});
+		
+		// stop event
+		event.preventDefault();
+	}
 
 });

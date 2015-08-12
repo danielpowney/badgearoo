@@ -10,7 +10,6 @@ table.badges .column-description {
 	width: 40%;
 }
 
-
 .ub-condition .ub-step {
 	margin-bottom: 9px;
 	border: 1px solid #e5e5e5;
@@ -19,10 +18,16 @@ table.badges .column-description {
 	cursor: move;
 	display: block;
 }
-.ub-condition .ub-step 
-.ub-step input {
+
+.ub-condition .ub-expiry-value {
+	width: 75px;
+}
+.ub-condition .ub-step label, .ub-condition .ub-step select, .ub-condition .ub-step input, .ub-condition .ub-step a {
+	display: inline-block;
 	padding: 3px 5px;
-	vertical-align: bottom;
+	vertical-align: middle;
+	margin-top: 3px;
+	margin-bottom: 3px;
 }
 
 .ub-condition .form-table, .ub-condition .ub-step-list {
@@ -33,11 +38,11 @@ table.badges .column-description {
 	display: block;
 }
 
-.ub-condition td {
+.ub-condition td.ub-condition-steps {
 	vertical-align: top;
 }
 
-.ub-condition .tagchecklist {
+.ub-condition .tagchecklist span {
 	margin-top: 10px;
 }
 

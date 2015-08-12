@@ -29,7 +29,10 @@ function ub_assignments_page() {
 					</tr>
 					<tr class="form-field">
 						<th scope="row"><label for="expiry_dt"><?php _e( 'Expiry Date', 'user-badges' ); ?></label></td>
-						<td><input type="date" name="expiry-dt" id="expiry-dt" class="medium-text" /></td>
+						<td>
+							<input type="date" name="expiry-dt" id="expiry-dt" class="medium-text" />
+							<label for="expiry_dt"><?php _e( 'Leave empty for no expiration.', 'user-badges' ); ?></label>
+						</td>
 					</tr>
 					<tr class="form-field">
 						<th scope="row"><label for="value"><?php _e( 'Assignment', 'user-badges' ); ?></label></td>
@@ -51,6 +54,7 @@ function ub_assignments_page() {
 				<?php 
 				$assignments_table = new UB_Assignments_Table();
 				$assignments_table->prepare_items();
+				$assignments_table->views();
 				$assignments_table->display();
 				?>
 			</form>
@@ -131,8 +135,12 @@ function ub_change_assignment_type() {
 }
 
 
-
+/**
+ * Add a new assignment
+ */
 function ub_add_new_assignment() {
+	
+	// TODO check if has capability
 	
 	$user_id = isset( $_POST['user-id'] ) ? intval( $_POST['user-id'] ) : 0;
 	$type = isset( $_POST['type'] ) ? $_POST['type'] : null;
@@ -142,6 +150,8 @@ function ub_add_new_assignment() {
 	if ( $user_id == 0 | $type == null || $value == null ) {
 		return;
 	}
+	
+	// TODO sanitize input
 	
 	User_Badges::instance()->api->add_user_assignment( null, $user_id, $type, $value, $expiry_dt );
 	

@@ -15,8 +15,6 @@ function ub_get_the_author_badges( $value, $user_id = false ) {
 
 	$badges = User_Badges::instance()->api->get_user_badges( $user_id );
 
-	$value = '';
-
 	if ( count( $badges ) > 0 ) {
 
 		foreach ( $badges as $badge ) {
@@ -32,8 +30,16 @@ function ub_get_the_author_badges( $value, $user_id = false ) {
 			) );
 
 		}
+	} else {
+		_e( 'No badges', 'user-badges' );
 	}
+	
+	echo '<br />';
 
-	return $value;
+	$points = User_Badges::instance()->api->get_user_points( $user_id );
+
+	ub_get_template_part( 'points', null, true, array(
+			'points' => $points
+	) );
 }
 add_filter( 'get_the_author_badges', 'ub_get_the_author_badges', 10, 2);

@@ -9,12 +9,14 @@ class UB_Condition {
 	public $points;
 	public $created_dt;
 	public $enabled;
-	public $assignment_expiry;
+	public $expiry_unit;
+	public $expiry_value;
+	public $recurring;
 	
 	/**
 	 * Constructor
 	 */
-	function __construct( $condition_id, $name, $badges = array(), $points = 0, $created_dt, $enabled = true, $assignment_expiry = null ) {
+	function __construct( $condition_id, $name, $badges = array(), $points = 0, $created_dt, $enabled = true, $expiry_unit = null, $expiry_value = null, $recurring = false ) {
 		
 		$this->condition_id = $condition_id;
 		$this->name = $name;
@@ -28,7 +30,9 @@ class UB_Condition {
 			array_push( $this->steps, new UB_Step( $row->step_id, $row->condition_id, $row->label, $row->action_name, $row->created_dt ) );
 		}
 		$this->created_dt = $created_dt;
-		$this->assignment_expiry = $assignment_expiry;
+		$this->expiry_unit = $expiry_unit;
+		$this->expiry_value = $expiry_value;
+		$this->recurring = $recurring;
 	}
 	
 	/**
@@ -63,15 +67,18 @@ class UB_Condition {
 			}
 		}
 		
+		// TODO work out expiry_dt based on expiry_unit and expiry_value e.g. 1 month
+		$expiry_dt = null;
+		
 		// if you get this far, condition has been met
 		if ( $condition_result == true && count( $this->steps ) > 0 ) {
 			
 			foreach ( $this->badges as $badge_id ) {
-				User_Badges::instance()->api->add_user_assignment( $this->condition_id, $user_id, 'badge', $badge_id, $this->assignment_expiry );
+				User_Badges::instance()->api->add_user_assignment( $this->condition_id, $user_id, 'badge', $badge_id, $expiry_dt );
 			}
 			
 			if ( $this->points > 0 ) {
-				User_Badges::instance()->api->add_user_assignment( $this->condition_id, $user_id, 'points', $this->points, $this->assignment_expiry );
+				User_Badges::instance()->api->add_user_assignment( $this->condition_id, $user_id, 'points', $this->points, $expiry_dt );
 			}
 		}
 	}

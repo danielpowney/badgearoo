@@ -101,10 +101,32 @@ function ub_display_condition_meta_box( $condition ) {
 											<p class="description"><?php _e( 'Allocate points to users.', 'user-badges' ); ?></p>
 										</td>
 									</tr>
+									<tr>
+										<th scope="row"><?php _e( 'Recurring', 'user-badges' ); ?></th>
+										<td>
+											<input type="checkbox" name="recurring" value="true" <?php checked( $condition->recurring, true, true ); ?>/>
+											<label for="recurring"><?php _e( 'Assignments can occur more than once.', 'user-badges' ); ?></label>
+											<p class="description"><?php _e( 'If turned on, assignments cannot be renewed.', 'user-badges' ); ?>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row"><?php _e( 'Expiry', 'user-badges' ); ?></th>
+										<td>
+											<input type="number" name="expiry-value" class="ub-expiry-value" value="<?php if ( $condition->expiry_value != 0 ) { echo $condition->expiry_value; } ?>" />
+											<select name="expiry-unit">
+												<option value="day" <?php if ( $condition->expiry_unit == 'day' ) { echo 'selected="selected"'; }?>><?php _e( 'Day(s)', 'user-badges' ); ?></option>
+												<option value="week" <?php if ( $condition->expiry_unit == 'week' ) { echo 'selected="selected"'; }?>><?php _e( 'Week(s)', 'user-badges' ); ?></option>
+												<option value="month" <?php if ( $condition->expiry_unit == 'month' ) { echo 'selected="selected"'; }?>><?php _e( 'Month(s)', 'user-badges' ); ?></option>
+												<option value="year" <?php if ( $condition->expiry_unit == 'year' ) { echo 'selected="selected"'; }?>><?php _e( 'Year(s)', 'user-badges' ); ?></option>
+											</select>
+											<p class="description"><?php _e( 'Leave empty if assignmemt has no expiration.', 'user-badges' ); ?></p>
+										</td>
+										
+									</tr>
 								</tbody>
 							</table>
 						</td>
-						<td>
+						<td class="ub-condition-steps">
 							<ul class="ub-step-list">
 								<?php
 								if ( count( $condition->steps ) == 0 ) {
@@ -210,8 +232,16 @@ function ub_display_step( $step ) {
 			
 			$actions = User_Badges::instance()->api->get_actions();
 			
-			foreach ( $actions as $action ) {
-				?><option value="<?php echo $action->name; ?>" <?php if ( $step->action_name == $action->name ) echo 'selected'; ?>><?php echo esc_html( stripslashes( $action->description ) ); ?></option><?php
+			foreach ( $actions as $group => $group_actions ) {
+				?>
+				<optgroup label="<?php echo $group; ?>">
+					<?php 
+					foreach ( $group_actions as $action ) {
+						?><option value="<?php echo $action->name; ?>" <?php if ( $step->action_name == $action->name ) echo 'selected'; ?>><?php echo esc_html( stripslashes( $action->description ) ); ?></option><?php
+					}
+					?>
+				</optgroup>
+				<?php 
 			}
 			?>
 		</select>
@@ -228,78 +258,6 @@ function ub_display_step( $step ) {
 	</li>
 	<?php 
 }
-
-/**
- * Shows a count step meta
- * 
- * @param unknown $step_id
- * @param unknown $action
- */
-function ub_step_meta_count( $step_id, $action  ) {
-	
-	$step_meta_enabled = apply_filters( 'ub_step_meta_count_enabled', false, $action );
-	
-	if ( $step_meta_enabled ) { 
-		$count = User_Badges::instance()->api->get_step_meta_value( $step_id, 'count' );
-		?>
-		<span class="step-meta-value">
-			<input name="count" type="number" value="<?php echo $count; ?>" class="small-text" />&nbsp;<?php _e( 'time(s)', 'user-badges' ); ?>
-		</span>
-		<?php
-	}
-}
-add_action( 'ub_step_meta', 'ub_step_meta_count', 10, 2 );
-
-/**
- * Shows a points step meta
- *
- * @param unknown $step_id
- * @param unknown $action
- */
-function ub_step_meta_points( $step_id, $action  ) {
-	
-	$step_meta_enabled = apply_filters( 'ub_step_meta_points_enabled', false, $action );
-	
-	if ( $step_meta_enabled ) {
-		$points = User_Badges::instance()->api->get_step_meta_value( $step_id, 'points' );
-		?>
-		<span class="step-meta-value">
-			<input name="points" type="number" value="<?php echo $points; ?>" class="small-text" />&nbsp;<?php _e( 'points', 'user-badges' ); ?>
-		</span>
-		<?php
-	}
-}
-add_action( 'ub_step_meta', 'ub_step_meta_points', 10, 2 );
-
-/**
- * Shows a points step meta
- *
- * @param unknown $step_id
- * @param unknown $action
- */
-function ub_step_meta_post_type( $step_id, $action  ) {
-	
-	$step_meta_enabled = apply_filters( 'ub_step_meta_post_type_enabled', false, $action );
-	
-	if ( $step_meta_enabled ) {
-		$value = User_Badges::instance()->api->get_step_meta_value( $step_id, 'post_type' );
-		?>
-		<span class="step-meta-value">
-			<label for="post_type">Post Type</label>
-			<select name="post_type">
-				<option value=""><?php _e( 'All', 'user-badges'); ?></option>
-				<?php 
-				$post_types = get_post_types( array( 'public' => true ), 'objects' );
-				foreach ( $post_types as $post_type ) {
-					?><option value="<?php echo $post_type->name; ?>" <?php if ( $post_type->name == $value ) { echo 'selected'; } ?>><?php echo $post_type->labels->name; ?></option><?php
-				} ?>
-			</select>
-		</span>
-		<?php
-	}
-}
-// TODO action with action_name in it e.g. ub_step_meta_$action_name
-add_action( 'ub_step_meta', 'ub_step_meta_post_type', 10, 2 );
 
 
 /**
@@ -439,13 +397,17 @@ function ub_save_condition() {
 		$badges = ( isset( $_POST['badges'] ) && strlen( trim($_POST['badges'] ) ) > 0 ) ? preg_split( '/[\s,]+/', $_POST['badges'] ) : array();
 		$points = ( isset( $_POST['points'] ) && is_numeric( $_POST['points'] ) ) ? intval( $_POST['points'] ) : 0;
 		$enabled = ( isset( $_POST['enabled'] ) && $_POST['enabled'] == 'true' ) ? true : false;
-		$assignment_expiry = null; // TODO
+		$expiry_value = ( isset( $_POST['expiryValue'] ) ) ? $_POST['expiryValue'] : 0;
+		$expiry_unit = ( isset( $_POST['expiryUnit'] ) ) ? $_POST['expiryUnit'] : '';
+		$recurring = ( isset( $_POST['recurring'] ) && $_POST['recurring'] == 'true' ) ? true : false;
 		
 		$badges = array_filter( $badges ); // removes empty array elements if they are there
 		
+		// TODO sanitize input here
+		
 		if ( $condition_id != null ) {
 			
-			$condition = new UB_Condition( $condition_id, $name, $badges, $points, null, $enabled, $assignment_expiry );
+			$condition = new UB_Condition( $condition_id, $name, $badges, $points, null, $enabled, $expiry_unit, $expiry_value, $recurring );
 			
 			if ( is_array( $_POST['steps'] ) ) {
 				foreach ( $_POST['steps'] as $step ) {

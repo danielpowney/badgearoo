@@ -9,7 +9,7 @@ function ub_user_badges( $atts) {
 	if ( $user_id == 0 && strlen( $username ) > 0 ) {
 		$user = get_user_by( 'login', $username );
 		$user_id = $user->ID;
-	} else {
+	} else if ( $user_id == 0 ) {
 		global $authordata;
 		$user_id = isset( $authordata->ID ) ? $authordata->ID : 0;
 	}
@@ -41,6 +41,37 @@ function ub_user_badges( $atts) {
 	return $html;
 }
 add_shortcode( 'ub_user_badges', 'ub_user_badges' );
+
+
+
+function ub_user_points( $atts) {
+
+	extract( shortcode_atts( array(
+			'user_id' => 0,
+			'username' => ''
+	), $atts ) );
+
+	if ( $user_id == 0 && strlen( $username ) > 0 ) {
+		$user = get_user_by( 'login', $username );
+		$user_id = $user->ID;
+	} else if ( $user_id == 0 ) {
+		global $authordata;
+		$user_id = isset( $authordata->ID ) ? $authordata->ID : 0;
+	}
+
+	$points = User_Badges::instance()->api->get_user_points( $user_id );
+
+	$html = '';
+	ob_start();
+	ub_get_template_part( 'points', null, true, array(
+			'points' => $points
+	) );
+	$html .= ob_get_contents();
+	ob_end_clean();
+	
+	return $html;
+}
+add_shortcode( 'ub_user_points', 'ub_user_points' );
 
 
 
