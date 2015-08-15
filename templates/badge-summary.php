@@ -1,10 +1,10 @@
-<div class="<?php echo $class; ?> ub-badge-summary">
+<div class="<?php if ( isset( $class ) ) { echo esc_attr( $class ); } ?> ub-badge-summary">
 
 	<div class="ub-badge-main">
 		<?php 
 		
 		if ( $logo_type != 'none' ) {
-			ub_get_template_part( 'badge', true, array(
+			ub_get_template_part( 'badge', null, true, array(
 					'show_title' => false,
 					'logo_type' => $logo_type,
 					'logo_image' => $logo_image,

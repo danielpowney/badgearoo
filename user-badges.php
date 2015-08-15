@@ -340,6 +340,7 @@ class User_Badges {
 		
 		add_submenu_page( 'edit.php?post_type=badge', __( 'Assignments', 'user-badges' ), __( 'Assignments', 'user-badges' ) . $pending_assignments_counter, 'manage_options', User_Badges::ASSIGNMENTS_PAGE_SLUG, 'ub_assignments_page' );
 		add_submenu_page( 'edit.php?post_type=badge', __( 'Settings', 'user-badges' ), __( 'Settings', 'user-badges' ), 'manage_options', User_Badges::SETTINGS_PAGE_SLUG, 'ub_settings_page' );
+		add_submenu_page( 'edit.php?post_type=badge', __( 'About', 'user-badges' ), __( 'About', 'user-badges' ), 'manage_options', User_Badges::ABOUT_PAGE_SLUG, 'ub_about_page' );
 	}
 	
 	/**
@@ -408,6 +409,9 @@ class User_Badges {
 		
 		add_action( 'wp_ajax_user_leaderboard_filter', 'ub_user_leaderboard_filter' );
 		add_action( 'wp_ajax_nopriv_user_leaderboard_filter', 'ub_user_leaderboard_filter' );
+		
+		add_action( 'wp_ajax_user_dashboard_assignments_more', 'ub_user_dashboard_assignments_more' );
+		add_action( 'wp_ajax_nopriv_user_dashboard_assignments_more', 'ub_user_dashboard_assignments_more' );
 		
 	}
 	

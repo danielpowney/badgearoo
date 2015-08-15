@@ -3,7 +3,7 @@
  * User leaderboard table template
  */
 ?>
-<table id="user-leaderboard-table">
+<table class="user-leaderboard-table">
 	<thead>
 		<tr>
 			<th><?php _e( 'Rank', 'user-badges' ); ?></th>

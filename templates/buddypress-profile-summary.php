@@ -2,8 +2,10 @@
 /**
  * Shows a summary of a user's badges and points
  */
+
+
 ?>
-<div class="user-badges-summary">
+<div class="<?php if ( isset( $class ) ) { echo esc_attr( $class ); } ?> user-badges-summary">
 
 	<ul class="ub-badges">
 		<?php 
@@ -18,7 +20,8 @@
 						'logo_html' => $badge->logo_html,
 						'excerpt' => $badge->excerpt,
 						'title' => $badge->title,
-						'content' => $badge->content
+						'content' => $badge->content,
+						'badge_count' => isset( $badge_count_lookup[$badge->id] ) ? $badge_count_lookup[$badge->id] : 1
 				) );
 				?>
 			</li>

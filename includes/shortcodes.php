@@ -16,6 +16,17 @@ function ub_user_badges( $atts) {
 	
 	$badges = User_Badges::instance()->api->get_user_badges( $user_id );
 	
+	// count badges by id
+	$badge_count_lookup = array();
+	foreach ( $badges as $index => $badge ) {
+		if ( ! isset( $badge_count_lookup[$badge->id] ) ) {
+			$badge_count_lookup[$badge->id] = 1;
+		} else {
+			$badge_count_lookup[$badge->id]++;
+			unset( $badges[$index] );
+		}
+	}
+	
 	$html = '';
 	
 	if (count( $badges ) > 0 ) {
@@ -30,7 +41,8 @@ function ub_user_badges( $atts) {
 					'title' => $badge->title,
 					'content'=> $badge->content,
 					'excerpt'=> $badge->excerpt,
-					'show_title' => true
+					'show_title' => true,
+					'badge_count' => isset( $badge_count_lookup[$badge->id] ) ? $badge_count_lookup[$badge->id] : 1 
 			) );
 			$html .= ob_get_contents();
 			ob_end_clean();
@@ -392,4 +404,205 @@ function ub_get_user_leaderboard( $filters = array() ) {
 	
 	return $rows;
 	
+}
+
+
+
+
+/**
+ * Displays the user dashboard
+ *
+ * @param unknown $atts
+ * @return string
+ */
+function ub_user_dashboard($atts) {
+
+	extract( shortcode_atts( array(
+			'show_badges' => true,
+			'show_points' => true,
+			'show_assignments' => true,
+			'limit' => 5,
+			'offset' => 0,
+			'type' => null,
+			'show_filters' => true,
+			'to_date' => null,
+			'from_date' => null,
+			'type' => null
+	), $atts ) );
+	
+	
+	if ( is_string( $show_badges ) ) {
+		$show_badges = $show_badges == 'true' ? true : false;
+	}
+	if ( is_string( $show_points ) ) {
+		$show_points = $show_points == 'true' ? true : false;
+	}
+	if ( is_string( $show_assignments ) ) {
+		$show_assignments = $show_assignments == 'true' ? true : false;
+	}
+	if ( is_string( $show_filters ) ) {
+		$show_filters = $show_filters == 'true' ? true : false;
+	}
+	
+	$to_date = isset( $_REQUEST['to-date'] ) ? $_REQUEST['to-date'] : $to_date;
+	$from_date = isset( $_REQUEST['from-date'] ) ? $_REQUEST['from-date'] : $from_date;
+	$type = isset( $_REQUEST['type'] ) ? $_REQUEST['type'] : $type;
+	
+	if ( $from_date != null && strlen( $from_date ) > 0 ) {
+		list( $year, $month, $day ) = explode( '-', $from_date ); // default yyyy-mm-dd format
+		if ( ! checkdate( $month , $day , $year ) ) {
+			$from_date = null;
+		}
+	}
+		
+	if ( $to_date != null && strlen($to_date) > 0 ) {
+		list( $year, $month, $day ) = explode( '-', $to_date );// default yyyy-mm-dd format
+		if ( ! checkdate( $month , $day , $year ) ) {
+			$to_date = null;
+		}
+	}
+	
+	$user_id = get_current_user_id();
+	
+	if ( $user_id == 0 ) {
+		// TODO
+	}
+	
+	$assignments = User_Badges::instance()->api->get_user_assignments( $user_id, array( 
+			'limit' => $limit, 
+			'offset' => $offset,
+			'to_date' => $to_date,
+			'from_date' => $from_date,
+			'type' => $type
+	), false );
+	
+	$count_assignments = User_Badges::instance()->api->get_user_assignments( $user_id, array( 
+			'to_date' => $to_date,
+			'from_date' => $from_date,
+			'type' => $type
+	), true );
+
+	$points = User_Badges::instance()->api->get_user_points( $user_id, array( 'to_date' => $to_date, 'from_date' => $from_date ) );
+	$badges = User_Badges::instance()->api->get_user_badges( $user_id, array( 'to_date' => $to_date, 'from_date' => $from_date ) );
+	
+	// count badges by id
+	$badge_count_lookup = array();
+	foreach ( $badges as $index => $badge ) {
+		if ( ! isset( $badge_count_lookup[$badge->id] ) ) {
+			$badge_count_lookup[$badge->id] = 1;
+		} else {
+			$badge_count_lookup[$badge->id]++;
+			unset( $badges[$index] );
+		}
+	}
+	
+	if ( ! is_array( $assignments ) ) {
+		$assignments = array();
+	}
+	
+	$offset = $limit; // next offset
+	
+	// TODO add condition progress
+
+	$html = '';
+
+	ob_start();
+	ub_get_template_part( 'user-dashboard', null, true, array(
+			'assignments' => $assignments,
+			'points' => $points,
+			'badges' => $badges,
+			'show_badges' => $show_badges,
+			'show_points' => $show_points,
+			'show_assignments' => $show_assignments,
+			'badge_count_lookup' => $badge_count_lookup,
+			'show_filters' => $show_filters,
+			'type' => $type,
+			'to_date' => $to_date,
+			'from_date' => $from_date,
+			'limit' => $limit,
+			'offset' => $offset,
+			'count_assignments' => $count_assignments
+	) );
+	$html .= ob_get_contents();
+	ob_end_clean();
+
+	return $html;
+}
+add_shortcode( 'ub_user_dashboard', 'ub_user_dashboard' );
+
+
+
+
+/**
+ * Loads more user dashboard assignments
+ */
+function ub_user_dashboard_assignments_more() {
+
+	$ajax_nonce = $_POST['nonce'];
+	if ( wp_verify_nonce($ajax_nonce, User_Badges::ID.'-nonce' ) ) {
+
+		$from_date = isset( $_POST['from-date'] ) ? $_POST['from-date'] : null;
+		$to_date = isset( $_POST['to-date'] ) ? $_POST['to-date'] : null;
+		$type = isset( $_POST['type'] ) ? $_POST['type'] : null;
+		$limit = isset( $_POST['limit'] ) ? intval( $_POST['limit'] ) : 5;
+		$offset = isset( $_POST['offset'] ) ? intval( $_POST['offset'] ) : 0;
+		$user_id = get_current_user_id();
+		
+		if ( $user_id == 0 ) {
+			echo json_encode( array(
+					'status' => 'error'
+			) );
+			die();
+		}
+
+		if ( $from_date != null && strlen( $from_date ) > 0 ) {
+			list( $year, $month, $day ) = explode( '-', $from_date ); // default yyyy-mm-dd format
+			if ( ! checkdate( $month , $day , $year ) ) {
+				$from_date = null;
+			}
+		}
+
+		if ( $to_date != null && strlen($to_date) > 0 ) {
+			list( $year, $month, $day ) = explode( '-', $to_date ); // default yyyy-mm-dd format
+			if ( ! checkdate( $month , $day , $year ) ) {
+				$to_date = null;
+			}
+		}
+
+		$assignments = User_Badges::instance()->api->get_user_assignments( $user_id, array( 
+			'limit' => $limit, 
+			'offset' => $offset,
+			'to_date' => $to_date,
+			'from_date' => $from_date,
+			'type' => $type
+		) );
+		
+		$offset += $limit; // next offset
+
+		$html = '';
+
+		ob_start();
+		
+		foreach ( $assignments as $assignment ) {
+			ub_get_template_part( 'assignments-table-row', null, true, array(
+					'assignment' => $assignment,
+			) );
+		}
+		
+		$html .= ob_get_contents();
+		ob_end_clean();
+
+		$data = array();
+		$data['html'] = $html;
+		$data['offset'] = $offset;
+
+		echo json_encode( array(
+				'status' => 'success',
+				'data' => $data
+		) );
+
+	}
+
+	die();
+
 }

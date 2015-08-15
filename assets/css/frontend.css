@@ -95,3 +95,26 @@
 .user-leaderboard td {
 	vertical-align: middle;
 }
+
+.ub-user-dashboard-summary div.ub-badge {
+	display: block;
+}
+.ub-user-dashboard form, .ub-user-dashboard-summary, .user-dashboard-assignments {
+	vertical-align: middle;
+}
+.ub-user-dashboard form {
+	margin-bottom: 10px;
+}
+.user-dashboard-assignments div.ub-badge {
+	display: block;
+}
+.user-dashboard-assignments .ub-more-btn {
+	margin-bottom: 20px;
+	text-align: center;
+	display: inline-block;
+	width: auto;
+}
+.user-dashboard-assignments label.ub-recent-assignments {
+	margin-bottom: 10px;
+	display: inline-block;
+}

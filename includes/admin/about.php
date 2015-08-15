@@ -65,9 +65,9 @@ function ub_about_page() {
 	?>
 	
 	<div class="wrap about-wrap">
-			<h1><?php printf( __( 'User Badges v%s', 'user-badges' ), User_Badges::VERSION ); ?></h1>
+			<h1><?php printf( __( 'Badgearoo v%s', 'user-badges' ), User_Badges::VERSION ); ?></h1>
 		
-		<div class="about-text"><?php _e( 'Create your own badges for WordPress users.', 'user-badges' ); ?></div>
+		<div class="about-text"><?php _e( 'Create your own badges and points system for WordPress users.', 'user-badges' ); ?></div>
 			<h2 class="nav-tab-wrapper">
 			<?php
 			$current_tab = isset( $_GET['tab'] ) ? $_GET['tab'] : 'getting_started';
@@ -88,23 +88,35 @@ function ub_about_page() {
 		
 			<div class="changelog">
 					
-				<p class="about-description"><?php _e( 'TODO', 'user-badges' ); ?></p>
+				<p class="about-description"><?php _e( 'Create your own badges and points system for WordPress users. You can manually assign badges or configure automatic assignment of predefined badges to to users.', 'user-badges' ); ?></p>
+				
+				<h4>Shortcodes</h4>
+				<ul>
+					<li>[broo_user_badges]</li>
+					<li>[broo_user_points]</li>
+					<li>[broo_leaderboard]</li>
+					<li>[broo_badge]</li>
+					<li>[broo_condition]</li>
+					<li>[broo_user_dashboard] - TODO</li>
+					<li>[broo_badge_list] - TODO</li>
+					<li>[broo_condition_list] - TODO</li>
+				</ul>
 				
 				<div class="feature-section col three-col">
 					<div class="col-1">
 						<img />
-						<h4><?php _e( 'TODO', 'user-badges' ); ?></h4>
-						<p><?php _e( 'TODO', 'user-badges' ); ?></p>
+						<h4><?php _e( 'Assignments', 'user-badges' ); ?></h4>
+						<p><?php _e( 'Manage user assignments of badges and points including moderation and e-mail notifications.', 'user-badges' ); ?></p>
 					</div>
 					<div class="col-2">
 						<img />
-						<h4><?php _e( 'TODO', 'user-badges' ); ?></h4>
-						<p><?php _e( 'TODO', 'user-badges' ); ?></p>
+						<h4><?php _e( 'Actions.', 'user-badges' ); ?></h4>
+						<p><?php _e( 'Out-of-the-box support for BuddyPress, bbPress, WooCommerce and Easy Digital Downloads plugins.', 'user-badges' ); ?></p>
 					</div>
 					<div class="col-3 last-feature">
 						<img />
-						<h4><?php _e( 'TODO', 'user-badges' ); ?></h4>
-						<p><?php _e( 'TODO', 'user-badges' ); ?></p>
+						<h4><?php _e( 'Conditions', 'user-badges' ); ?></h4>
+						<p><?php _e( 'Setup conditions with steps that need to be accomplished for badges and or points to be assigned to users.', 'user-badges' ); ?></p>
 					</div>
 				</div>
 			

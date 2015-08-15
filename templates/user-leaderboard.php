@@ -4,7 +4,7 @@
  */
 ?>
 
-<div class="user-leaderboard <?php if ( isset( $class ) ) { echo esc_attr( $class ); } ?>">
+<div class="<?php if ( isset( $class ) ) { echo esc_attr( $class ); } ?> user-leaderboard">
 
 	<h2><?php _e( 'Leaderboard', 'user-badges' ); ?></h2>
 	

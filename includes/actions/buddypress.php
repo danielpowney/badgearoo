@@ -274,12 +274,24 @@ function ub_bp_before_member_header_meta() {
 	
 	$user_id = bp_displayed_user_id();
 	
-	$badges = User_Badges::instance()->api->get_user_badges( $user_id );
 	$points = User_Badges::instance()->api->get_user_points( $user_id );
-
-	ub_get_template_part( 'user-badges-summary', null, true, array(
+	$badges = User_Badges::instance()->api->get_user_badges( $user_id );
+	
+	// count badges by id
+	$badge_count_lookup = array();
+	foreach ( $badges as $index => $badge ) {
+		if ( ! isset( $badge_count_lookup[$badge->id] ) ) {
+			$badge_count_lookup[$badge->id] = 1;
+		} else {
+			$badge_count_lookup[$badge->id]++;
+			unset( $badges[$index] );
+		}
+	}
+	
+	ub_get_template_part( 'buddypress-profile-summary', null, true, array(
 			'badges' => $badges,
-			'points' => $points
+			'points' => $points,
+			'badge_count_lookup' => $badge_count_lookup
 	) );
 	
 }

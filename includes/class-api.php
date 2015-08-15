@@ -31,18 +31,28 @@ interface UB_API {
 	public function delete_user_assignment( $assignment_id = null, $condition_id = null, $user_id = 0, $type = 'badge', $value = 0 );
 	
 	/**
+	 * Gets user assignments
+	 * 
+	 * @param unknown $user_id
+	 * @param unknown $filters
+	 */
+	public function get_user_assignments( $user_id, $filters = array() );
+	
+	/**
 	 * Gets badges by user id
 	 * 
 	 * @param unknown $user_id
+	 * @param array $filters
 	 */
-	public function get_user_badges( $user_id );
+	public function get_user_badges( $user_id, $filters = array() );
 	
 	/**
 	 * Gets points by user id
 	 * 
 	 * @param unknown $user_id
+	 * @param array $filters
 	 */
-	public function get_user_points( $user_id );
+	public function get_user_points( $user_id, $filters = array() );
 	
 	/**
 	 * 
@@ -335,10 +345,140 @@ class UB_API_Impl implements UB_API {
 	
 	/**
 	 * (non-PHPdoc)
+	 * @see UB_API::get_user_assignments()
+	 */
+	public function get_user_assignments( $user_id, $filters = array(), $is_count = false ) {
+		
+		extract( wp_parse_args( $filters, array(
+				'to_date' => null,
+				'from_date' => null,
+				'expired' => false, 
+				'status' => 'approved',
+				'limit' => 5,
+				'offset' => 0,
+				'type' => null
+				// TODO sort_by e.g. most_recent, oldest
+		) ) );
+		
+		global $wpdb;
+		
+		
+		$query = 'SELECT';
+		
+		if ( $is_count ) {
+			$query .= ' COUNT(*) ';
+		} else {
+			$query .= ' * ';
+		}
+		
+		$query .= 'FROM ' . $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME . '
+				WHERE       user_id = %d';
+		
+		$data = array( $user_id );
+		
+		$added_to_query = true;
+		
+		if ( $expired == false ) {
+			if ( $added_to_query ) {
+				$query .= ' AND';
+			}
+		
+			$query .= ' ( NOW() <= expiry_dt OR expiry_dt IS NULL )';
+			$added_to_query = true;
+		}
+		
+		if ( $status ) {
+			if ( $added_to_query ) {
+				$query .= ' AND';
+			}
+			
+			$query .= ' status = "' . esc_sql( $status ) . '"';
+			$added_to_query = true;
+		}
+		
+		if ( $type ) {
+			if ( $added_to_query ) {
+				$query .= ' AND';
+			}
+				
+			$query .= ' type = "' . esc_sql( $type ) . '"';
+			$added_to_query = true;
+		}
+		
+		if ( $to_date ) {
+			if ( $added_to_query ) {
+				$query .= ' AND';
+			}
+		
+			$query .= ' created_dt <= "' . esc_sql( $to_date ) . '"';
+			$added_to_query = true;
+			
+			array_push( $data, $to_date );
+		}
+		
+		if ( $from_date ) {
+			if ( $added_to_query ) {
+				$query .= ' AND';
+			}
+		
+			$query .= ' created_dt >= "' . esc_sql( $from_date ) . '"';
+			$added_to_query = true;
+			
+			array_push( $data, $from_date );
+		}
+		
+		$query .= ' ORDER BY created_dt DESC';
+		
+		if ( $limit && is_numeric( $limit ) ) {
+			if ( intval( $limit ) > 0 ) {
+				$query .= ' LIMIT ' . $offset . ', ' . intval( $limit );
+			}
+		}
+		
+		if ( $is_count) {
+			return $wpdb->get_var( $wpdb->prepare( $query, $data) );
+		}
+
+		$results = $wpdb->get_results( $wpdb->prepare( $query, $data ) );
+		
+		$assignments = array();
+		
+		foreach ( $results as $row ) {
+
+			$condition = User_Badges::instance()->api->get_condition( $row->condition_id );
+			
+			$badge = null;
+			$points = null;
+			
+			if ( $row->type == 'badge' ) {
+				$badge = User_Badges::instance()->api->get_badge( $row->value );
+			} else {
+				$points = intval( $row->value );
+			}
+			
+			array_push( $assignments, array(
+					'id' => $row->id,
+					'user_id' => $user_id,
+					'condition' => $condition,
+					'type' => $row->type,
+					'points' => $points,
+					'badge' => $badge,
+					'created_dt' => $row->created_dt,
+					'expiry_dt' => $row->expiry_dt,
+					'status' => $row->status
+			) );
+		}
+		
+		return $assignments;
+		
+	}
+	
+	
+	/**
+	 * (non-PHPdoc)
 	 * @see UB_API::get_user_badges()
 	 */
 	public function get_user_badges( $user_id, $filters = array() ) {
-		
 		
 		extract( wp_parse_args( $filters, array(
 				'to_date' => null,
@@ -394,12 +534,37 @@ class UB_API_Impl implements UB_API {
 	 * (non-PHPdoc)
 	 * @see UB_API::get_user_points()
 	 */
-	public function get_user_points( $user_id ) {
+	public function get_user_points( $user_id, $filters = array() ) {
+		
+		extract( wp_parse_args( $filters, array(
+				'to_date' => null,
+				'from_date' => null
+		) ) );
 		
 		global $wpdb;
 		
 		$query = 'SELECT SUM(CASE WHEN type = "points" THEN value ELSE 0 END) AS points FROM wp_ub_user_assignment WHERE user_id = ' 
 				. $user_id . ' AND ( NOW() <= expiry_dt OR expiry_dt IS NULL ) AND status = "approved"';
+		
+		$added_to_query = true;
+		
+		if ( $to_date ) {
+			if ( $added_to_query ) {
+				$query .= ' AND';
+			}
+		
+			$query .= ' created_dt <= "' . esc_sql( $to_date ) . '"';
+			$added_to_query = true;
+		}
+		
+		if ( $from_date ) {
+			if ( $added_to_query ) {
+				$query .= ' AND';
+			}
+		
+			$query .= ' created_dt >= "' . esc_sql( $from_date ) . '"';
+			$added_to_query = true;
+		}
 		
 		$points = $wpdb->get_var( $query );
 		

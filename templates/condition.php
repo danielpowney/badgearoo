@@ -1,4 +1,4 @@
-<div class="<?php echo $class; ?> ub-condition">
+<div class="<?php if ( isset( $class ) ) { echo esc_attr( $class ); } ?> ub-condition">
 
 	<h2><?php echo $name; ?></h2>
 	

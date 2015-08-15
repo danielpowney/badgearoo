@@ -14,6 +14,17 @@ function ub_get_the_author_badges( $value, $user_id = false ) {
 	}
 
 	$badges = User_Badges::instance()->api->get_user_badges( $user_id );
+	
+	// count badges by id
+	$badge_count_lookup = array();
+	foreach ( $badges as $index => $badge ) {
+		if ( ! isset( $badge_count_lookup[$badge->id] ) ) {
+			$badge_count_lookup[$badge->id] = 1;
+		} else {
+			$badge_count_lookup[$badge->id]++;
+			unset( $badges[$index] );
+		}
+	}
 
 	if ( count( $badges ) > 0 ) {
 
@@ -26,7 +37,8 @@ function ub_get_the_author_badges( $value, $user_id = false ) {
 					'title' => $badge->title,
 					'content'=> $badge->content,
 					'excerpt'=> $badge->excerpt,
-					'show_title' => true
+					'show_title' => true,
+					'badge_count' => isset( $badge_count_lookup[$badge->id] ) ? $badge_count_lookup[$badge->id] : 1
 			) );
 
 		}
