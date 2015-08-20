@@ -288,7 +288,7 @@ function ub_bp_before_member_header_meta() {
 		}
 	}
 	
-	ub_get_template_part( 'buddypress-profile-summary', null, true, array(
+	ub_get_template_part( 'user-badges-summary', null, true, array(
 			'badges' => $badges,
 			'points' => $points,
 			'badge_count_lookup' => $badge_count_lookup

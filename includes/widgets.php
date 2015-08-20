@@ -14,7 +14,7 @@ class UB_User_Details_Widget extends WP_Widget {
 		$name = __( 'User Badges', 'user-badges' );
 		$widget_opts = array(
 				'classname' => 'user-badges-widget',
-				'description' => __('Shows the post author details including any badges they have.', 'user-badges' )
+				'description' => __( 'Shows the post author details including any badges they have.', 'user-badges' )
 		);
 		$control_ops = array( 'width' => 400, 'height' => 350 );
 
@@ -51,6 +51,7 @@ class UB_User_Details_Widget extends WP_Widget {
 		ub_get_template_part( 'user-badges-widget', null, true, array(
 				'before_title' => $before_title,
 				'after_title' => $after_title,
+				'class' => 'user-badges-widget'
 		) );
 		
 		wp_reset_postdata();

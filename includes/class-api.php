@@ -31,12 +31,19 @@ interface UB_API {
 	public function delete_user_assignment( $assignment_id = null, $condition_id = null, $user_id = 0, $type = 'badge', $value = 0 );
 	
 	/**
-	 * Gets user assignments
+	 * Gets assignments
 	 * 
 	 * @param unknown $user_id
 	 * @param unknown $filters
 	 */
-	public function get_user_assignments( $user_id, $filters = array() );
+	public function get_assignments( $filters = array() );
+	
+	/**
+	 * Gets an assignment by assignment id
+	 * 
+	 * @param unknown $assignment_id
+	 */
+	public function get_assignment( $assignment_id );
 	
 	/**
 	 * Gets badges by user id
@@ -202,7 +209,7 @@ class UB_API_Impl implements UB_API {
 		
 		if ( $condition_id ) {
 			
-			$query = 'SELECT ua.id, ua.value, c.recurring, c.expiry_unit, c.expiry_value FROM ' 
+			$query = 'SELECT ua.id, ua.value, ua.status, c.recurring, c.expiry_unit, c.expiry_value FROM ' 
 					. $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME . ' ua, ' . $wpdb->prefix . UB_CONDITION_TABLE_NAME . ' c'
 					. ' WHERE ua.condition_id = c.condition_id AND ua.condition_id = ' . esc_sql( $condition_id ) 
 					. ' AND ua.type = "' . esc_sql( $type ) . '"';
@@ -249,11 +256,6 @@ class UB_API_Impl implements UB_API {
 				array_push( $format, '%s' );
 			}
 			
-			if ( ! $assignment_auto_approve ) {
-				$data['status'] = 'pending';
-				array_push( $format, '%s' );
-			}
-			
 			$result = $wpdb->update( $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME,
 					$data,
 					$where,
@@ -263,7 +265,7 @@ class UB_API_Impl implements UB_API {
 			
 			$assignment_id = $wpdb->insert_id;
 			
-			do_action( 'ub_update_user_assignment', $assignment_id, $condition_id, $user_id, $type, $value );
+			do_action( 'ub_update_user_assignment', $assignment_id, $condition_id, $user_id, $type, $value, $status );
 			
 		} else {
 			
@@ -284,8 +286,10 @@ class UB_API_Impl implements UB_API {
 				array_push( $format, '%s' );
 			}
 			
+			$status = 'approved';
 			if ( ! $assignment_auto_approve ) {
-				$data['status'] = 'pending';
+				$status = 'pending';
+				$data['status'] = $status;
 				array_push( $format, '%s' );
 			}
 			
@@ -296,7 +300,7 @@ class UB_API_Impl implements UB_API {
 			
 			$assignment_id = $wpdb->insert_id;
 			
-			do_action( 'ub_add_user_assignment', $assignment_id, $condition_id, $user_id, $type, $value, $created_dt );
+			do_action( 'ub_add_user_assignment', $assignment_id, $condition_id, $user_id, $type, $value, $created_dt, $status );
 		}
 	}
 	
@@ -345,9 +349,9 @@ class UB_API_Impl implements UB_API {
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see UB_API::get_user_assignments()
+	 * @see UB_API::get_assignments()
 	 */
-	public function get_user_assignments( $user_id, $filters = array(), $is_count = false ) {
+	public function get_assignments( $filters = array(), $is_count = false ) {
 		
 		extract( wp_parse_args( $filters, array(
 				'to_date' => null,
@@ -356,27 +360,44 @@ class UB_API_Impl implements UB_API {
 				'status' => 'approved',
 				'limit' => 5,
 				'offset' => 0,
-				'type' => null
+				'type' => null,
+				'user_id' => 0, // all
+				'badge_id' => null
 				// TODO sort_by e.g. most_recent, oldest
 		) ) );
 		
 		global $wpdb;
-		
 		
 		$query = 'SELECT';
 		
 		if ( $is_count ) {
 			$query .= ' COUNT(*) ';
 		} else {
-			$query .= ' * ';
+			$query .= ' a.*, u.user_login ';
 		}
 		
-		$query .= 'FROM ' . $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME . '
-				WHERE       user_id = %d';
+		$query .= 'FROM ' . $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME . ' a';
 		
-		$data = array( $user_id );
+		$added_to_query = false;
 		
-		$added_to_query = true;
+		if ( ! $is_count ) {
+			$query .= ', ' . $wpdb->users . ' u WHERE a.user_id = u.ID';
+			$added_to_query = true;
+		}
+		
+		if ( ! $added_to_query && count( $filters ) > 0 ) {
+			$query .= ' WHERE';
+			$added_to_query = false;
+		}
+		
+		if ( $user_id ) {
+			if ( $added_to_query ) {
+				$query .= ' AND';
+			}
+			
+			$query .= ' user_id = ' . intval( $user_id );
+			$added_to_query = true;
+		}
 		
 		if ( $expired == false ) {
 			if ( $added_to_query ) {
@@ -402,6 +423,15 @@ class UB_API_Impl implements UB_API {
 			}
 				
 			$query .= ' type = "' . esc_sql( $type ) . '"';
+			$added_to_query = true;
+		}
+		
+		if ( $badge_id ) {
+			if ( $added_to_query ) {
+				$query .= ' AND';
+			}
+		
+			$query .= ' type = "badge" AND value = ' . intval( $badge_id );
 			$added_to_query = true;
 		}
 		
@@ -458,7 +488,8 @@ class UB_API_Impl implements UB_API {
 			
 			array_push( $assignments, array(
 					'id' => $row->id,
-					'user_id' => $user_id,
+					'user_id' => $row->user_id,
+					'username' => $row->user_login,
 					'condition' => $condition,
 					'type' => $row->type,
 					'points' => $points,
@@ -472,6 +503,52 @@ class UB_API_Impl implements UB_API {
 		return $assignments;
 		
 	}
+	
+	
+	/**
+	 * (non-PHPdoc)
+	 * @see UB_API::get_assignment()
+	 */
+	public function get_assignment( $assignment_id ) {
+
+		global $wpdb;
+	
+		$query .= 'SELECT a.*, u.user_login FROM ' . $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME . ' a, ' . $wpdb->users
+				. ' WHERE       a.id = %d AND u.ID = a.user_id';
+	
+		$row = $wpdb->get_row( $wpdb->prepare( $query, $assignment_id ) );
+	
+		if ( $row ) {
+			
+			$condition = User_Badges::instance()->api->get_condition( $row->condition_id );
+				
+			$badge = null;
+			$points = null;
+				
+			if ( $row->type == 'badge' ) {
+				$badge = User_Badges::instance()->api->get_badge( $row->value );
+			} else {
+				$points = intval( $row->value );
+			}
+				
+			return array(
+					'id' => $row->id,
+					'user_id' => $row->user_id,
+					'username' => $row->user_login,
+					'condition' => $condition,
+					'type' => $row->type,
+					'points' => $points,
+					'badge' => $badge,
+					'created_dt' => $row->created_dt,
+					'expiry_dt' => $row->expiry_dt,
+					'status' => $row->status
+			);
+		}
+	
+		return null;
+	
+	}
+	
 	
 	
 	/**
@@ -492,6 +569,7 @@ class UB_API_Impl implements UB_API {
 				WHERE       user_id = %d AND type = "badge"'
 							. ' AND ( NOW() <= expiry_dt OR expiry_dt IS NULL )'
 							. ' AND status = "approved"';
+		
 		$added_to_query = true;
 		
 		if ( $to_date ) {
@@ -594,12 +672,18 @@ class UB_API_Impl implements UB_API {
 				
 				global $wpdb;
 				
-				$users = $wpdb->get_results( $wpdb->prepare( '
-						SELECT      user_id
+				$rows = $wpdb->get_results( $wpdb->prepare( '
+						SELECT      DISTINCT( user_id ) AS user_id
 						FROM        ' . $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME . '
-						WHERE       value = %d AND type = "badge"',
+						WHERE       value = %d AND type = "badge" 
+									AND ( NOW() <= expiry_dt OR expiry_dt IS NULL )
+									AND status = "approved"',
 						$badge_id
-				), ARRAY_N );
+				) );
+				
+				foreach ( $rows as $row ) {
+					array_push( $users, $row->user_id );
+				}
 				
 				$wpdb->show_errors();
 			}
@@ -719,7 +803,8 @@ class UB_API_Impl implements UB_API {
 	 * (non-PHPdoc)
 	 * @see UB_API::get_badges()
 	 */
-	public function get_badges( $filters = array( 'status' => 'publish' ), $load_users = false ) {
+	public function get_badges( $filters = array( 'status' => 'publish', 'badge_ids' => array() ), $load_users = false ) {
+		
 		global $wpdb;
 				
 		$query = 'SELECT * FROM ' . $wpdb->posts . ' WHERE post_type = "badge"';
@@ -728,21 +813,37 @@ class UB_API_Impl implements UB_API {
 			$query .= ' AND post_status = "' . esc_sql( $filters['status'] ) . '"';
 		}
 		
+		if ( isset( $filters['badge_ids'] ) && is_array( $filters['badge_ids'] ) 
+				&& count( $filters['badge_ids'] ) > 0 ) {
+					
+					
+			// TODO WPML
+			
+			$query .= ' AND ID IN (' . implode( ',', $filters['badge_ids'] ) . ')';
+		}
+		
 		$results = $wpdb->get_results( $query );
 		
 		$badges = array();
 		foreach ( $results as $row ) {
 			
-			$users = null;
+			$users = array();
 			if ( $load_users == true ) {
-				$users = $wpdb->get_results( $wpdb->prepare( '
-							SELECT      user_id
+				
+				$user_rows = $wpdb->get_results( $wpdb->prepare( '
+							SELECT      DISTINCT( user_id ) AS user_id
 							FROM        ' . $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME . '
-							WHERE       value = %d AND type = "badge"',
+							WHERE       value = %d AND type = "badge"
+										AND ( NOW() <= expiry_dt OR expiry_dt IS NULL )
+										AND status = "approved"',
 						$row->ID
-				), ARRAY_N );
+				) );
+				
+				foreach ( $user_rows as $user_row ) {
+					array_push( $users, $user_row->user_id );
+				}
 			}
-			
+
 			$badge = new UB_Badge(
 					$row->ID,
 					$row->post_title,

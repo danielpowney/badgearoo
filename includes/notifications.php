@@ -2,7 +2,7 @@
 /**
  * Notifications
  */
-function ub_assignment_moderation_notification( $assignment_id, $condition_id, $user_id, $type, $value, $created_dt ) {
+function ub_assignment_moderation_notification( $assignment_id, $condition_id, $user_id, $type, $value, $created_dt, $status ) {
 	
 	$general_settings = (array) get_option( 'ub_general_settings' );
 	
@@ -75,7 +75,7 @@ function ub_assignment_moderation_notification( $assignment_id, $condition_id, $
 		
 	}
 }
-add_action( 'ub_add_user_assignment', 'ub_assignment_moderation_notification', 10, 6 );
+add_action( 'ub_add_user_assignment', 'ub_assignment_moderation_notification', 10, 7 );
 
 /**
  * 

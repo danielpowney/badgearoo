@@ -1,27 +1,47 @@
 <?php
-add_action('manage_users_columns','ub_add_badges_column');
-add_action('manage_users_custom_column','ub_user_badges_column',10,3);
+add_action('manage_users_columns','ub_add_user_badges_columns');
+add_action('manage_users_custom_column','ub_manage_user_badges_columns',10,3);
 
-function ub_add_badges_column( $column_headers ) {
+function ub_add_user_badges_columns( $column_headers ) {
     $column_headers['badges'] = __( 'Badges' , 'user-badges' ); 
     $column_headers['points'] = __( 'Points' , 'user-badges' );
+    $column_headers['view-assignments'] = __( 'Action' , 'user-badges' );
     return $column_headers;
 }
 
-function ub_user_badges_column( $custom_column, $column_name, $user_id  ) {
+function ub_manage_user_badges_columns( $custom_column, $column_name, $user_id  ) {
 		
 	$column_content = '';
 			
     if  ( $column_name == 'badges' ) {
         $badges = User_Badges::instance()->api->get_user_badges( $user_id );
+        
+        // count badges by id
+        $badge_count_lookup = array();
+        foreach ( $badges as $index => $badge ) {
+        	if ( ! isset( $badge_count_lookup[$badge->id] ) ) {
+        		$badge_count_lookup[$badge->id] = 1;
+        	} else {
+        		$badge_count_lookup[$badge->id]++;
+        		unset( $badges[$index] );
+        	}
+        }
+        
         $count = count( $badges );
+        
         if ( $count == 0 ) {
         	$column_content .= __('None', 'user-badges' );
         } else {
+        	
         	$index = 0;
 	        foreach ( $badges as $badge ) {
 	        	$attachment_img = wp_get_attachment_image_src( get_post_thumbnail_id( $badge->id ) );
-	        	$column_content .= '<a href="' . get_edit_post_link( $badge->id ) . '">' . $badge->title . '</a>';
+	        	$column_content .= '<a href="' . get_edit_post_link( $badge->id ) . '">' . $badge->title;
+
+	       		if ( $badge_count_lookup[$badge->id] && $badge_count_lookup[$badge->id] > 1 ) {
+					$column_content .= ' (' . $badge_count_lookup[$badge->id] . ')';
+				} 
+				$column_content	.= '</a>';
 	        	
 	        	if ( $index < $count-1 ) {
 	        		$column_content .= ', ';
@@ -30,12 +50,19 @@ function ub_user_badges_column( $custom_column, $column_name, $user_id  ) {
 	        }
         }
     } 
+    
     if ( $column_name == 'points' ) {
     			
-		$points = User_Badges::instance()->api->get_user_points( $user_id );
-    	
+		$points = User_Badges::instance()->api->get_user_points( $user_id );	
     	$column_content .= $points;
     	
+    }
+    
+    if ( $column_name == 'view-assignments' ) {
+    	 
+    	$url = 'edit.php?post_type=badge&page=' . User_Badges::ASSIGNMENTS_PAGE_SLUG . '&user-id=' . $user_id;
+    	$column_content .= '<a href="' . $url . '">' . __( 'View Assignments', 'user-badges' ) . '</a>';
+    	 
     }
     
     return $column_content;

@@ -13,6 +13,7 @@ function ub_get_the_author_badges( $value, $user_id = false ) {
 		$user_id = isset( $authordata->ID ) ? $authordata->ID : 0;
 	}
 
+	$points = User_Badges::instance()->api->get_user_points( $user_id );
 	$badges = User_Badges::instance()->api->get_user_badges( $user_id );
 	
 	// count badges by id
@@ -25,33 +26,12 @@ function ub_get_the_author_badges( $value, $user_id = false ) {
 			unset( $badges[$index] );
 		}
 	}
-
-	if ( count( $badges ) > 0 ) {
-
-		foreach ( $badges as $badge ) {
-			
-			ub_get_template_part( 'badge', null, true, array(
-					'logo_type' => $badge->logo_type,
-					'logo_html' => $badge->logo_html,
-					'logo_image' => $badge->logo_image,
-					'title' => $badge->title,
-					'content'=> $badge->content,
-					'excerpt'=> $badge->excerpt,
-					'show_title' => true,
-					'badge_count' => isset( $badge_count_lookup[$badge->id] ) ? $badge_count_lookup[$badge->id] : 1
-			) );
-
-		}
-	} else {
-		_e( 'No badges', 'user-badges' );
-	}
 	
-	echo '<br />';
-
-	$points = User_Badges::instance()->api->get_user_points( $user_id );
-
-	ub_get_template_part( 'points', null, true, array(
-			'points' => $points
+	ub_get_template_part( 'user-badges-summary', null, true, array(
+			'badges' => $badges,
+			'points' => $points,
+			'badge_count_lookup' => $badge_count_lookup
 	) );
+	
 }
 add_filter( 'get_the_author_badges', 'ub_get_the_author_badges', 10, 2);

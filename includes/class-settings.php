@@ -53,7 +53,8 @@ class UB_Settings {
 				'ub_assignment_moderation_notification_email'	=> get_option( 'admin_email' ),
 				'ub_assignment_moderation_notification_subject' => __( 'New Assignment', 'user-badges' ),
 				'ub_assignment_moderation_notification_heading'	=> __( 'New Assignment', 'user-badges' ),
-				'ub_assignment_moderation_notification_template' => $assignment_moderator_notification_email_template
+				'ub_assignment_moderation_notification_template' => $assignment_moderator_notification_email_template,
+				'ub_show_user_assignment_modal'					=> true
 		), $this->general_settings );
 		
 		update_option( 'ub_actions_enabled', $this->actions_enabled );
@@ -67,9 +68,22 @@ class UB_Settings {
 	
 		register_setting( 'ub_general_settings', 'ub_general_settings', array( &$this, 'sanitize_general_settings' ) );
 	
+		add_settings_section( 'section_general', __( 'General', 'user-badges' ), array( &$this, 'section_general_desc' ), 'ub_general_settings' );
 		add_settings_section( 'section_moderation', __( 'Moderation', 'user-badges' ), array( &$this, 'section_moderation_desc' ), 'ub_general_settings' );
-	
+		
 		$setting_fields = array(
+			'ub_show_user_assignment_modal' => array(
+					'title' 	=> __( 'Show Assignment Modal', 'user-badges' ),
+					'callback' 	=> 'field_checkbox',
+					'page' 		=> 'ub_general_settings',
+					'section' 	=> 'section_general',
+					'args' => array(
+							'option_name' 	=> 'ub_general_settings',
+							'setting_id' 	=> 'ub_show_user_assignment_modal',
+							'label' 		=> __( 'Do you want the user to see a popup message on page load upon assignment of badges and points?', 'user-badges' )
+					)
+			
+			),
 			'ub_assignment_auto_approve' => array( 
 					'title' 	=> __( 'Auto Approve Assignments', 'user-badges' ),
 					'callback' 	=> 'field_checkbox',
@@ -181,9 +195,18 @@ class UB_Settings {
 	 */
 	function section_moderation_desc() {
 		?>
-		<p><?php _e( 'User assignment of badges or points moderation settings.', 'user-badges' ); ?></p>
+		<p><?php _e( 'Moderation settings for user assignment of badges and points.', 'user-badges' ); ?></p>
 		<?php
 	}
+	
+	/**
+	 * Misc section desciption
+	 */
+	function section_general_desc() {
+		?>
+			<p><?php _e( 'Misc settings.', 'user-badges' ); ?></p>
+			<?php
+		}
 	
 	/**
 	 * Checkbox setting
@@ -244,6 +267,12 @@ class UB_Settings {
 	 * @return boolean
 	 */
 	function sanitize_general_settings( $input ) {
+		
+		if ( isset( $input['ub_show_user_assignment_modal'] ) && $input['ub_show_user_assignment_modal'] == 'true' ) {
+			$input['ub_show_user_assignment_modal'] = true;
+		} else {
+			$input['ub_show_user_assignment_modal'] = false;
+		}
 		
 		if ( isset( $input['ub_assignment_auto_approve'] ) && $input['ub_assignment_auto_approve'] == 'true' ) {
 			$input['ub_assignment_auto_approve'] = true;

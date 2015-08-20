@@ -26,8 +26,8 @@ function ub_settings_page() {
 		</h2>
 		
 		<?php 
-			
-		if ( $current_tab == 'ub_general_settings' && isset( $_POST['submit'] ) ) {
+
+		if ( $current_tab == 'ub_action_settings' && isset( $_POST['submit'] ) ) {
 
 			global $wpdb;
 			$actions_enabled = (array) get_option( 'ub_actions_enabled' );

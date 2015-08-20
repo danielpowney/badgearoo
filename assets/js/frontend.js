@@ -45,5 +45,28 @@ jQuery(document).ready(function() {
 			}
 		});
 	});
+
+	
+	if (Cookies.get("ub_new_assignment") != undefined) {
+		
+		var jsonNewAssignments = Cookies.get("ub_new_assignment");
+		
+		var newAssignments = jQuery.parseJSON(jsonNewAssignments);
+		
+		if ( ub_frontend_data.show_user_assignment_modal ) {
+			jQuery.each(newAssignments, function(index, assignment) {
+				alert(assignment.message.replace(/\+/g, ' '));
+			});
+		}
+		
+		// TODO converter
+		//Cookies.withConverter(function (value) {
+		//   return value.replace(/\+/g, ' ');
+		//}).get('foo');		
+		
+		// https://github.com/js-cookie/js-cookie
+		Cookies.remove("ub_new_assignment", { 'path' : ub_frontend_data.cookie_path, 'domain' : ub_frontend_data.cookie_domain });
+		
+	}
 	
 });

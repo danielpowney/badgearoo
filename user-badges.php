@@ -56,6 +56,7 @@ class User_Badges {
 	BADGES_PAGE_SLUG = 'ub_badges',
 	CONDITIONS_PAGE_SLUG = 'ub_conditions',
 	SETTINGS_PAGE_SLUG = 'ub_settings',
+	TOOLS_PAGE_SLUG = 'ub_tools',
 	ASSIGNMENTS_PAGE_SLUG = 'ub_assignments';
 	
 	/**
@@ -193,9 +194,9 @@ class User_Badges {
 		if ( is_admin() ) {
 			require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'conditions.php';
 			require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'about.php';
+			require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'tools.php';
 			require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'settings.php';
 			require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'badges.php';
-			require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'class-actions-table.php';
 			require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'users.php';
 			require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'class-assignments-table.php';
 			require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'assignments.php';
@@ -340,6 +341,7 @@ class User_Badges {
 		
 		add_submenu_page( 'edit.php?post_type=badge', __( 'Assignments', 'user-badges' ), __( 'Assignments', 'user-badges' ) . $pending_assignments_counter, 'manage_options', User_Badges::ASSIGNMENTS_PAGE_SLUG, 'ub_assignments_page' );
 		add_submenu_page( 'edit.php?post_type=badge', __( 'Settings', 'user-badges' ), __( 'Settings', 'user-badges' ), 'manage_options', User_Badges::SETTINGS_PAGE_SLUG, 'ub_settings_page' );
+		add_submenu_page( 'edit.php?post_type=badge', __( 'Tools', 'user-badges' ), __( 'Tools', 'user-badges' ), 'manage_options', User_Badges::TOOLS_PAGE_SLUG, 'ub_tools_page' );
 		add_submenu_page( 'edit.php?post_type=badge', __( 'About', 'user-badges' ), __( 'About', 'user-badges' ), 'manage_options', User_Badges::ABOUT_PAGE_SLUG, 'ub_about_page' );
 	}
 	
@@ -376,16 +378,21 @@ class User_Badges {
 	 */
 	public function assets() {
 		
+		$general_settings = (array) get_option( 'ub_general_settings' );
+		
 		$config_array = array(
 				'ajax_url' => admin_url( 'admin-ajax.php' ),
-				'ajax_nonce' => wp_create_nonce( User_Badges::ID.'-nonce' )
+				'ajax_nonce' => wp_create_nonce( User_Badges::ID.'-nonce' ),
+				'cookie_path' => COOKIEPATH,
+				'cookie_domain' => COOKIE_DOMAIN,
+				'show_user_assignment_modal' => $general_settings['ub_show_user_assignment_modal']
 		);
 
 		wp_enqueue_style( 'ub-frontend-style', plugins_url( 'assets' . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'frontend.css', __FILE__ ) );
 		
-		wp_enqueue_script( 'ub-frontend-script', plugins_url('assets' . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'frontend.js', __FILE__), array('jquery'), User_Badges::VERSION, true );
+		wp_enqueue_script( 'js-cookie-script', plugins_url('assets' . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'js.cookie.js', __FILE__), array(), User_Badges::VERSION, true );
+		wp_enqueue_script( 'ub-frontend-script', plugins_url('assets' . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'frontend.js', __FILE__), array( 'jquery', 'js-cookie-script' ), User_Badges::VERSION, true );
 		wp_localize_script( 'ub-frontend-script', 'ub_frontend_data', $config_array );
-		
 		
 	}
 	

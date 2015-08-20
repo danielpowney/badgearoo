@@ -73,6 +73,14 @@ class UB_Assignments_Table extends WP_List_Table {
 			if ( isset( $_REQUEST['type'] ) && strlen( trim( $_REQUEST['type'] ) ) > 0 ) {
 				$type = $_REQUEST['type'];
 			}
+			$order_by = 'created_dt';
+			if ( isset( $_REQUEST['order-by'] ) && strlen( trim( $_REQUEST['order-by'] ) ) > 0 ) {
+				$order_by = $_REQUEST['order-by'];
+			}
+			$expired = false;
+			if ( isset( $_REQUEST['expired'] ) ) {
+				$expired = true;
+			}
 			
 			?>
 			<div class="alignleft filters">	
@@ -94,6 +102,12 @@ class UB_Assignments_Table extends WP_List_Table {
 					<option value="badge"<?php if ( $type == 'badges' ) echo ' selected'; ?>><?php _e( 'Badge', 'user-badges' ); ?></option>
 					<option value="points"<?php if ( $type == 'points' ) echo ' selected'; ?>><?php _e( 'Points', 'user-badges' ); ?></option>
 				</select>
+				<select name="order-by" id="order-by">
+					<option value="newest"<?php if ( $order_by == 'newest' ) echo ' selected'; ?>><?php _e( 'Newest', 'user-badges' ); ?></option>
+					<option value="oldest"<?php if ( $order_by == 'oldest' ) echo ' selected'; ?>><?php _e( 'Oldest', 'user-badges' ); ?></option>
+					<option value="expires"<?php if ( $order_by == 'expires' ) echo ' selected'; ?>><?php _e( 'Expires', 'user-badges' ); ?></option>
+				</select>
+				<input name="expired" id="expired" type="checkbox" <?php checked( true, $expired, true )?>><label for="expired"><?php _e( 'Include expired', 'user-badges' ); ?></label>
 				<input type="submit" class="button" value="<?php _e( 'Filter', 'user-badges' ); ?>"/>
 			</div>
 			<?php
@@ -154,10 +168,12 @@ class UB_Assignments_Table extends WP_List_Table {
 			$type = $_REQUEST['type'];
 		}
 		$status = isset( $_REQUEST['status'] ) ? $_REQUEST['status'] : null;
+		$expired = isset( $_REQUEST['expired'] ) ? true : false;
+		$order_by = 'created_dt';
 
 		$query = 'SELECT * FROM ' . $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME;
 		
-		if ( $user_id != 0 || $badge_id != 0 || $type || $status ) {
+		if ( $user_id != 0 || $badge_id != 0 || $type || $status || ! $expired ) {
 			
 			$query .= ' WHERE';
 			$added_to_query = false;
@@ -194,13 +210,66 @@ class UB_Assignments_Table extends WP_List_Table {
 				$added_to_query = true;
 			}
 			
+			if ( ! $expired ) {
+				if ( $added_to_query ) {
+					$query .= ' AND';
+				}
+					
+				$query .= ' ( expiry_dt >= NOW() OR expiry_dt IS NULL )';
+				$added_to_query = true;
+			}
+			
 		}
+		
+		if ( isset( $_REQUEST['order-by'] ) && strlen( trim( $_REQUEST['order-by'] ) ) > 0 ) {
+			$order_by = $_REQUEST['order-by'];
+		}
+		
+		if ( $order_by == 'oldest' ) {
+			$query .= ' ORDER BY created_dt ASC';
+		} else if ( $order_by == 'expires' ) {
+			$query .= ' ORDER BY expiry_dt ASC';
+		} else {
+			$query .= ' ORDER BY created_dt DESC';
+		}
+		
+		// pagination
+		$items_per_page = 25;
+		$page_num = ! empty( $_GET["paged"] ) ? mysql_real_escape_string( $_GET["paged"] ) : '';
+		if ( empty( $page_num ) || ! is_numeric( $page_num ) || $page_num <= 0 ) {
+			$page_num = 1;
+		}
+		$offset = 0;
+		if ( ! empty( $page_num ) && ! empty( $items_per_page ) ) {
+			$offset = ( $page_num -1 ) * $items_per_page;
+		}
+		
+		$query .= ' LIMIT ' . intval( $offset ) . ', ' . $items_per_page;
 		
 		// get counts of each status
 		$this->set_view_counts( array(
 				'user_id' => $user_id,
 				'badge_id' => $badge_id,
-				'type' => $type
+				'type' => $type,
+				'status' => $status,
+				'expired' => $expired
+		) );
+		
+		$total_items = intval( $this->total_count );
+		if ( $status == 'approved' ) {
+			$total_items = intval( $this->approved_count );
+		} else if ( $status == 'pending' ) {
+			$total_items = intval( $this->pending_count );
+		} else if ( $status == 'unapproved' ) {
+			$total_items = intval( $this->unapproved_count );
+		}
+		
+		$total_pages = ceil( $total_items / $items_per_page );
+		
+		$this->set_pagination_args( array(
+				'total_items' => $total_items,
+				'total_pages' => $total_pages,
+				'per_page' => $items_per_page
 		) );
 		
 		$this->items = $wpdb->get_results( $query, ARRAY_A );
@@ -217,9 +286,10 @@ class UB_Assignments_Table extends WP_List_Table {
 		$query = 'SELECT COUNT(*) FROM ' . $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME;
 		
 		$added_to_query = false;
-		if ( ( isset ( $params['user_id'] ) && $params['user_id'] != 0 ) 
-				|| ( isset ( $params['badge_id'] ) && $params['badge_id'] != 0 ) 
-				|| isset ( $params['type'] ) ) {
+		if ( ( isset( $params['user_id'] ) && $params['user_id'] != 0 ) 
+				|| ( isset( $params['badge_id'] ) && $params['badge_id'] != 0 ) 
+				|| isset( $params['type'] ) || isset( $params['status'] ) 
+				|| ( isset( $params['expired'] ) && ! $params['expired'] ) ) {
 			
 			$query .= ' WHERE';
 				
@@ -233,7 +303,7 @@ class UB_Assignments_Table extends WP_List_Table {
 					$query .= ' AND';
 				}
 		
-				$query .= ' badge_id = ' . intval( $params['badge_id'] );
+				$query .= ' id = ' . intval( $params['badge_id'] );
 				$added_to_query = true;
 			}
 				
@@ -243,6 +313,24 @@ class UB_Assignments_Table extends WP_List_Table {
 				}
 					
 				$query .= ' type = "' . esc_sql( $params['type'] ) . '"';
+				$added_to_query = true;
+			}
+			
+			if ( isset( $params['expired'] ) && ! $params['expired'] ) {
+				if ( $added_to_query ) {
+					$query .= ' AND';
+				}
+					
+				$query .= ' ( expiry_dt >= NOW() OR expiry_dt IS NULL )';
+				$added_to_query = true;
+			}
+			
+			if ( isset( $params['status'] ) ) {
+				if ( $added_to_query ) {
+					$query .= ' AND';
+				}
+					
+				$query .= ' status = "' . esc_sql( $params['status'] ) . '"';
 				$added_to_query = true;
 			}
 				

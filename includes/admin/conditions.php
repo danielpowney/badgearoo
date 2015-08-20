@@ -25,8 +25,10 @@ function ub_conditions_page() {
 										array_push( $conditions, $condition );
 									}
 									
+									$is_closed = false;
 									foreach ( $conditions as $condition ) {
-										ub_display_condition_meta_box( $condition );
+										ub_display_condition_meta_box( $condition, $is_closed );
+										$is_closed = true;
 									}
 									?>
 								</div>
@@ -46,9 +48,9 @@ function ub_conditions_page() {
  * @param unknown $post
  * @param unknown $data
  */
-function ub_display_condition_meta_box( $condition ) {
+function ub_display_condition_meta_box( $condition, $is_closed = false ) {
 	?>
-	<div <?php if ( isset( $condition->condition_id ) ) echo 'id="condition-' . $condition->condition_id . '"'; ?> class="postbox">
+	<div <?php if ( isset( $condition->condition_id ) ) echo 'id="condition-' . $condition->condition_id . '"'; ?> class="postbox <?php if ( $is_closed ) echo 'closed'; ?>">
 		<div class="handlediv" title="Click to toggle"><br /></div>
 		<h3 class="hndle ui-sortable-handle">
 			<span>
@@ -58,6 +60,9 @@ function ub_display_condition_meta_box( $condition ) {
 		</h3>
 		<div class="inside">
 			<form method="post" class="condition">
+				<?php wp_nonce_field('closedpostboxes', 'closedpostboxesnonce', false ); ?>
+				<?php wp_nonce_field('meta-box-order', 'meta-box-order-nonce', false ); ?>
+	
 				<table class="ub-condition">
 					<tr>
 						<td>
@@ -275,7 +280,7 @@ function ub_add_condition() {
 		$name = __( 'New Condition' );
 		$condition = User_Badges::instance()->api->add_condition( $name );
 		
-		ub_display_condition_meta_box( $condition );
+		ub_display_condition_meta_box( $condition, false );
 	
 		$html = ob_get_contents();
 		ob_end_clean();

@@ -55,6 +55,7 @@
 	padding: 5px 10px;
 }
 
+
 #buddypress div#item-header .ub-points {
 	padding: 5px 10px;
 }
@@ -63,6 +64,11 @@
   margin: 15px 0 5px;
   padding-bottom: 10px;
 }
+
+.user-badges-summary ul.ub-badges li {
+	list-style: none;
+}
+
 .ub-badge img {
 	-webkit-box-shadow: 0 0 0 0 #fff !important;  /* Safari 3-4, iOS 4.0.2 - 4.2, Android 2.3+ */
   	-moz-box-shadow: 0 0 0 0 #fff !important;  /* Firefox 3.5 - 3.6 */
@@ -104,6 +110,10 @@
 }
 .ub-user-dashboard form {
 	margin-bottom: 10px;
+}
+
+.user-dashboard-assignments table {
+	width: auto;
 }
 .user-dashboard-assignments div.ub-badge {
 	display: block;

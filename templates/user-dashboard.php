@@ -20,6 +20,12 @@
 	if ( $show_points || $show_badges ) { ?>
 		<table class="ub-user-dashboard-summary">
 			<tbody>
+				<tr>
+					<th scope="col"><?php _e( 'Assignments', 'user-badges' ); ?></th>
+					<td>
+						<?php echo $count_assignments; ?>
+					 </td>
+				</tr>
 				<?php if ( $show_points && $type != 'badge' ) { ?>
 					<tr>
 						<th scope="col"><?php _e( 'Points', 'user-badges' ); ?></th>
@@ -53,12 +59,6 @@
 						</td>
 					</tr>
 				<?php } ?>
-				<tr>
-					<th scope="col"><?php _e( 'Assignments', 'user-badges' ); ?></th>
-					<td>
-						<?php echo $count_assignments; ?>
-					 </td>
-				</tr>
 			</tbody>
 		</table>
 	<?php }

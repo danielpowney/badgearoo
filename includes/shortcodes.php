@@ -186,6 +186,7 @@ function ub_badge( $atts ) {
 
 	$users = array();
 	foreach ( $badge->users as $user_id ) {
+
 		$user = get_userdata( intval( $user_id ) );
 		
 		if ( $user ) {
@@ -216,6 +217,72 @@ function ub_badge( $atts ) {
 	return $html;
 }
 add_shortcode( 'ub_badge', 'ub_badge' );
+
+
+
+/**
+ * Displays a list of badges
+ *
+ * @param unknown $atts
+ * @return unknown
+ */
+function ub_badge_list( $atts ) {
+
+	extract( shortcode_atts( array(
+			'badge_ids' => null,
+			'show_description' => true,
+			'before_name' => '',
+			'after_name' => '',
+			'show_users' => true,
+			'show_users_count' => true
+	), $atts ) );
+
+	if ( is_string( $show_description ) ) {
+		$show_description = $show_description == 'true' ? true : false;
+	}
+	if ( is_string( $show_users ) ) {
+		$show_users = $show_users == 'true' ? true : false;
+	}
+	if ( is_string( $show_users_count ) ) {
+		$show_users_count = $show_users_count == 'true' ? true : false;
+	}
+	
+	if ( isset( $badge_ids ) && strlen( trim( $badge_ids ) ) > 0 ) {
+		$badge_ids = explode( ',', $badge_ids );
+			
+		if ( function_exists( 'icl_object_id' ) ) {
+			$temp_badge_ids = array();
+	
+			foreach ( $badge_ids as $temp_badge_id ) {
+				global $sitepress;
+				array_push( $temp_badge_ids, icl_object_id( $temp_badge_id , get_post_type( $temp_badge_id ), true,
+						$sitepress->get_default_language() ) );
+			}
+			
+			$badge_ids = $temp_badge_ids;
+		}
+	} else {
+		$badge_ids = null;
+	}
+	
+	$badges =  User_Badges::instance()->api->get_badges( array( 'badge_ids' => $badge_ids ), ( $show_users || $show_users_count ) );
+
+	$html = '';
+
+	ob_start();
+	ub_get_template_part( 'badge', 'list', true, array(
+			'badges' => $badges,
+			'show_users' => $show_users,
+			'show_users_count' => $show_users_count,
+			'show_description' => $show_description
+				
+	) );
+	$html .= ob_get_contents();
+	ob_end_clean();
+
+	return $html;
+}
+add_shortcode( 'ub_badge_list', 'ub_badge_list' );
 
 
 
@@ -397,8 +464,7 @@ function ub_get_user_leaderboard( $filters = array() ) {
 		$added_to_query = true;
 	}
 	
-	$query .= ' GROUP BY user_id ORDER BY ' . $order_by;
-	
+	$query .= ' GROUP BY user_id ORDER BY ' . $order_by . ' DESC';
 	
 	$rows = $wpdb->get_results( $query, ARRAY_A );
 	
@@ -468,7 +534,8 @@ function ub_user_dashboard($atts) {
 		// TODO
 	}
 	
-	$assignments = User_Badges::instance()->api->get_user_assignments( $user_id, array( 
+	$assignments = User_Badges::instance()->api->get_assignments( array( 
+			'user_id' => $user_id,
 			'limit' => $limit, 
 			'offset' => $offset,
 			'to_date' => $to_date,
@@ -476,7 +543,8 @@ function ub_user_dashboard($atts) {
 			'type' => $type
 	), false );
 	
-	$count_assignments = User_Badges::instance()->api->get_user_assignments( $user_id, array( 
+	$count_assignments = User_Badges::instance()->api->get_assignments( array(
+			'user_id' => $user_id, 
 			'to_date' => $to_date,
 			'from_date' => $from_date,
 			'type' => $type
@@ -569,7 +637,8 @@ function ub_user_dashboard_assignments_more() {
 			}
 		}
 
-		$assignments = User_Badges::instance()->api->get_user_assignments( $user_id, array( 
+		$assignments = User_Badges::instance()->api->get_assignments( array( 
+			'user_id' => $user_id,
 			'limit' => $limit, 
 			'offset' => $offset,
 			'to_date' => $to_date,

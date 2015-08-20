@@ -90,18 +90,6 @@ function ub_about_page() {
 					
 				<p class="about-description"><?php _e( 'Create your own badges and points system for WordPress users. You can manually assign badges or configure automatic assignment of predefined badges to to users.', 'user-badges' ); ?></p>
 				
-				<h4>Shortcodes</h4>
-				<ul>
-					<li>[broo_user_badges]</li>
-					<li>[broo_user_points]</li>
-					<li>[broo_leaderboard]</li>
-					<li>[broo_badge]</li>
-					<li>[broo_condition]</li>
-					<li>[broo_user_dashboard] - TODO</li>
-					<li>[broo_badge_list] - TODO</li>
-					<li>[broo_condition_list] - TODO</li>
-				</ul>
-				
 				<div class="feature-section col three-col">
 					<div class="col-1">
 						<img />
@@ -118,19 +106,34 @@ function ub_about_page() {
 						<h4><?php _e( 'Conditions', 'user-badges' ); ?></h4>
 						<p><?php _e( 'Setup conditions with steps that need to be accomplished for badges and or points to be assigned to users.', 'user-badges' ); ?></p>
 					</div>
+					
+					<h4><?php _e( 'Shortcodes', 'user-badges' ); ?></h4>
+					<ul>
+						<li>[broo_user_badges] - <?php _e( 'Shows a list of badges assigned to a user.', 'user-badges' ); ?></li>
+						<li>[broo_user_points] - <?php _e( 'Shows total points assigned to a user.', 'user-badges' ); ?></li>
+						<li>[broo_leaderboard] - <?php _e( 'Shows a leaderboard of user badges and points', 'user-badges' ); ?></li>
+						<li>[broo_badge] - <?php _e( 'Shows badge details.', 'user-badges' ); ?></li>
+						<li>[broo_condition] - <?php _e( 'Shows condition details.', 'user-badges' ); ?></li>
+						<li>[broo_user_dashboard] - <?php _e( 'Shows a dashboard of badges, points and assignents for a user.', 'user-badges' ); ?></li>
+						<li>[broo_badge_list] - <?php _e( 'Shows a list of badge details.', 'user-badges' ); ?></li>
+					</ul>
+					
+					<h4><?php _e( 'Widgets', 'user-badges' ); ?></h4>
+					<ul>
+						<li><?php _e( 'User Badges - Shows the post author details including any badges and points they have.', 'user-badges' ); ?></li>
+					</ul>
 				</div>
 			
 				<hr>
 			
 				<div class="feature-section col two-col">
 					<div class="col-1">
-						<img />
-						<h4><?php _e( 'TODO', 'user-badges' ); ?></h4>
-						<p><?php _e( 'TODO', 'user-badges' ); ?></p>
+						<h4><?php _e( 'API', 'user-badges' ); ?></h4>
+						<p>TODO</p>
 					</div>
 					<div class="col-2 last-feature">
 						<img />
-						<h4><?php _e( 'TODO', 'user-badges' ); ?></h4>
+						<h4><?php _e( 'Developer Friendly', 'user-badges' ); ?></h4>
 						<p><?php _e( 'TODO', 'user-badges' ); ?></p>
 					</div>
 				</div>
@@ -140,25 +143,63 @@ function ub_about_page() {
 			
 			<div class="changelog under-the-hood">
 				<div class="feature-section col three-col">
+				
+					<h3><?php _e( 'Steps Actions', 'user-badges' ); ?></h3>
+					<p><?php _e( 'The following actions can be used in condition steps. It\'s easy to add new actions with add-ons.', 'user-badges' ); ?>
 					<div>
 						
-						<h4><?php _e( 'TODO', 'user-badges' ); ?></h4>
-						<p><?php _e( 'TODO', 'user-badges' ); ?></p>
+						<h4><?php _e( 'BuddyPress', 'user-badges' ); ?></h4>
+						<ul>
+							<li><?php _e( 'Add favorite.', 'user-badges' ); ?></li>
+							<li><?php _e( 'Comment on an activity. ', 'user-badges' ); ?></li>
+							<li><?php _e( 'Post activity. ', 'user-badges' ); ?></li>
+							<li><?php _e( 'Accept a friend request.', 'user-badges' ); ?></li>
+							<li><?php _e( 'Request a friend.', 'user-badges' ); ?></li>
+							<li><?php _e( 'Create Group.', 'user-badges' ); ?></li>
+							<li><?php _e( 'Join Group.', 'user-badges' ); ?></li>
+						</ul>
 						
 					</div>
 					<div>
-					
-						<h4><?php _e( 'TODO', 'user-badges' ); ?></h4>
-						<p><?php _e( 'TODO', 'user-badges' ); ?></p>
+						<h4><?php _e( 'bbPress', 'user-badges' ); ?></h4>
+						<ul>
+							<li><?php _e( 'Closes a forum topic.', 'user-badges' ); ?></li>
+							<li><?php _e( 'Creates a new forum (outside wp-admin). ', 'user-badges' ); ?></li>
+							<li><?php _e( 'Replies to forum topic (outside wp-admin). ', 'user-badges' ); ?></li>
+							<li><?php _e( 'Adds a new forum topic (outside wp-admin).', 'user-badges' ); ?></li>
+						</ul>
+						
+						<h4><?php _e( 'WooCommerce', 'user-badges' ); ?></h4>
+						<ul>
+							<li><?php _e( 'Checkout order processed.', 'user-badges' ); ?></li>
+							
+						</ul>
+						
+						<h4><?php _e( 'Easy Digital Downloads', 'user-badges' ); ?></h4>
+						<ul>
+							<li><?php _e( 'User completed purchase.', 'user-badges' ); ?></li>
+							
+						</ul>
+						 
 						
 					</div>
 					<div class="last-feature">	
-					
-						<h4><?php _e( 'TODO', 'user-badges' ); ?></h4>
-						<p><?php _e( 'TODO', 'user-badges' ); ?></p>
+						<h4><?php _e( 'WordPress', 'user-badges' ); ?></h4>
+						<ul>
+							<li><?php _e( 'User logs in.', 'user-badges' ); ?></li>
+							<li><?php _e( 'User updates their profile. ', 'user-badges' ); ?></li>
+							<li><?php _e( 'Register user. ', 'user-badges' ); ?></li>
+							<li><?php _e( ' User submits a comment..', 'user-badges' ); ?></li>
+						</ul>
+						
+						<h4><?php _e( 'Custom', 'user-badges' ); ?></h4>
+						<ul>
+							<li><?php _e( 'Minimum points.', 'user-badges' ); ?></li>
+						</ul>
 										
 					</div>
 			</div>
+		
 			
 		</div>
 	<?php }
