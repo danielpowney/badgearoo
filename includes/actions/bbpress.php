@@ -95,8 +95,8 @@ add_action( 'ub_init_actions_complete', 'ub_add_bbp_actions' );
 */
 function ub_bbp_step_meta_count_enabled( $enabled, $action ) {
 
-	if ( $action == BBP_CLOSED_TOPIC_ACTION || BBP_NEW_FORUM_ACTION 
-			|| BBP_NEW_REPLY_ACTION || BBP_NEW_TOPIC_ACTION ) {
+	if ( $action == BBP_CLOSED_TOPIC_ACTION || $action == BBP_NEW_FORUM_ACTION 
+			|| $action == BBP_NEW_REPLY_ACTION || $action == BBP_NEW_TOPIC_ACTION ) {
 		return true;
 	}
 

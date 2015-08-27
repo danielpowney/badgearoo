@@ -1,21 +1,6 @@
 <div class="<?php if ( isset( $class ) ) { echo esc_attr( $class ); } ?> ub-badge-summary">
 
 	<div class="ub-badge-main">
-		<?php 
-		
-		if ( $logo_type != 'none' ) {
-			ub_get_template_part( 'badge', null, true, array(
-					'show_title' => false,
-					'logo_type' => $logo_type,
-					'logo_image' => $logo_image,
-					'logo_html' => $logo_html,
-					'excerpt' => $excerpt,
-					'title' => $title,
-					'content' => $content
-			) );
-		}
-		?>
-		
 		<h2><?php echo $title; ?></h2>
 	</div>
 	

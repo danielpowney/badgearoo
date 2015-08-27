@@ -27,6 +27,8 @@ function ub_user_badges( $atts) {
 		}
 	}
 	
+	$general_settings = (array) get_option( 'ub_general_settings' );
+	
 	$html = '';
 	
 	if (count( $badges ) > 0 ) {
@@ -35,14 +37,17 @@ function ub_user_badges( $atts) {
 				
 			ob_start();
 			ub_get_template_part( 'badge', null, true, array(
-					'logo_type' => $badge->logo_type,
-					'logo_html' => $badge->logo_html,
-					'logo_image' => $badge->logo_image,
+					'badge_id' => $badge->id,
+					'badge_theme' => $general_settings['ub_badge_theme'],
+					'badge_icon' => $badge->badge_icon,
+					'badge_html' => $badge->badge_html,
+					'badge_color' => $badge->badge_color,
 					'title' => $badge->title,
 					'content'=> $badge->content,
 					'excerpt'=> $badge->excerpt,
 					'show_title' => true,
-					'badge_count' => isset( $badge_count_lookup[$badge->id] ) ? $badge_count_lookup[$badge->id] : 1 
+					'badge_count' => isset( $badge_count_lookup[$badge->id] ) ? $badge_count_lookup[$badge->id] : 1,
+					'enable_badge_permalink' => $general_settings['ub_enable_badge_permalink']
 			) );
 			$html .= ob_get_contents();
 			ob_end_clean();
@@ -194,13 +199,16 @@ function ub_badge( $atts ) {
 		}
 	}
 	
+	$general_settings = (array) get_option( 'ub_general_settings' );
+	
 	$html = '';
 
 	ob_start();
 	ub_get_template_part( 'badge', 'summary', true, array(
-			'logo_type' => $badge->logo_type,
-			'logo_html' => $badge->logo_html,
-			'logo_image' => $badge->logo_image,
+			'badge_theme' => $general_settings['ub_badge_theme'],
+			'badge_icon' => $badge->badge_icon,
+			'badge_html' => $badge->badge_html,
+			'badge_color' => $badge->badge_color,
 			'title' => $badge->title,
 			'content'=> $badge->content,
 			'excerpt'=> $badge->excerpt,
@@ -208,7 +216,8 @@ function ub_badge( $atts ) {
 			'users_count' => count( $badge->users ),
 			'show_users' => $show_users,
 			'show_users_count' => $show_users_count,
-			'show_description' => $show_description
+			'show_description' => $show_description,
+			'enable_badge_permalink' => $general_settings['ub_enable_badge_permalink']
 			
 	) );
 	$html .= ob_get_contents();
@@ -234,7 +243,8 @@ function ub_badge_list( $atts ) {
 			'before_name' => '',
 			'after_name' => '',
 			'show_users' => true,
-			'show_users_count' => true
+			'show_users_count' => true,
+			'layout' => 'table'
 	), $atts ) );
 
 	if ( is_string( $show_description ) ) {
@@ -267,15 +277,19 @@ function ub_badge_list( $atts ) {
 	
 	$badges =  User_Badges::instance()->api->get_badges( array( 'badge_ids' => $badge_ids ), ( $show_users || $show_users_count ) );
 
+	$general_settings = (array) get_option( 'ub_general_settings' );
+	
 	$html = '';
 
 	ob_start();
 	ub_get_template_part( 'badge', 'list', true, array(
+			'layout' => $layout,
 			'badges' => $badges,
 			'show_users' => $show_users,
 			'show_users_count' => $show_users_count,
-			'show_description' => $show_description
-				
+			'show_description' => $show_description,
+			'enable_badge_permalink' => $general_settings['ub_enable_badge_permalink'],
+			'badge_theme' => $general_settings['ub_badge_theme']
 	) );
 	$html .= ob_get_contents();
 	ob_end_clean();
@@ -331,11 +345,14 @@ function ub_condition( $atts ) {
 			}
 		}
 	}
+	
+	$general_settings = (array) get_option( 'ub_general_settings' );
 
 	$html = '';
 
 	ob_start();
 	ub_get_template_part( 'condition', null, true, array(
+			'badge_theme' => $general_settings['ub_badge_theme'],
 			'name' => $condition->name,
 			'steps' => $condition->steps,
 			'badges' => $badges,
@@ -343,7 +360,8 @@ function ub_condition( $atts ) {
 			'show_steps' => $show_steps,
 			'show_badges' => $show_badges,
 			'show_points' => $show_points,
-			'enabled' => $condition->enabled
+			'enabled' => $condition->enabled,
+			'enable_badge_permalink' => $general_settings['ub_enable_badge_permalink']
 	) );
 	$html .= ob_get_contents();
 	ob_end_clean();
@@ -493,7 +511,6 @@ function ub_user_dashboard($atts) {
 			'show_filters' => true,
 			'to_date' => null,
 			'from_date' => null,
-			'type' => null
 	), $atts ) );
 	
 	
@@ -573,6 +590,8 @@ function ub_user_dashboard($atts) {
 	// TODO add condition progress
 
 	$html = '';
+	
+	$general_settings = (array) get_option( 'ub_general_settings' );
 
 	ob_start();
 	ub_get_template_part( 'user-dashboard', null, true, array(
@@ -589,7 +608,9 @@ function ub_user_dashboard($atts) {
 			'from_date' => $from_date,
 			'limit' => $limit,
 			'offset' => $offset,
-			'count_assignments' => $count_assignments
+			'count_assignments' => $count_assignments,
+			'badge_theme' => $general_settings['ub_badge_theme'],
+			'enable_badge_permalink' => $general_settings['ub_enable_badge_permalink']
 	) );
 	$html .= ob_get_contents();
 	ob_end_clean();
@@ -647,6 +668,8 @@ function ub_user_dashboard_assignments_more() {
 		) );
 		
 		$offset += $limit; // next offset
+		
+		$general_settings = (array) get_option( 'ub_general_settings' );
 
 		$html = '';
 
@@ -655,8 +678,12 @@ function ub_user_dashboard_assignments_more() {
 		foreach ( $assignments as $assignment ) {
 			ub_get_template_part( 'assignments-table-row', null, true, array(
 					'assignment' => $assignment,
+					'badge_theme' => $general_settings['ub_badge_theme'],
+					'enable_badge_permalink' => $general_settings['ub_enable_badge_permalink']
 			) );
 		}
+		
+		
 		
 		$html .= ob_get_contents();
 		ob_end_clean();

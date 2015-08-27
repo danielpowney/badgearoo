@@ -41,16 +41,25 @@
 				if ( $show_badges && $type != 'points' ) { ?>
 					<tr>
 						<th scope="col"><?php _e( 'Badges', 'user-badges' ); ?></th>
-						<td><?php 
+						<td>
+							<?php 
 							if ( count( $badges ) > 0 ) {
+								
 								foreach ( $badges as $badge ) {
-									?>
-									<div class="ub-badge" title="<?php echo $badge->excerpt; ?>"><?php echo $badge->title; ?><?php 
-									if ( $badge_count_lookup[$badge->id] && $badge_count_lookup[$badge->id] > 1 ) {
-										printf( __( ' X %d', 'user-badges' ), $badge_count_lookup[$badge->id] );
-									} 
-									?></div>
-									<?php
+									
+									ub_get_template_part( 'badge', null, true, array(
+											'badge_id' => $badge->id,
+											'show_title' => true,
+											'badge_theme' => $badge_theme,
+											'badge_icon' => $badge->badge_icon,
+											'badge_html' => $badge->badge_html,
+											'badge_color' => $badge->badge_color,
+											'excerpt' => $badge->excerpt,
+											'title' => $badge->title,
+											'content' => $badge->content,
+											'enable_badge_permalink' => $enable_badge_permalink,
+											'badge_count' => isset( $badge_count_lookup[$badge->id] ) ? $badge_count_lookup[$badge->id] : 1,
+									) );
 								}
 							} else {
 								_e( 'No badges', 'user-badges' );
@@ -68,7 +77,9 @@
 				'assignments' => $assignments,
 				'limit' => $limit,
 				'offset' => $offset,
-				'count_assignments' => $count_assignments
+				'count_assignments' => $count_assignments,
+				'badge_theme' => $badge_theme,
+				'enable_badge_permalink' => $enable_badge_permalink
 		) );
 	}
 	?>

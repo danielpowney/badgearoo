@@ -17,6 +17,13 @@
 	font-weight: bold;
 	display: block;
 }
+.ub-condition label.ub-assignments, .ub-condition label.ub-steps  {
+	margin-bottom: 10px;
+}
+.ub-condition .ub-points {
+	display: block;
+}
+
 .ub-badge-summary .ub-users .ub-user {
 	display: inline-block;
 	text-align: center;
@@ -88,9 +95,10 @@
 .user-leaderboard form input {
 	max-width: 180px;
 }
+/*
 .user-leaderboard td.ub-badges, .user-leaderboard td.ub-points, .user-leaderboard td.rank {
 	text-align: center;
-}
+}*/
 .user-leaderboard td.rank {
 	font-weight: bold;
 }
@@ -102,8 +110,8 @@
 	vertical-align: middle;
 }
 
-.ub-user-dashboard-summary div.ub-badge {
-	display: block;
+.ub-user-dashboard-summary .ub-badge {
+	display: inline-block;
 }
 .ub-user-dashboard form, .ub-user-dashboard-summary, .user-dashboard-assignments {
 	vertical-align: middle;
@@ -115,7 +123,7 @@
 .user-dashboard-assignments table {
 	width: auto;
 }
-.user-dashboard-assignments div.ub-badge {
+.user-dashboard-assignments .ub-badge {
 	display: block;
 }
 .user-dashboard-assignments .ub-more-btn {
@@ -127,4 +135,78 @@
 .user-dashboard-assignments label.ub-recent-assignments {
 	margin-bottom: 10px;
 	display: inline-block;
+}
+
+.badge-count {
+	margin-right: 10px;
+}
+
+.ub-badge-theme-dark {
+	background-color: #333;
+    border: 1px solid #333 !important;
+    color: #fff;
+}
+.ub-badge-theme-light {
+    border: 1px solid #e0e0e0 !important;
+    color: #777;
+    background: #f2f2f2;
+}
+
+a.ub-badge-theme-light, a.ub-badge-theme-dark {
+	text-decoration: none !important;
+}
+
+.ub-badge-theme-icon img {
+	display: inline-block !important;
+}
+
+
+.ub-badge-theme-light, .ub-badge-theme-dark {  
+    -webkit-transition: background, 0.3s, ease;
+    -moz-transition: background, 0.3s, ease;
+    -ms-transition: background, 0.3s, ease;
+    -o-transition: background, 0.3s, ease;
+    padding: .4em .8em .4em .2em;
+    margin: 0 3px 3px 0;
+    line-height: 1;
+    text-decoration: none;
+    white-space: nowrap;
+    display: inline-block;
+    border-radius: 4px;
+    vertical-align: middle; 
+}
+
+.ub-badge-container + .ub-badge-container {
+	margin-top: 5px;
+}
+
+.ub-assignment .ub-badge-container {
+	display: inline-block;
+}
+.ub-assignment + .ub-assignment{
+	margin-top: 10px;
+}
+.ub-assignment .ub-time-diff {
+	font-style: italic;
+}
+
+.ub-badge-theme-light:hover {
+	background: #e0e0e0;
+    color: #777;
+}
+
+.ub-badge-theme-dark:hover {
+	background: #555;
+    color: #fff;
+    border-color: #555;
+}
+
+.ub-badge .ub-theme-color {
+	width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin: 0;
+    display: inline-block;
+    margin-right: 2px;
+    margin-left: 4px;
 }

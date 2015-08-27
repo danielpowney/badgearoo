@@ -47,28 +47,23 @@ table.badges .column-description {
 }
 
 
- .ub-step .step-meta, .ub-step .step-meta .step-meta-value {
+.ub-step .step-meta, .ub-step .step-meta .step-meta-value {
 	display: inline-block;
 	vertical-align: middle;
 }
- .ub-step .step-action, .ub-step .step-meta .step-meta-value {
- 	margin-right: 10px;
- }
+.ub-step .step-action, .ub-step .step-meta .step-meta-value {
+	margin-right: 10px;
+}
 
 .ub-step a {
 	color: #0074a2 !important;
 	text-decoration: underline !important;
 }
 
-#ub-logo-image-preview {
+#ub-badge-icon-upload-btn {
 	display: block;
-	margin-bottom: 10px;
 }
-#ub_badge_logo_meta_box input[type="radio"] + input[type="radio"] {
-	margin-left: 5px;
-	
+#ub-badge-icon-preview {
+	margin-top: 10px;
 }
-#ub_badge_logo_meta_box #ub-logo-image-container, #ub_badge_logo_meta_box #ub-logo-html-container, 
-#ub_badge_logo_meta_box #ub-logo-type-container {
-	margin-top: 10px
-}
+

@@ -20,8 +20,8 @@ function ub_tools_page() {
 						<form method="post" id="export-assignments-form">
 							<p>
 								<input type="text" name="username1" class="" autocomplete="off" placeholder="Username">
-								<input type="text" class="date-picker" autocomplete="off" name="from-date1" placeholder="From - yyyy-MM-dd" id="from-date1">
-								<input type="text" class="date-picker" autocomplete="off" name="to-date1" placeholder="To - yyyy-MM-dd" id="to-date1">
+								<input type="text" class="date-picker" autocomplete="off" name="from-date1" placeholder="From - yyyy-MM-dd">
+								<input type="text" class="date-picker" autocomplete="off" name="to-date1" placeholder="To - yyyy-MM-dd">
 								
 								<select name="type1" id="type1">
 									<option value=""<?php if ( $type == null ) echo ' selected'; ?>><?php _e( 'All types', 'user-badges' ); ?></option>
@@ -31,15 +31,12 @@ function ub_tools_page() {
 																
 								<?php
 								ub_dropdown_badges( array( 'name' => 'badge-id1', 'show_option_all' => true, 'echo' => true ) );
-								
 								?>
+								
 								<input type="checkbox" name="expired1" /><label for="expired1"><?php _e( 'Include expired', 'user-badges' ); ?></label>
 								<input type="checkbox" name="approved1" /><label for="approved1"><?php _e( 'Approved only', 'user-badges' ); ?></label>
 								
-								<input type="hidden" name="export-assignments" id="export-assignments" value="false" />
-								
 								<?php
-								
 								submit_button( __( 'Export', 'user-badges' ), 'secondary', 'export-assignments-btn', false, null );
 								?>
 							</p>
@@ -59,12 +56,20 @@ function ub_tools_page() {
 						<form method="post" id="delete-assignments-form">
 							<p>
 								<input type="text" name="username2" class="" autocomplete="off" placeholder="Username">
-								<input type="text" class="date-picker" autocomplete="off" name="from-date2" placeholder="From - yyyy-MM-dd" id="from-date2">
-								<input type="text" class="date-picker" autocomplete="off" name="to-date2" placeholder="To - yyyy-MM-dd" id="to-date2">
+								<input type="text" class="date-picker" autocomplete="off" name="from-date2" placeholder="From - yyyy-MM-dd">
+								<input type="text" class="date-picker" autocomplete="off" name="to-date2" placeholder="To - yyyy-MM-dd">
 								
+								<select name="type2" id="type2">
+									<option value=""<?php if ( $type == null ) echo ' selected'; ?>><?php _e( 'All types', 'user-badges' ); ?></option>
+									<option value="badge"<?php if ( $type == 'badges' ) echo ' selected'; ?>><?php _e( 'Badge', 'user-badges' ); ?></option>
+									<option value="points"<?php if ( $type == 'points' ) echo ' selected'; ?>><?php _e( 'Points', 'user-badges' ); ?></option>
+								</select>
+																
 								<?php
-								ub_dropdown_badges( array( 'name' => 'badges-id2', 'show_option_all' => true, 'echo' => true ) );
-								
+								ub_dropdown_badges( array( 'name' => 'badge-id2', 'show_option_all' => true, 'echo' => true ) );
+								?>
+																
+								<?php								
 								submit_button( __( 'Delete', 'user-badges' ), 'secondary', 'delete-assignments-btn', false, null );
 								?>
 							</p>
@@ -228,9 +233,9 @@ function ub_generate_assignments_csv( $file_name, $filters ) {
 }
 
 /**
- * Clears all rating results from the database
+ * Deletes assignments from the database
  */
-function ub_clear_db() {
+function ub_delete_assignments() {
 	
 	if ( ! current_user_can( 'manage_options' ) ) {
 		return;
@@ -240,7 +245,8 @@ function ub_clear_db() {
 	$from_date = isset( $_POST['from-date2'] ) ? $_POST['from-date2'] : null;
 	$to_date = isset( $_POST['to-date2'] ) ? $_POST['to-date2'] : null;
 	$badge_id = isset( $_POST['badge-id2'] ) ? $_POST['badge-id2'] : null;
-		
+	$type = ( isset( $_POST['type2'] ) && strlen( $_POST['type2'] ) > 0 ) ? $_POST['type1'] : null;
+			
 	$user_id = null;
 	if ( $username ) {
 		$user = get_user_by( 'login', $username );
@@ -263,8 +269,15 @@ function ub_clear_db() {
 		}
 	}
 	
-	if (true) {
-		echo '<div class="updated"><p>' . __( 'Assignments have been deleted successfully.', 'user-badges' ) . '</p></div>';
+	$count = User_Badges::instance()->api->delete_assignments( array( 
+			'to_date' => $to_date,
+			'from_date' => $from_date,
+			'badge_id' => $badge_id,
+			'type' => $type
+	) );
+	
+	if ( $count > 0 ) {
+		echo '<div class="updated"><p>' . sprintf( __( '%d assignments deleted.', 'user-badges' ), $count ) . '</p></div>';
 	} else {
 		echo '<div class="error"><p>' . __( 'No assignments found', 'user-badges' ) . '</p></div>';
 	}
@@ -274,7 +287,7 @@ if ( isset( $_POST['export-assignments-btn'] ) ) {
 	add_action( 'admin_init', 'ub_export_assignments' );
 }
 
-if ( isset( $_POST['clear-assignments-btn'] ) ) {
-	add_action( 'admin_init', 'ub_clear_assignments' );
+if ( isset( $_POST['delete-assignments-btn'] ) ) {
+	add_action( 'admin_init', 'ub_delete_assignments' );
 }
 ?>

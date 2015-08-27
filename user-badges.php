@@ -369,6 +369,10 @@ class User_Badges {
 		wp_enqueue_script( 'wp-lists' );
 		wp_enqueue_script( 'postbox' );
 		wp_enqueue_media();
+		
+		// color picker
+		wp_enqueue_style( 'wp-color-picker' );
+		wp_enqueue_script( 'wp-color-picker' );
 	}
 	
 	/**
@@ -467,7 +471,7 @@ class User_Badges {
 						'read_post' => 'read_badge',
 				),*/
 				'hierarchical' => false,
-				'supports' => array( 'title', 'editor', 'excerpt' ),
+				'supports' => array( 'title', 'editor', 'excerpt', 'thumbnail', 'custom-fields' ),
 				'slug' => ( empty( $slug ) ) ? 'badge' : $slug,
 				'taxonomies' => array( 'category' )
 		) );

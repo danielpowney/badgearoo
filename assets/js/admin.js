@@ -453,9 +453,9 @@ jQuery(document).ready(function($) {
 	 
 	        // After that, set the properties of the image and display it
 	        
-	        jQuery("#ub-logo-image-preview").remove();
+	        jQuery("#ub-badge-icon-preview").remove();
 			
-			jQuery("<img id=\"ub-logo-image-preview\" src=\"" + json.url + "\">").insertBefore("#ub-logo-image-upload-btn");
+			jQuery("<img id=\"ub-badge-icon-preview\" src=\"" + json.url + "\">").insertAfter("#ub-badge-icon-upload-btn");
 	        
 	        // Store the image's information into the meta data fields
 	        jQuery(field).val( json.url );
@@ -466,28 +466,13 @@ jQuery(document).ready(function($) {
 	 
 	}
 	
-	jQuery("#ub-logo-image-upload-btn").on("click", function(evt) {
+	jQuery("#ub-badge-icon-upload-btn").on("click", function(evt) {
         // Stop the anchor's default behavior
         evt.preventDefault();
 
         // Display the media uploader
-        renderMediaUploader( '#ub-logo-image' );
+        renderMediaUploader( '#ub-badge-icon' );
     });
-	
-	jQuery("input[name=\"ub-logo-type\"]:radio").on("change", function(e) {
-		var type = jQuery("input[name=\"ub-logo-type\"]:checked").val();
-		
-		if (type == 'image') {
-			jQuery("#ub-logo-image-container").css('display', 'block');
-			jQuery("#ub-logo-html-container").css('display', 'none');
-		} else if (type == 'html'){
-			jQuery("#ub-logo-html-container").css('display', 'block');
-			jQuery("#ub-logo-image-container").css('display', 'none');
-		} else {
-			jQuery("#ub-logo-html-container").css('display', 'none');
-			jQuery("#ub-logo-image-container").css('display', 'none');
-		}
-	});
 	
 	jQuery("#add-new-assignment-form select#type").on("change", function(e) {
 		

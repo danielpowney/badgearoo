@@ -27,10 +27,14 @@ function ub_get_the_author_badges( $value, $user_id = false ) {
 		}
 	}
 	
+	$general_settings = (array) get_option( 'ub_general_settings' );
+	
 	ub_get_template_part( 'user-badges-summary', null, true, array(
+			'badge_theme' => $general_settings['ub_badge_theme'],
 			'badges' => $badges,
 			'points' => $points,
-			'badge_count_lookup' => $badge_count_lookup
+			'badge_count_lookup' => $badge_count_lookup,
+			'enable_badge_permalink' => $general_settings['ub_enable_badge_permalink']
 	) );
 	
 }

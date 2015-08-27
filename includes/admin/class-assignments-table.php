@@ -473,7 +473,7 @@ class UB_Assignments_Table extends WP_List_Table {
 			$checked = ( is_array( $_REQUEST['cb'] ) ) ? $_REQUEST['cb'] : array( $_REQUEST['cb'] );
 			
 			foreach( $checked as $id ) {
-				User_Badges::instance()->api->delete_user_assignment( $id );
+				User_Badges::instance()->api->delete_assignment( $id );
 			}
 			
 			echo '<div class="updated"><p>' . __( 'Assignment(s) deleted successfully.', 'user-badges' ) . '</p></div>';

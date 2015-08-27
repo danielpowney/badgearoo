@@ -54,7 +54,9 @@ class UB_Settings {
 				'ub_assignment_moderation_notification_subject' => __( 'New Assignment', 'user-badges' ),
 				'ub_assignment_moderation_notification_heading'	=> __( 'New Assignment', 'user-badges' ),
 				'ub_assignment_moderation_notification_template' => $assignment_moderator_notification_email_template,
-				'ub_show_user_assignment_modal'					=> true
+				'ub_show_user_assignment_modal'					=> true,
+				'ub_enable_badge_permalink'						=> true,
+				'ub_default_badge_style'						=> 'none'
 		), $this->general_settings );
 		
 		update_option( 'ub_actions_enabled', $this->actions_enabled );
@@ -83,6 +85,34 @@ class UB_Settings {
 							'label' 		=> __( 'Do you want the user to see a popup message on page load upon assignment of badges and points?', 'user-badges' )
 					)
 			
+			),
+			'ub_enable_badge_permalink' => array(
+					'title' 	=> __( 'Enable Badge Permalink', 'user-badges' ),
+					'callback' 	=> 'field_checkbox',
+					'page' 		=> 'ub_general_settings',
+					'section' 	=> 'section_general',
+					'args' => array(
+							'option_name' 	=> 'ub_general_settings',
+							'setting_id' 	=> 'ub_enable_badge_permalink',
+							'label' 		=> __( 'Do you want to enable the badge permalink?', 'user-badges' )
+					)			
+			),
+			'ub_badge_theme' => array(
+					'title' 	=> __( 'Badge Theme', 'user-badges' ),
+					'callback' 	=> 'field_select',
+					'page' 		=> 'ub_general_settings',
+					'section' 	=> 'section_general',
+					'args' => array(
+							'option_name' 	=> 'ub_general_settings',
+							'setting_id' 	=> 'ub_badge_theme',
+							'label' 		=> __( 'CSS theme to apply to badges.', 'user-badges' ),
+							'select_options' => array(
+									'icon'	=> __( 'Icon', 'user-badges' ),
+									'light' 		=> __( 'Light', 'user-badges' ),
+									'dark' 			=> __( 'Dark', 'user-badges' ),
+									'html' 			=> __( 'Custom HTML', 'user-badges' )
+							)
+					)
 			),
 			'ub_assignment_auto_approve' => array( 
 					'title' 	=> __( 'Auto Approve Assignments', 'user-badges' ),
@@ -242,6 +272,11 @@ class UB_Settings {
 		<?php
 	}
 	
+	/**
+	 * Editor field
+	 * 
+	 * @param unknown $args
+	 */
 	function field_editor( $args ) {
 		
 		$settings = (array) get_option( $args['option_name' ] );
@@ -261,6 +296,41 @@ class UB_Settings {
 	}
 	
 	/**
+	 * Color picker field
+	 * 
+	 * @param unknown $args
+	 */
+	function field_color_picker( $args ) {
+		$settings = (array) get_option( $args['option_name' ] );
+		?>
+		<input type="text" class="color-picker" name="<?php echo $args['option_name']; ?>[<?php echo $args['setting_id']; ?>]" value="<?php echo $settings[$args['setting_id']]; ?>" />
+		<?php 
+	}
+	
+	/**
+	 * Color picker field
+	 *
+	 * @param unknown $args
+	 */
+	function field_select( $args ) {
+		$settings = (array) get_option( $args['option_name' ] );
+		$value = $settings[$args['setting_id']];
+		?>
+		<select name="<?php echo $args['option_name']; ?>[<?php echo $args['setting_id']; ?>]">
+			<?php 
+			foreach ( $args['select_options'] as $option_value => $option_label ) {
+				$selected = '';
+				if ( $value == $option_value ) {
+					$selected = 'selected="selected"';
+				}
+				echo '<option value="' . $option_value . '" ' . $selected . '>' . $option_label . '</option>';
+			}
+			?>
+		</select>
+		<?php 
+		}
+	
+	/**
 	 * Sanitize the general settings
 	 *
 	 * @param $input
@@ -272,6 +342,12 @@ class UB_Settings {
 			$input['ub_show_user_assignment_modal'] = true;
 		} else {
 			$input['ub_show_user_assignment_modal'] = false;
+		}
+		
+		if ( isset( $input['ub_enable_badge_permalink'] ) && $input['ub_enable_badge_permalink'] == 'true' ) {
+			$input['ub_enable_badge_permalink'] = true;
+		} else {
+			$input['ub_enable_badge_permalink'] = false;
 		}
 		
 		if ( isset( $input['ub_assignment_auto_approve'] ) && $input['ub_assignment_auto_approve'] == 'true' ) {

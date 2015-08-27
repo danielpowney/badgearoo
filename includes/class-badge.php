@@ -13,9 +13,10 @@ class UB_Badge {
 	public $excerpt = null;
 	public $created_dt = null;
 	public $users = array();
-	public $logo_type;
-	public $logo_html;
-	public $logo_image;
+	public $badge_html;
+	public $badge_icon;
+	public $badge_color;
+	public $permalink;
 	
 	/**
 	 * Constructor
@@ -27,12 +28,37 @@ class UB_Badge {
 		$this->excerpt = $excerpt;
 		$this->created_dt = $created_dt;
 		$this->users = $users;
-		$this->logo_type = get_post_meta( $id, 'ub_logo_type', true );
-		$this->logo_image = get_post_meta( $id, 'ub_logo_image', true );
-		$this->logo_html = get_post_meta( $id, 'ub_logo_html', true );
+		$this->badge_icon = get_post_meta( $id, 'ub_badge_icon', true );
+		$this->badge_html = get_post_meta( $id, 'ub_badge_html', true );
+		$this->badge_color = get_post_meta( $id, 'ub_badge_color', true );
 		
-		if ( $this->logo_type == '' ) {
-			$this->logo_type = 'none';
+		if ( $this->badge_color == null || $this->badge_color == '' ) {
+			$this->badge_color = '#fc0'; // default to Gold
 		}
+		
+		/**
+		 * Template tags:
+		 * {count}
+		 * {title%
+		 * %badge_id%
+		 * %excerpt%
+		 * %badge_icon%
+		 * %content%
+		 * $badge_color%
+		 */
+		$template_tags = array(
+				'{title}' => trim( $this->title ),
+				'{badge_id}' => trim( $this->id ),
+				'{excerpt}' => trim( $this->excerpt ),
+				'{content}' => $this->content,
+				'{permalink}' => get_permalink( $this->id ),
+				'{badge_icon}' => $this->badge_icon,
+				'{badge_color}' => $this->badge_color
+		);
+		
+		foreach ( $template_tags as $string => $value ) {
+			$this->badge_html = str_replace( $string, $value, $this->badge_html );
+		}
+
 	}
 }

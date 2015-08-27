@@ -28,7 +28,14 @@ interface UB_API {
 	 * @param string $type
 	 * @param int $value
 	 */
-	public function delete_user_assignment( $assignment_id = null, $condition_id = null, $user_id = 0, $type = 'badge', $value = 0 );
+	public function delete_assignment( $assignment_id = null, $condition_id = null, $user_id = 0, $type = 'badge', $value = 0 );
+
+	/**
+	 * Deletes assignments (e.g. badge, points) from a user
+	 *
+	 * @param array filters
+	 */
+	public function delete_assignments( $filters = array() );
 	
 	/**
 	 * Gets assignments
@@ -306,9 +313,92 @@ class UB_API_Impl implements UB_API {
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see UB_API::delete_user_assignment()
+	 * @see UB_API::delete_assignment()
 	 */
-	public function delete_user_assignment( $assignment_id = null, $condition_id = null, $user_id = 0, $type = 'badge', $value = 0 ) {
+	public function delete_assignments( $filters = array() ) {
+		
+		extract( wp_parse_args( $filters, array(
+				'to_date' => null,
+				'from_date' => null,
+				'type' => null,
+				'user_id' => 0, // all
+				'badge_id' => null
+		) ) );
+		
+		global $wpdb;
+		
+		$query = 'DELETE FROM ' . $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME;
+		
+		$added_to_query = false;
+		
+		if ( $user_id || $status || $type || $badge_id || $to_date || $from_date ) {
+			$query .= ' WHERE';
+			$added_to_query = false;
+		}
+		
+		if ( $user_id ) {
+			if ( $added_to_query ) {
+				$query .= ' AND';
+			}
+				
+			$query .= ' user_id = ' . intval( $user_id );
+			$added_to_query = true;
+		}
+		
+		if ( $status ) {
+			if ( $added_to_query ) {
+				$query .= ' AND';
+			}
+				
+			$query .= ' status = "' . esc_sql( $status ) . '"';
+			$added_to_query = true;
+		}
+		
+		if ( $type ) {
+			if ( $added_to_query ) {
+				$query .= ' AND';
+			}
+		
+			$query .= ' type = "' . esc_sql( $type ) . '"';
+			$added_to_query = true;
+		}
+		
+		if ( $badge_id ) {
+			if ( $added_to_query ) {
+				$query .= ' AND';
+			}
+		
+			$query .= ' type = "badge" AND value = ' . intval( $badge_id );
+			$added_to_query = true;
+		}
+		
+		if ( $to_date ) {
+			if ( $added_to_query ) {
+				$query .= ' AND';
+			}
+		
+			$query .= ' created_dt <= "' . esc_sql( $to_date ) . '"';
+			$added_to_query = true;
+		}
+		
+		if ( $from_date ) {
+			if ( $added_to_query ) {
+				$query .= ' AND';
+			}
+		
+			$query .= ' created_dt >= "' . esc_sql( $from_date ) . '"';
+			$added_to_query = true;
+		}
+		
+		return $wpdb->query( $query );
+		
+	}
+	
+	/**
+	 * (non-PHPdoc)
+	 * @see UB_API::delete_assignment()
+	 */
+	public function delete_assignment( $assignment_id = null, $condition_id = null, $user_id = 0, $type = 'badge', $value = 0 ) {
 		
 		global $wpdb;
 		
@@ -390,7 +480,7 @@ class UB_API_Impl implements UB_API {
 			$added_to_query = false;
 		}
 		
-		if ( $user_id ) {
+		if ( $user_id && $user_id != 0 ) {
 			if ( $added_to_query ) {
 				$query .= ' AND';
 			}
@@ -466,10 +556,10 @@ class UB_API_Impl implements UB_API {
 		}
 		
 		if ( $is_count) {
-			return $wpdb->get_var( $wpdb->prepare( $query, $data) );
+			return $wpdb->get_var( $query );
 		}
 
-		$results = $wpdb->get_results( $wpdb->prepare( $query, $data ) );
+		$results = $wpdb->get_results( $query );
 		
 		$assignments = array();
 		

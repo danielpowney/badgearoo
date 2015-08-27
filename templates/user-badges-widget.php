@@ -12,7 +12,7 @@ do_action( 'ub_user_badges_widget_before_badges' );
 ?>
 
 <div class="badges">
-	<?php  echo get_the_author_meta( 'badges' ); ?>
+	<?php echo get_the_author_meta( 'badges' ); ?>
 </div>
 
 <?php 

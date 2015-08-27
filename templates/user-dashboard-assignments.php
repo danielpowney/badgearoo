@@ -26,6 +26,8 @@
 		foreach ( $assignments as $assignment ) {
 			ub_get_template_part( 'assignments-table-row', null, true, array(
 					'assignment' => $assignment,
+					'badge_theme' => $badge_theme,
+					'enable_badge_permalink' => $enable_badge_permalink
 			) );
 		} ?>
 	</table>

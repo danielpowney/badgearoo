@@ -7,9 +7,20 @@
 	<td>
 		<?php 
 		if ( $assignment['type'] == 'badge' && $assignment['badge'] ) {
-			?>
-			<div class="ub-badge" title="<?php echo $assignment['badge']->excerpt; ?>"><?php echo $assignment['badge']->title; ?></div>
-			<?php
+			
+			ub_get_template_part( 'badge', null, true, array(
+					'badge_id' => $assignment['badge']->id,
+					'show_title' => true,
+					'badge_theme' => $badge_theme,
+					'badge_icon' => $assignment['badge']->badge_icon,
+					'badge_html' => $assignment['badge']->badge_html,
+					'badge_color' => $assignment['badge']->badge_color,
+					'excerpt' => $assignment['badge']->excerpt,
+					'title' => $assignment['badge']->title,
+					'content' => $assignment['badge']->content,
+					'enable_badge_permalink' => $enable_badge_permalink
+			) );
+
 		} else if ( $assignment['points'] ) {
 			ub_get_template_part( 'points', null, true, array(
 					'points' => $assignment['points']
