@@ -326,7 +326,7 @@ class User_Badges {
 	 */	
 	public function add_admin_menus() {
 		
-		add_dashboard_page( __( 'About User Badges', 'user-badges' ), '', 'manage_options', User_Badges::ABOUT_PAGE_SLUG, 'ub_about_page' );
+		add_dashboard_page( __( 'About Badgearoo', 'user-badges' ), '', 'manage_options', User_Badges::ABOUT_PAGE_SLUG, 'ub_about_page' );
 		add_submenu_page( 'edit.php?post_type=badge', __( 'Conditions', 'user-badges' ), __( 'Conditions', 'user-badges' ), 'manage_options', User_Badges::CONDITIONS_PAGE_SLUG, 'ub_conditions_page' );
 		
 		global $wpdb;
@@ -438,7 +438,7 @@ class User_Badges {
 		$slug = get_theme_mod( 'badge_permalink' );
 		
 		register_post_type( 'badge', array(
-				'label' => 'Badges',
+				'label' => __( 'Badges', 'user-badges' ),
 				'labels' => array(
 						'name' => __( 'Badges', 'user-badges' ),
 						'singular_name' => __( 'Badge', 'user-badges' ),

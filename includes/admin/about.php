@@ -90,62 +90,69 @@ function ub_about_page() {
 					
 				<p class="about-description"><?php _e( 'Create your own badges and points system for WordPress users. You can manually assign badges or configure automatic assignment of predefined badges to to users.', 'user-badges' ); ?></p>
 				
-				<div class="feature-section col three-col">
+				<div class="feature-section col two-col">
 					<div class="col-1">
-						<img />
+						<img src="<?php echo plugins_url( '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'about-assignments.png' , __FILE__ ); ?>" />
 						<h4><?php _e( 'Assignments', 'user-badges' ); ?></h4>
 						<p><?php _e( 'Manage user assignments of badges and points including moderation and e-mail notifications.', 'user-badges' ); ?></p>
 					</div>
-					<div class="col-2">
-						<img />
-						<h4><?php _e( 'Actions.', 'user-badges' ); ?></h4>
-						<p><?php _e( 'Out-of-the-box support for BuddyPress, bbPress, WooCommerce and Easy Digital Downloads plugins.', 'user-badges' ); ?></p>
-					</div>
-					<div class="col-3 last-feature">
-						<img />
-						<h4><?php _e( 'Conditions', 'user-badges' ); ?></h4>
-						<p><?php _e( 'Setup conditions with steps that need to be accomplished for badges and or points to be assigned to users.', 'user-badges' ); ?></p>
-					</div>
-					
-					<h4><?php _e( 'Shortcodes', 'user-badges' ); ?></h4>
-					<ul>
-						<li>[broo_user_badges] - <?php _e( 'Shows a list of badges assigned to a user.', 'user-badges' ); ?></li>
-						<li>[broo_user_points] - <?php _e( 'Shows total points assigned to a user.', 'user-badges' ); ?></li>
-						<li>[broo_leaderboard] - <?php _e( 'Shows a leaderboard of user badges and points', 'user-badges' ); ?></li>
-						<li>[broo_badge] - <?php _e( 'Shows badge details.', 'user-badges' ); ?></li>
-						<li>[broo_condition] - <?php _e( 'Shows condition details.', 'user-badges' ); ?></li>
-						<li>[broo_user_dashboard] - <?php _e( 'Shows a dashboard of badges, points and assignents for a user.', 'user-badges' ); ?></li>
-						<li>[broo_badge_list] - <?php _e( 'Shows a list of badge details.', 'user-badges' ); ?></li>
-					</ul>
-					
-					<h4><?php _e( 'Widgets', 'user-badges' ); ?></h4>
-					<ul>
-						<li><?php _e( 'User Badges - Shows the post author details including any badges and points they have.', 'user-badges' ); ?></li>
-					</ul>
-				</div>
-			
-				<hr>
-			
-				<div class="feature-section col two-col">
-					<div class="col-1">
-						<h4><?php _e( 'API', 'user-badges' ); ?></h4>
-						<p>TODO</p>
-					</div>
 					<div class="col-2 last-feature">
-						<img />
-						<h4><?php _e( 'Developer Friendly', 'user-badges' ); ?></h4>
-						<p><?php _e( 'TODO', 'user-badges' ); ?></p>
+						<img src="<?php echo plugins_url( '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'about-conditions.png' , __FILE__ ); ?>" />
+						<h4><?php _e( 'Conditions', 'user-badges' ); ?></h4>
+						<p><?php _e( 'Setup conditions with steps that need to be accomplished for badges and or points to be automatically assigned to users.', 'user-badges' ); ?></p>
 					</div>
+				</div>
+				
+				<div class="feature-section col two-col">
+					<br />
+					<br />
+					<div class="col-1">
+					
+						<h4><?php _e( 'Shortcodes', 'user-badges' ); ?></h4>
+						<ul>
+							<li>[broo_user_badges] - <?php _e( 'Shows a list of badges assigned to a user.', 'user-badges' ); ?></li>
+							<li>[broo_user_points] - <?php _e( 'Shows total points assigned to a user.', 'user-badges' ); ?></li>
+							<li>[broo_leaderboard] - <?php _e( 'Shows a leaderboard of user badges and points', 'user-badges' ); ?></li>
+							<li>[broo_badge] - <?php _e( 'Shows badge details.', 'user-badges' ); ?></li>
+							<li>[broo_condition] - <?php _e( 'Shows condition details.', 'user-badges' ); ?></li>
+							<li>[broo_user_dashboard] - <?php _e( 'Shows a dashboard of badges, points and assignents for a user.', 'user-badges' ); ?></li>
+							<li>[broo_badge_list] - <?php _e( 'Shows a list of badge details.', 'user-badges' ); ?></li>
+						</ul>
+						
+						<h4><?php _e( 'Widgets', 'user-badges' ); ?></h4>
+						<ul>
+							<li><?php _e( 'User Badges - Shows the post author details including any badges and points they have.', 'user-badges' ); ?></li>
+							<li><?php _e( 'Recent Assignments -  Shows recent user assignments of badges and points.', 'user-badges' ); ?>
+						</ul>
+						
+						<h4><?php _e( 'Moderation', 'user-badges' ); ?></h4>
+						<p><?php _e( 'You can turn on moderation of new user assignments. E-mail notifications can be setup to notify moderations to approve or unapprove new user assignments', 'user-badges' ); ?></p>
+				
+					</div>
+					
+					<div class="col-2 last-feature">
+						<h4><?php _e( 'Badge Themes', 'user-badges' ); ?></h4>
+						<p><?php _e( 'There are four themes currently available for displaying badges: dark, light, badge icon and custom HTML.', 'user-badges' ); ?></p>
+						<img src="<?php echo plugins_url( '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'about-theme-dark.PNG' , __FILE__ ); ?>" />
+						<img src="<?php echo plugins_url( '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'about-theme-light.PNG' , __FILE__ ); ?>" />
+						<img src="<?php echo plugins_url( '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'about-theme-icon.PNG' , __FILE__ ); ?>" />
+						
+						<h4><?php _e( 'Reports', 'user-badges' ); ?></h4>
+						<p><?php _e( 'You can export user assignments to a CSV file from the plugin tools page.', 'user-badges' ); ?></p>
+						
+						<h4><?php _e( 'Developer Friendly', 'user-badges' ); ?></h4>
+						<p><?php _e( 'The Badgearoo plugin has been built with extensibility in mind providing an API in one place and plenty of action hooks and filters for customization.', 'user-badges' ); ?></p>
+						<p><?php _e( 'Please see the developer guide for instructions on how to add your own predefined actions that can be used in conditions.', 'user-badges' ); ?>
+					</div>
+					
 				</div>
 			</div>
-			
-			<hr>
-			
+						
 			<div class="changelog under-the-hood">
 				<div class="feature-section col three-col">
 				
 					<h3><?php _e( 'Steps Actions', 'user-badges' ); ?></h3>
-					<p><?php _e( 'The following actions can be used in condition steps. It\'s easy to add new actions with add-ons.', 'user-badges' ); ?>
+					<p><?php _e( 'The following actions are available out-of-the-box and can be used in condition steps. It\'s easy to add more actions through add-ons.', 'user-badges' ); ?>
 					<div>
 						
 						<h4><?php _e( 'BuddyPress', 'user-badges' ); ?></h4>

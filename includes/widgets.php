@@ -11,7 +11,7 @@ class UB_User_Details_Widget extends WP_Widget {
 	function __construct( ) {
 
 		$id_base = 'ub_user_badges';
-		$name = __( 'User Badges', 'user-badges' );
+		$name = __( 'Badgearoo User Badges', 'user-badges' );
 		$widget_opts = array(
 				'classname' => 'ub-user-badges-widget',
 				'description' => __( 'Shows the post author details including any badges and points they have.', 'user-badges' )
@@ -124,7 +124,7 @@ class UB_Recent_Assignments_Widget extends WP_Widget {
 	function __construct( ) {
 
 		$id_base = 'ub_recent_assignments';
-		$name = __( 'Recent Assignments', 'user-badges' );
+		$name = __( 'Badgearoo Recent Assignments', 'user-badges' );
 		$widget_opts = array(
 				'classname' => 'ub-recent-assignments-widget',
 				'description' => __( 'Shows recent user assignments of badges and points.', 'user-badges' )
