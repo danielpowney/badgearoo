@@ -1,0 +1,69 @@
+@CHARSET "ISO-8859-1";
+
+table.badges .column-cb, table.badges .column-enabled, table.badges .column-actions {
+	width: 10%;
+}
+table.badges .column-badge, table.badges .column-name {
+	width: 15%;
+}
+table.badges .column-description {
+	width: 40%;
+}
+
+.ub-condition .ub-step {
+	margin-bottom: 9px;
+	border: 1px solid #e5e5e5;
+	background: #f9f9f9;
+	padding: 9px 15px;
+	cursor: move;
+	display: block;
+}
+
+.ub-condition .ub-expiry-value {
+	width: 75px;
+}
+.ub-condition .ub-step label, .ub-condition .ub-step select, .ub-condition .ub-step input, .ub-condition .ub-step a {
+	display: inline-block;
+	padding: 3px 5px;
+	vertical-align: middle;
+	margin-top: 3px;
+	margin-bottom: 3px;
+}
+
+.ub-condition .form-table, .ub-condition .ub-step-list {
+	margin-right: 10px;
+	width: auto;
+	margin: 0px;
+	padding: 0px;
+	display: block;
+}
+
+.ub-condition td.ub-condition-steps {
+	vertical-align: top;
+}
+
+.ub-condition .tagchecklist span {
+	margin-top: 10px;
+}
+
+
+.ub-step .step-meta, .ub-step .step-meta .step-meta-value {
+	display: inline-block;
+	vertical-align: middle;
+}
+.ub-step .step-action, .ub-step .step-meta .step-meta-value {
+	margin-right: 10px;
+}
+
+.ub-step a {
+	color: #0074a2 !important;
+	text-decoration: underline !important;
+}
+
+#ub-badge-icon-upload-btn {
+	display: block;
+}
+#ub-badge-icon-preview {
+	margin-top: 10px;
+}
+

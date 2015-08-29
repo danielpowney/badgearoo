@@ -1,0 +1,15 @@
+<?php 
+/**
+ * User leaderboard filters template
+ */
+?>
+<form class="user-leaderboard-filters">
+	<label for="from-date"><?php _e( 'From: ', 'user-badges' ); ?></label><input type="date" name="from-date"></input>
+	<label for="to-date"><?php _e( 'To: ', 'user-badges' ); ?></label><input type="date" name="to-date" ></input>
+	<label for="sort-by"><?php _e( 'Sort: ', 'user-badges' ); ?></label>
+	<select name="sort-by">
+		<option value="badges"><?php _e( 'Most badges', 'user-badges' ); ?></option>
+		<option value="points"><?php _e( 'Most points', 'user-badges' ); ?></option>
+	</select>
+	<input type="submit" id="filter-btn" value="<?php _e( 'Filter', 'user-badges' ); ?>" />
+</form>

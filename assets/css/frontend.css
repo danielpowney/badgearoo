@@ -1,0 +1,214 @@
+.user-badges-widget h1, .user-badges-widget h2, .user-badges-widget h3, .user-badges-widget h4, .user-badges-widget h5, .user-badges-widget h6 {
+	display: inline;
+}
+.user-badges-widget img, .ub-condition .ub-badges .ub-badge img {
+	margin-right: 2px;
+}
+
+.ub-condition, .ub-badge-summary, .user-leaderboard {
+	margin-bottom: 20px;
+}
+
+.user-badges-widget .badges {
+	margin-top: 10px;
+}
+
+.ub-condition label {
+	font-weight: bold;
+	display: block;
+}
+.ub-condition label.ub-assignments, .ub-condition label.ub-steps  {
+	margin-bottom: 10px;
+}
+.ub-condition .ub-points {
+	display: block;
+}
+
+.ub-badge-summary .ub-users .ub-user {
+	display: inline-block;
+	text-align: center;
+	margin-top: 10px;
+}
+.ub-badge-summary .ub-users-count {
+	margin-bottom: 10px;
+}
+.ub-badge-summary .ub-badge-main {
+	text-align: left;
+	margin-bottom: 20px;
+}
+.ub-badge-summary .ub-badge-main h2, .ub-badge-summary .ub-badge-main img {
+	margin-top: 0px;
+	margin-bottom: 0px;
+	display: inline-block;
+	vertical-align: middle;
+	-webkit-box-shadow: 0 0 0 0 #fff !important;  /* Safari 3-4, iOS 4.0.2 - 4.2, Android 2.3+ */
+  	-moz-box-shadow: 0 0 0 0 #fff !important;  /* Firefox 3.5 - 3.6 */
+ 	 box-shadow: 0 0 0 0 #fff !important;
+}
+
+.ub-badge {
+	cursor: pointer;
+	width: auto;
+	display: inline-block;
+}
+
+#buddypress div#item-header ul {
+	margin-bottom: 0px;
+}
+#buddypress div#item-header ul.ub-badges li {
+	list-style: none;
+	float: none;
+	display: inline;
+	padding: 5px 10px;
+}
+
+
+#buddypress div#item-header .ub-points {
+	padding: 5px 10px;
+}
+
+#buddypress .user-badges-summary {
+  margin: 15px 0 5px;
+  padding-bottom: 10px;
+}
+
+.user-badges-summary ul.ub-badges li {
+	list-style: none;
+}
+
+.ub-badge img {
+	-webkit-box-shadow: 0 0 0 0 #fff !important;  /* Safari 3-4, iOS 4.0.2 - 4.2, Android 2.3+ */
+  	-moz-box-shadow: 0 0 0 0 #fff !important;  /* Firefox 3.5 - 3.6 */
+ 	 box-shadow: 0 0 0 0 #fff !important;
+}
+.ub-badge-summary  .ub-badge-description, .ub-badge-summary .ub-users-count {
+	display: block;
+	margin-top: 10px;
+}
+
+.user-leaderboard table {
+	width: auto;
+}
+.user-leaderboard form, .user-leaderboard form input, .user-leaderboard form select {
+	margin-bottom: 10px;
+}
+.user-leaderboard form input {
+	max-width: 180px;
+}
+/*
+.user-leaderboard td.ub-badges, .user-leaderboard td.ub-points, .user-leaderboard td.rank {
+	text-align: center;
+}*/
+.user-leaderboard td.rank {
+	font-weight: bold;
+}
+.user-leaderboard form label {
+	display: inline;
+}
+
+.user-leaderboard td {
+	vertical-align: middle;
+}
+
+.ub-user-dashboard-summary .ub-badge {
+	display: inline-block;
+}
+.ub-user-dashboard form, .ub-user-dashboard-summary, .user-dashboard-assignments {
+	vertical-align: middle;
+}
+.ub-user-dashboard form {
+	margin-bottom: 10px;
+}
+
+.user-dashboard-assignments table {
+	width: auto;
+}
+.user-dashboard-assignments .ub-badge {
+	display: block;
+}
+.user-dashboard-assignments .ub-more-btn {
+	margin-bottom: 20px;
+	text-align: center;
+	display: inline-block;
+	width: auto;
+}
+.user-dashboard-assignments label.ub-recent-assignments {
+	margin-bottom: 10px;
+	display: inline-block;
+}
+
+.badge-count {
+	margin-right: 10px;
+}
+
+.ub-badge-theme-dark {
+	background-color: #333;
+    border: 1px solid #333 !important;
+    color: #fff;
+}
+.ub-badge-theme-light {
+    border: 1px solid #e0e0e0 !important;
+    color: #777;
+    background: #f2f2f2;
+}
+
+a.ub-badge-theme-light, a.ub-badge-theme-dark {
+	text-decoration: none !important;
+}
+
+.ub-badge-theme-icon img {
+	display: inline-block !important;
+}
+
+
+.ub-badge-theme-light, .ub-badge-theme-dark {  
+    -webkit-transition: background, 0.3s, ease;
+    -moz-transition: background, 0.3s, ease;
+    -ms-transition: background, 0.3s, ease;
+    -o-transition: background, 0.3s, ease;
+    padding: .4em .8em .4em .2em;
+    margin: 0 3px 3px 0;
+    line-height: 1;
+    text-decoration: none;
+    white-space: nowrap;
+    display: inline-block;
+    border-radius: 4px;
+    vertical-align: middle; 
+}
+
+.ub-badge-container, .ub-points, .ub-assignment {
+	display: block;
+	margin-bottom: 5px;
+}
+.ub-assignment .ub-points, .user-leaderboard-table .ub-points {
+	display: inline-block;
+	margin-bottom: 0px;
+}
+
+.ub-assignment .ub-badge-container {
+	display: inline-block;
+}
+.ub-assignment .ub-time-diff {
+	font-style: italic;
+}
+
+.ub-badge-theme-light:hover {
+	background: #e0e0e0;
+    color: #777;
+}
+
+.ub-badge-theme-dark:hover {
+	background: #555;
+    color: #fff;
+    border-color: #555;
+}
+
+.ub-badge .ub-theme-color {
+	width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin: 0;
+    display: inline-block;
+    margin-right: 2px;
+    margin-left: 4px;
+}
