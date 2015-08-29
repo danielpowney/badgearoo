@@ -1,8 +1,8 @@
 <?php
 echo get_avatar( get_current_user_id() );
 		
-$before_title = apply_filters( 'ub_user_badges_before_title', $before_title );
-$after_title = apply_filters( 'ub_user_details_after_title', $after_title );
+$before_title = apply_filters( 'broo_user_badges_before_title', $before_title );
+$after_title = apply_filters( 'broo_user_details_after_title', $after_title );
 
 $title = apply_filters( 'widget_title', get_the_author_meta( 'display_name' ) );
 		
@@ -14,7 +14,7 @@ if ( $user_biography && strlen( $user_biography ) > 0 ) {
 	?><p class="ub-user-biography"><?php echo $user_biography; ?></p><?php
 }
 
-do_action( 'ub_user_badges_widget_before_badges' );
+do_action( 'broo_user_badges_widget_before_badges' );
 ?>
 
 
@@ -23,4 +23,4 @@ do_action( 'ub_user_badges_widget_before_badges' );
 </div>
 
 <?php 
-do_action( 'ub_user_badges_widget_after_badges' );
+do_action( 'broo_user_badges_widget_after_badges' );

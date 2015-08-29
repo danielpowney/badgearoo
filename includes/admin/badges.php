@@ -1,17 +1,17 @@
 <?php
 
-function ub_manage_badge_posts_columns( $posts_columns ) {
+function broo_manage_badge_posts_columns( $posts_columns ) {
 	$post_columns_new_order['cb'] = $posts_columns['cb'];
-	$post_columns_new_order['id'] = __( 'ID', 'user-badges' );
+	$post_columns_new_order['id'] = __( 'ID', 'badgearoo' );
 	$post_columns_new_order['title'] = $posts_columns['title'];
 	$post_columns_new_order['categories'] = $posts_columns['categories'];
 	$post_columns_new_order['date'] = $posts_columns['date'];
 
 	return $post_columns_new_order;
 }
-add_filter( 'manage_badge_posts_columns', 'ub_manage_badge_posts_columns', 5, 1  );
+add_filter( 'manage_badge_posts_columns', 'broo_manage_badge_posts_columns', 5, 1  );
 
-function ub_manage_badge_posts_custom_column( $column_name, $post_id ){
+function broo_manage_badge_posts_custom_column( $column_name, $post_id ){
 
 	switch ( $column_name ){
 
@@ -25,7 +25,7 @@ function ub_manage_badge_posts_custom_column( $column_name, $post_id ){
 			break;
 	}
 }
-add_action( 'manage_badge_posts_custom_column', 'ub_manage_badge_posts_custom_column', 5, 2 );
+add_action( 'manage_badge_posts_custom_column', 'broo_manage_badge_posts_custom_column', 5, 2 );
 
 
 /**
@@ -33,38 +33,38 @@ add_action( 'manage_badge_posts_custom_column', 'ub_manage_badge_posts_custom_co
  */
 function display_badge_theme_meta_box( $post ) {
 	
-	wp_nonce_field( 'ub_badge_theme_meta_box_nonce', 'ub_badge_theme_meta_box_nonce_action' );
+	wp_nonce_field( 'broo_badge_theme_meta_box_nonce', 'broo_badge_theme_meta_box_nonce_action' );
 
-	$general_settings = (array) get_option( 'ub_general_settings' );
+	$general_settings = (array) get_option( 'broo_general_settings' );
 	
-	$badge_color = get_post_meta( $post->ID, 'ub_badge_color', true );
+	$badge_color = get_post_meta( $post->ID, 'broo_badge_color', true );
 	if ( ! isset( $badge_color ) || $badge_color == '' ) {
 		$badge_color = '#fc0';
 	}
 	
-	$badge_theme_no_color = get_post_meta( $post->ID, 'ub_badge_theme_no_color', true );
+	$badge_theme_no_color = get_post_meta( $post->ID, 'broo_badge_theme_no_color', true );
 		
-	$badge_icon = get_post_meta( $post->ID, 'ub_badge_icon', true );
-	$badge_html = get_post_meta( $post->ID, 'ub_badge_html', true );
+	$badge_icon = get_post_meta( $post->ID, 'broo_badge_icon', true );
+	$badge_html = get_post_meta( $post->ID, 'broo_badge_html', true );
 		
 	?>
 
 	<table class="form-table">
 		<tbody>
 			<tr>
-				<th scope="row"><?php _e( 'Badge Color', 'user-badges' ); ?></th>
+				<th scope="row"><?php _e( 'Badge Color', 'badgearoo' ); ?></th>
 				<td>
 					<input type="text" class="color-picker" name="ub-badge-color" value="<?php echo $badge_color; ?>" />					
 					
 					<p><input type="checkbox" name="ub-badge-no-color" value="true" <?php checked( true, $badge_theme_no_color, true ); ?> />
-					<label><?php _e( 'Ignore badge color.', 'user-badges' ); ?></label></p>
-					<p class="description"><?php _e( 'Used by light and dark badge themes to show a badge color. E.g. #c96 for Bronze, #c5c5c5 for Silver and #fc0 for Gold.', 'user-badges' ); ?></p>
+					<label><?php _e( 'Ignore badge color.', 'badgearoo' ); ?></label></p>
+					<p class="description"><?php _e( 'Used by light and dark badge themes to show a badge color. E.g. #c96 for Bronze, #c5c5c5 for Silver and #fc0 for Gold.', 'badgearoo' ); ?></p>
 				</td>
 			</tr>
 			<tr>
-				<th scope="row"><?php _e( 'Badge Icon', 'user-badges' ); ?></th>
+				<th scope="row"><?php _e( 'Badge Icon', 'badgearoo' ); ?></th>
 				<td>
-					<input type="submit" id="ub-badge-icon-upload-btn" class="button" value="<?php _e( 'Upload', 'user-badges' ); ?>">
+					<input type="submit" id="ub-badge-icon-upload-btn" class="button" value="<?php _e( 'Upload', 'badgearoo' ); ?>">
 					
 					<?php 
 					if ( strlen( $badge_icon ) > 0 ) {
@@ -73,12 +73,12 @@ function display_badge_theme_meta_box( $post ) {
 						<?php
 					} 
 					?>
-					<p class="description"><?php _e( 'This is used by the icon and title theme. Upload a icon image for this badge. A badge icon is optional. Recommended icon size 32 pixels by 32 pixels.', 'user-badges' ); ?></p>
+					<p class="description"><?php _e( 'This is used by the icon and title theme. Upload a icon image for this badge. A badge icon is optional. Recommended icon size 32 pixels by 32 pixels.', 'badgearoo' ); ?></p>
 					<input type="hidden" name="ub-badge-icon" id="ub-badge-icon" value="<?php echo $badge_icon; ?>" />
 				</td>
 			</tr>
 			<tr>
-				<th scope="row"><?php _e( 'Custom HTML', 'user-badges' ); ?></th>
+				<th scope="row"><?php _e( 'Custom HTML', 'badgearoo' ); ?></th>
 				<td>
 					<textarea name="ub-badge-html" rows="5" cols="40" class="widefat"><?php echo $badge_html; ?></textarea>
 					
@@ -90,7 +90,7 @@ function display_badge_theme_meta_box( $post ) {
 								. '{content} - The badge content.<br />'
 								. '{badge_color} - The badge color.<br />'
 								. '{badge_icon} - The badge icon.<br />'
-								. '{permalink} - The badge permalink.', 'user-badges' ); ?>
+								. '{permalink} - The badge permalink.', 'badgearoo' ); ?>
 					</p>
 				</td>
 			</tr>
@@ -106,7 +106,7 @@ function display_badge_theme_meta_box( $post ) {
 function add_badge_meta_boxes( $post_type ) {
 
 	if ( $post_type == 'badge' ) {
-		add_meta_box( 'ub_badge_theme_meta_box', __( 'Badge Theme', 'user-badges' ), 'display_badge_theme_meta_box', 'badge', 'normal', 'high' );
+		add_meta_box( 'broo_badge_theme_meta_box', __( 'Badge Theme', 'badgearoo' ), 'display_badge_theme_meta_box', 'badge', 'normal', 'high' );
 	}
 
 }
@@ -120,11 +120,11 @@ add_action( 'add_meta_boxes', 'add_badge_meta_boxes' );
  */
 function save_badge_meta( $post_id, $post, $update ) {
 
-	if ( ! isset( $_POST['ub_badge_theme_meta_box_nonce_action'] ) ) {
+	if ( ! isset( $_POST['broo_badge_theme_meta_box_nonce_action'] ) ) {
 		return $post_id;
 	}
 	
-	if ( ! wp_verify_nonce( $_POST['ub_badge_theme_meta_box_nonce_action'], 'ub_badge_theme_meta_box_nonce' ) ) {
+	if ( ! wp_verify_nonce( $_POST['broo_badge_theme_meta_box_nonce_action'], 'broo_badge_theme_meta_box_nonce' ) ) {
 		return $post_id;
 	}
 	
@@ -154,9 +154,9 @@ function save_badge_meta( $post_id, $post, $update ) {
 	}
 	
 	// Update the post meta fields
-	update_post_meta( $post_id, 'ub_badge_icon', $badge_icon );
-	update_post_meta( $post_id, 'ub_badge_html', $badge_html );
-	update_post_meta( $post_id, 'ub_badge_color', $badge_color );
+	update_post_meta( $post_id, 'broo_badge_icon', $badge_icon );
+	update_post_meta( $post_id, 'broo_badge_html', $badge_html );
+	update_post_meta( $post_id, 'broo_badge_color', $badge_color );
 	
 }
 add_action( 'save_post', 'save_badge_meta', 10, 3 );

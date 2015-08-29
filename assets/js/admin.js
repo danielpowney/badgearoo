@@ -2,7 +2,7 @@ jQuery(document).ready(function($) {
 	
 	// Metabox toggle
 	jQuery(".if-js-closed").removeClass("if-js-closed").addClass("closed");
-	postboxes.add_postbox_toggles( 'user-badges');
+	postboxes.add_postbox_toggles( 'badgearoo');
 	
 	jQuery(".ub-step-list").sortable({
 		items: '.ub-step',
@@ -82,7 +82,7 @@ jQuery(document).ready(function($) {
 		
 		var data = {
 				action : "save_condition",
-				nonce : ub_admin_data.ajax_nonce,
+				nonce : broo_admin_data.ajax_nonce,
 				conditionId : conditionId,
 				name : jQuery("#condition-" + conditionId + " input[name=name]").val(),
 				enabled : jQuery("#condition-" + conditionId + " input[name=enabled]").is(':checked'),
@@ -94,7 +94,7 @@ jQuery(document).ready(function($) {
 				steps : steps
 		};
 	
-		jQuery.post(ub_admin_data.ajax_url, data, function(response) {
+		jQuery.post(broo_admin_data.ajax_url, data, function(response) {
 			var jsonResponse = jQuery.parseJSON(response);
 			
 			// remove any previous message
@@ -119,16 +119,16 @@ jQuery(document).ready(function($) {
 		
 		var data = {
 				action : "add_condition",
-				nonce : ub_admin_data.ajax_nonce
+				nonce : broo_admin_data.ajax_nonce
 		};
 	
-		jQuery.post(ub_admin_data.ajax_url, data, function(response) {
+		jQuery.post(broo_admin_data.ajax_url, data, function(response) {
 			var jsonResponse = jQuery.parseJSON(response);
 			
 			jQuery("#postbox-container #normal-sortables").append(jsonResponse.html);
 			
 			jQuery(".postbox .hndle, .postbox .handlediv , .postbox a.dismiss, .hide-postbox-tog").unbind("click.postboxes");
-			postboxes.add_postbox_toggles('user-badges');
+			postboxes.add_postbox_toggles('badgearoo');
 			
 			// delete condition
 			jQuery("div#condition-" + jsonResponse.data.conditionId + " .delete-condition-btn").on("click", function(e) {
@@ -314,11 +314,11 @@ jQuery(document).ready(function($) {
 		
 		var data = {
 				action : "add_step",
-				nonce : ub_admin_data.ajax_nonce,
+				nonce : broo_admin_data.ajax_nonce,
 				conditionId : conditionId
 		};
 	
-		jQuery.post(ub_admin_data.ajax_url, data, function(response) {
+		jQuery.post(broo_admin_data.ajax_url, data, function(response) {
 			var jsonResponse = jQuery.parseJSON(response);
 			
 			//var conditionId = jsonResponse.data.conditionId;
@@ -349,11 +349,11 @@ jQuery(document).ready(function($) {
 		
 		var data = {
 				action : "delete_step",
-				nonce : ub_admin_data.ajax_nonce,
+				nonce : broo_admin_data.ajax_nonce,
 				stepId : stepId
 		};
 	
-		jQuery.post(ub_admin_data.ajax_url, data, function(response) {
+		jQuery.post(broo_admin_data.ajax_url, data, function(response) {
 			var jsonResponse = jQuery.parseJSON(response);
 			
 			if (jsonResponse.success == true ) {
@@ -369,11 +369,11 @@ jQuery(document).ready(function($) {
 		
 		var data = {
 				action : "delete_condition",
-				nonce : ub_admin_data.ajax_nonce,
+				nonce : broo_admin_data.ajax_nonce,
 				conditionId : conditionId
 		};
 	
-		jQuery.post(ub_admin_data.ajax_url, data, function(response) {
+		jQuery.post(broo_admin_data.ajax_url, data, function(response) {
 			var jsonResponse = jQuery.parseJSON(response);
 			
 			if (jsonResponse.success == true ) {
@@ -391,12 +391,12 @@ jQuery(document).ready(function($) {
 		
 		var data = {
 				action : "step_meta",
-				nonce : ub_admin_data.ajax_nonce,
+				nonce : broo_admin_data.ajax_nonce,
 				actionName : newActionName,
 				stepId : stepId
 		};
 	
-		jQuery.post(ub_admin_data.ajax_url, data, function(response) {
+		jQuery.post(broo_admin_data.ajax_url, data, function(response) {
 			var jsonResponse = jQuery.parseJSON(response);
 
 			jQuery("li#step-" + stepId + " .step-meta").html(jsonResponse.html);
@@ -478,11 +478,11 @@ jQuery(document).ready(function($) {
 		
 		var data = {
 				action : "change_assignment_type",
-				nonce : ub_admin_data.ajax_nonce,
+				nonce : broo_admin_data.ajax_nonce,
 				type : jQuery("#add-new-assignment-form select#type").val()
 		};
 	
-		jQuery.post(ub_admin_data.ajax_url, data, function(response) {
+		jQuery.post(broo_admin_data.ajax_url, data, function(response) {
 			var jsonResponse = jQuery.parseJSON(response);
 			
 			jQuery("#add-new-assignment-form #assignment").replaceWith(jsonResponse.data.html);
@@ -508,12 +508,12 @@ jQuery(document).ready(function($) {
 		
 		var data =  { 
 				action : "update_user_assignment_status",
-				nonce : ub_admin_data.ajax_nonce,
+				nonce : broo_admin_data.ajax_nonce,
 				assignmentId : rowId,
 				status : status
 		};
 				
-		jQuery.post(ub_admin_data.ajax_url, data, function(response) {
+		jQuery.post(broo_admin_data.ajax_url, data, function(response) {
 			var jsonResponse = jQuery.parseJSON(response);
 			
 			var assignmentId = jsonResponse.assignment_id;

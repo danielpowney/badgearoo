@@ -5,16 +5,16 @@
 
 define( 'EDD_COMPLETE_DOWNLOAD_PURCHASE_ACTION', 'edd_complete_download_purchase' );
 
-function ub_init_edd_actions( $ub_actions ) {
+function broo_init_edd_actions( $broo_actions ) {
 
-	$ub_actions[EDD_COMPLETE_DOWNLOAD_PURCHASE_ACTION] = array(
-			'description' => __( 'User completed purchase.', 'user-badges' ),
-			'source' =>	__( 'Easy Digital Downloads', 'user-badges' )
+	$broo_actions[EDD_COMPLETE_DOWNLOAD_PURCHASE_ACTION] = array(
+			'description' => __( 'User completed purchase.', 'badgearoo' ),
+			'source' =>	__( 'Easy Digital Downloads', 'badgearoo' )
 	);
 
-	return $ub_actions;
+	return $broo_actions;
 }
-add_filter( 'ub_init_actions', 'ub_init_edd_actions', 10, 1 );
+add_filter( 'broo_init_actions', 'broo_init_edd_actions', 10, 1 );
 
 
 /**
@@ -22,18 +22,18 @@ add_filter( 'ub_init_actions', 'ub_init_edd_actions', 10, 1 );
  *
  * @param actions
 */
-function ub_add_edd_actions( $actions = array() ) {
+function broo_add_edd_actions( $actions = array() ) {
 
-	$actions_enabled = (array) get_option( 'ub_actions_enabled' );
+	$actions_enabled = (array) get_option( 'broo_actions_enabled' );
 
 	if ( isset( $actions[EDD_COMPLETE_DOWNLOAD_PURCHASE_ACTION] ) && $actions[EDD_COMPLETE_DOWNLOAD_PURCHASE_ACTION]['enabled'] == true ) {
-		add_action( 'edd_complete_download_purchase',  'ub_edd_complete_download_purchase', 10, 3 );
-		add_filter( 'ub_condition_step_check_edd_complete_download_purchase', 'ub_condition_step_check_count', 10, 4 );
+		add_action( 'edd_complete_download_purchase',  'broo_edd_complete_download_purchase', 10, 3 );
+		add_filter( 'broo_condition_step_check_edd_complete_download_purchase', 'broo_condition_step_check_count', 10, 4 );
 	}
 
-	add_filter('ub_step_meta_count_enabled', 'ub_edd_step_meta_count_enabled', 10, 2 );
+	add_filter('broo_step_meta_count_enabled', 'broo_edd_step_meta_count_enabled', 10, 2 );
 }
-add_action( 'ub_init_actions_complete', 'ub_add_edd_actions' );
+add_action( 'broo_init_actions_complete', 'broo_add_edd_actions' );
 
 /**
  * Sets whether step meta count is enabled
@@ -42,7 +42,7 @@ add_action( 'ub_init_actions_complete', 'ub_add_edd_actions' );
  * @param unknown $action
  * @return boolean|unknown
 */
-function ub_edd_step_meta_count_enabled( $enabled, $action ) {
+function broo_edd_step_meta_count_enabled( $enabled, $action ) {
 
 	if ( $action == EDD_COMPLETE_DOWNLOAD_PURCHASE_ACTION ) {
 		return true;
@@ -58,14 +58,14 @@ function ub_edd_step_meta_count_enabled( $enabled, $action ) {
  * @param array $actions_enabled
  * @return $actions_enabled:
  */
-function ub_default_edd_actions_enabled( $actions_enabled ) {
+function broo_default_edd_actions_enabled( $actions_enabled ) {
 
 	return array_merge( array(
 			EDD_COMPLETE_DOWNLOAD_PURCHASE_ACTION		=> false,
 	), $actions_enabled );
 
 }
-add_filter( 'ub_default_actions_enabled', 'ub_default_edd_actions_enabled', 10, 1 );
+add_filter( 'broo_default_actions_enabled', 'broo_default_edd_actions_enabled', 10, 1 );
 
 
 /**
@@ -74,11 +74,11 @@ add_filter( 'ub_default_actions_enabled', 'ub_default_edd_actions_enabled', 10, 
  * @param unknown $order_id
  * @param unknown $posted
 */
-function ub_edd_complete_download_purchase( $download_id, $payment_id, $download_type ) {
+function broo_edd_complete_download_purchase( $download_id, $payment_id, $download_type ) {
 
 	// $download = edd_get_download( $download_id );
 
 	$user_id = edd_get_payment_user_id( $payment_id );
 
-	User_Badges::instance()->api->add_user_action( EDD_COMPLETE_DOWNLOAD_PURCHASE_ACTION, $user_id );
+	Badgearoo::instance()->api->add_user_action( EDD_COMPLETE_DOWNLOAD_PURCHASE_ACTION, $user_id );
 }

@@ -9,11 +9,11 @@
 	<div class="ub-users-count">
 		<?php 
 		if ( $users_count == 0 ) {
-			_e( 'No users have earned this badge.', 'user-badges' );
+			_e( 'No users have earned this badge.', 'badgearoo' );
 		} else if ( $users_count == 1 ) {
-			_e( '1 user has earned this badge.', 'user-badges' ); 
+			_e( '1 user has earned this badge.', 'badgearoo' ); 
 		} else {
-			printf( __( '%d users have earned this badge.', 'user-badges' ), $users_count );
+			printf( __( '%d users have earned this badge.', 'badgearoo' ), $users_count );
 		}
 		?>
 	</div>

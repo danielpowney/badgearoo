@@ -5,7 +5,7 @@
  * @author dpowney
  *
  */
-class UB_Action {
+class BROO_Action {
 	
 	public $name;
 	public $description;

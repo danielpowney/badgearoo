@@ -8,7 +8,7 @@
 		<?php 
 		if ( $assignment['type'] == 'badge' && $assignment['badge'] ) {
 			
-			ub_get_template_part( 'badge', null, true, array(
+			broo_get_template_part( 'badge', null, true, array(
 					'badge_id' => $assignment['badge']->id,
 					'show_title' => true,
 					'badge_theme' => $badge_theme,
@@ -22,7 +22,7 @@
 			) );
 
 		} else if ( $assignment['points'] ) {
-			ub_get_template_part( 'points', null, true, array(
+			broo_get_template_part( 'points', null, true, array(
 					'points' => $assignment['points']
 			) );
 		}

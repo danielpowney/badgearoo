@@ -3,20 +3,20 @@
 /**
  * Shows the settings screen
 */
-function ub_settings_page() {
+function broo_settings_page() {
 	?>
 	<div class="wrap">
 		
 		<h2 class="nav-tab-wrapper">
 			<?php
-			$current_tab = isset( $_GET['tab'] ) ? $_GET['tab'] : 'ub_action_settings';
-			$page = User_Badges::SETTINGS_PAGE_SLUG;
+			$current_tab = isset( $_GET['tab'] ) ? $_GET['tab'] : 'broo_general_settings';
+			$page = Badgearoo::SETTINGS_PAGE_SLUG;
 			$tabs = array (
-					'ub_action_settings' 		=> __( 'Actions', 'user-badges' ),
-					'ub_general_settings'		=> __( 'General', 'user-badges' )
+					'broo_general_settings'		=> __( 'General', 'badgearoo' ),
+					'broo_action_settings' 		=> __( 'Actions', 'badgearoo' )
 			);
 			
-			$tabs = apply_filters( 'ub_settings_tabs', $tabs );
+			$tabs = apply_filters( 'broo_settings_tabs', $tabs );
 			
 			foreach ( $tabs as $tab_key => $tab_caption ) {
 				$active = $current_tab == $tab_key ? 'nav-tab-active' : '';
@@ -27,10 +27,10 @@ function ub_settings_page() {
 		
 		<?php 
 
-		if ( $current_tab == 'ub_action_settings' && isset( $_POST['submit'] ) ) {
+		if ( $current_tab == 'broo_action_settings' && isset( $_POST['submit'] ) ) {
 
 			global $wpdb;
-			$actions_enabled = (array) get_option( 'ub_actions_enabled' );
+			$actions_enabled = (array) get_option( 'broo_actions_enabled' );
 		
 			$temp_actions_enabled = array();
 			foreach (  $_POST['actions-enabled'] as $action_name ) {
@@ -46,22 +46,22 @@ function ub_settings_page() {
 				}
 			}
 		
-			update_option( 'ub_actions_enabled', $actions_enabled );
+			update_option( 'broo_actions_enabled', $actions_enabled );
 		}
 		
 		if ( isset( $_GET['updated'] ) && isset( $_GET['page'] ) ) {
-			add_settings_error( 'general', 'settings_updated', __('Settings saved.', 'user-badges' ), 'updated' );
+			add_settings_error( 'general', 'settings_updated', __('Settings saved.', 'badgearoo' ), 'updated' );
 		}
 
 		settings_errors();
 		
-		if ( $current_tab == 'ub_general_settings' ) {
+		if ( $current_tab == 'broo_general_settings' ) {
 			?>
-			<form method="post" name="ub_general_settings" action="options.php">
+			<form method="post" name="broo_general_settings" action="options.php">
 				<?php
 				wp_nonce_field( 'update-options' );
-				settings_fields( 'ub_general_settings' );
-				do_settings_sections( 'ub_general_settings' );
+				settings_fields( 'broo_general_settings' );
+				do_settings_sections( 'broo_general_settings' );
 				submit_button(null, 'primary', 'submit', true, null);
 				?>
 			</form>
@@ -69,9 +69,9 @@ function ub_settings_page() {
 		} else {
 			
 			global $wpdb;
-			$actions_enabled = (array) get_option( 'ub_actions_enabled' );
+			$actions_enabled = (array) get_option( 'broo_actions_enabled' );
 			
-			$action_sources = $wpdb->get_col( 'SELECT DISTINCT(source) AS source FROM ' . $wpdb->prefix . UB_ACTION_TABLE_NAME );
+			$action_sources = $wpdb->get_col( 'SELECT DISTINCT(source) AS source FROM ' . $wpdb->prefix . BROO_ACTION_TABLE_NAME );
 			
 			if ( count( $action_sources ) > 0 ) { ?>
 				
@@ -84,7 +84,7 @@ function ub_settings_page() {
 									<th scope="row"><?php echo $source; ?></th>
 									<td>
 										<?php
-										$actions = $wpdb->get_results( 'SELECT * FROM ' . $wpdb->prefix . UB_ACTION_TABLE_NAME . ' WHERE source = "' . $source . '"' );
+										$actions = $wpdb->get_results( 'SELECT * FROM ' . $wpdb->prefix . BROO_ACTION_TABLE_NAME . ' WHERE source = "' . $source . '"' );
 										
 										$index = 0;
 										$count = count( $actions );

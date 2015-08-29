@@ -1,5 +1,5 @@
 <?php
-class UB_Utils {
+class BROO_Utils {
 	/**
 	 * Gets the current URL
 	 *
@@ -20,7 +20,7 @@ class UB_Utils {
 			$url .= $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
 		}
 	
-		return UB_Utils::normalize_url( $url );
+		return BROO_Utils::normalize_url( $url );
 	}
 	
 	/**
@@ -128,7 +128,7 @@ class UB_Utils {
 		}
 	
 		// Remove some query params which we do not want
-		$url = UB_Utils::remove_query_string_params( $url, array() );
+		$url = BROO_Utils::remove_query_string_params( $url, array() );
 	
 		return $url;
 	}

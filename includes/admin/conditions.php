@@ -2,11 +2,11 @@
 /**
  * Conditions page
  */
-function ub_conditions_page() {
+function broo_conditions_page() {
 	?>
 	<div class="wrap">
-		<h2><?php _e( 'Conditions', 'user-badges' ); ?>
-			<a class="add-new-h2" href="#" id="add-condition"><?php _e('Add New', 'user-badges' ); ?></a>
+		<h2><?php _e( 'Conditions', 'badgearoo' ); ?>
+			<a class="add-new-h2" href="#" id="add-condition"><?php _e('Add New', 'badgearoo' ); ?></a>
 		</h2>
 	
 		<div id="poststuff">
@@ -17,17 +17,17 @@ function ub_conditions_page() {
 							<div id="postbox-container" class="postbox-container active">
 								<div id="normal-sortables" class="meta-box-sortables ui-sortable">
 									<?php 
-									$conditions = User_Badges::instance()->api->get_conditions();
+									$conditions = Badgearoo::instance()->api->get_conditions();
 									
 									if ( count( $conditions ) == 0 ) {
 										$name = __( 'New Condition' );
-										$condition = User_Badges::instance()->api->add_condition( $name );
+										$condition = Badgearoo::instance()->api->add_condition( $name );
 										array_push( $conditions, $condition );
 									}
 									
 									$is_closed = false;
 									foreach ( $conditions as $condition ) {
-										ub_display_condition_meta_box( $condition, $is_closed );
+										broo_display_condition_meta_box( $condition, $is_closed );
 										$is_closed = true;
 									}
 									?>
@@ -48,15 +48,15 @@ function ub_conditions_page() {
  * @param unknown $post
  * @param unknown $data
  */
-function ub_display_condition_meta_box( $condition, $is_closed = false ) {
+function broo_display_condition_meta_box( $condition, $is_closed = false ) {
 	?>
 	<div <?php if ( isset( $condition->condition_id ) ) echo 'id="condition-' . $condition->condition_id . '"'; ?> class="postbox <?php if ( $is_closed ) echo 'closed'; ?>">
 		<div class="handlediv" title="Click to toggle"><br /></div>
 		<h3 class="hndle ui-sortable-handle">
 			<span>
-				<?php printf( __( 'Condition %d - %s', 'user-badges' ), $condition->condition_id, esc_html( $condition->name ) ); ?>
+				<?php printf( __( 'Condition %d - %s', 'badgearoo' ), $condition->condition_id, esc_html( $condition->name ) ); ?>
 			</span>
-			<?php ub_condition_status( $condition ); ?>
+			<?php broo_condition_status( $condition ); ?>
 		</h3>
 		<div class="inside">
 			<form method="post" class="condition">
@@ -69,18 +69,18 @@ function ub_display_condition_meta_box( $condition, $is_closed = false ) {
 							<table class="form-table">
 								<tbody>
 									<tr>
-										<th scope="row"><?php _e( 'Name', 'user-badges' ); ?></th>
+										<th scope="row"><?php _e( 'Name', 'badgearoo' ); ?></th>
 										<td><input type="text" name="name" value="<?php echo $condition->name; ?>" class="regular-text" /></td>
 									</tr>
 									<tr>
-										<th scope="row"><?php _e( 'Enabled', 'user-badges' ); ?></th>
+										<th scope="row"><?php _e( 'Enabled', 'badgearoo' ); ?></th>
 										<td><input type="checkbox" name="enabled" value="true" <?php checked( $condition->enabled, true, true ); ?>/></td>
 									</tr>
 									<tr>
-										<th scope="row"><?php _e( 'Badges', 'user-badges' ); ?></th>
+										<th scope="row"><?php _e( 'Badges', 'badgearoo' ); ?></th>
 										<td>
 											<?php 
-											ub_dropdown_badges( array( 'name' => 'addBadge', 'echo' => true ) );
+											broo_dropdown_badges( array( 'name' => 'addBadge', 'echo' => true ) );
 											?>
 											<input type="button" class="button secondary addBadgeBtn" value="Add Badge" />
 											<p class="description"><?php _e( 'Allocate badges to users'); ?></p>
@@ -88,7 +88,7 @@ function ub_display_condition_meta_box( $condition, $is_closed = false ) {
 											<div class="tagchecklist" style="max-width: 100%;">
 												<?php if ( count( $condition->badges ) > 0 ) {
 													foreach ( $condition->badges as $badge_id ) {
-														$badge = User_Badges::instance()->api->get_badge( $badge_id );
+														$badge = Badgearoo::instance()->api->get_badge( $badge_id );
 														?>
 														<span><a name="badgeId-<?php echo $badge->id; ?>" class="ntdelbutton">X</a>&nbsp;<?php echo $badge->title; ?></span>
 														<?php 
@@ -100,31 +100,31 @@ function ub_display_condition_meta_box( $condition, $is_closed = false ) {
 										</td>
 									</tr>
 									<tr>
-										<th scope="row"><?php _e( 'Points', 'user-badges' ); ?></th>
+										<th scope="row"><?php _e( 'Points', 'badgearoo' ); ?></th>
 										<td>
 											<input type="number" class="medium-text" name="points" value="<?php echo $condition->points; ?>" />
-											<p class="description"><?php _e( 'Allocate points to users.', 'user-badges' ); ?></p>
+											<p class="description"><?php _e( 'Allocate points to users.', 'badgearoo' ); ?></p>
 										</td>
 									</tr>
 									<tr>
-										<th scope="row"><?php _e( 'Recurring', 'user-badges' ); ?></th>
+										<th scope="row"><?php _e( 'Recurring', 'badgearoo' ); ?></th>
 										<td>
 											<input type="checkbox" name="recurring" value="true" <?php checked( $condition->recurring, true, true ); ?>/>
-											<label for="recurring"><?php _e( 'Assignments can occur more than once.', 'user-badges' ); ?></label>
-											<p class="description"><?php _e( 'If turned on, assignments cannot be renewed.', 'user-badges' ); ?>
+											<label for="recurring"><?php _e( 'Assignments can occur more than once.', 'badgearoo' ); ?></label>
+											<p class="description"><?php _e( 'If turned on, assignments cannot be renewed.', 'badgearoo' ); ?>
 										</td>
 									</tr>
 									<tr>
-										<th scope="row"><?php _e( 'Expiry', 'user-badges' ); ?></th>
+										<th scope="row"><?php _e( 'Expiry', 'badgearoo' ); ?></th>
 										<td>
 											<input type="number" name="expiry-value" class="ub-expiry-value" value="<?php if ( $condition->expiry_value != 0 ) { echo $condition->expiry_value; } ?>" />
 											<select name="expiry-unit">
-												<option value="day" <?php if ( $condition->expiry_unit == 'day' ) { echo 'selected="selected"'; }?>><?php _e( 'Day(s)', 'user-badges' ); ?></option>
-												<option value="week" <?php if ( $condition->expiry_unit == 'week' ) { echo 'selected="selected"'; }?>><?php _e( 'Week(s)', 'user-badges' ); ?></option>
-												<option value="month" <?php if ( $condition->expiry_unit == 'month' ) { echo 'selected="selected"'; }?>><?php _e( 'Month(s)', 'user-badges' ); ?></option>
-												<option value="year" <?php if ( $condition->expiry_unit == 'year' ) { echo 'selected="selected"'; }?>><?php _e( 'Year(s)', 'user-badges' ); ?></option>
+												<option value="day" <?php if ( $condition->expiry_unit == 'day' ) { echo 'selected="selected"'; }?>><?php _e( 'Day(s)', 'badgearoo' ); ?></option>
+												<option value="week" <?php if ( $condition->expiry_unit == 'week' ) { echo 'selected="selected"'; }?>><?php _e( 'Week(s)', 'badgearoo' ); ?></option>
+												<option value="month" <?php if ( $condition->expiry_unit == 'month' ) { echo 'selected="selected"'; }?>><?php _e( 'Month(s)', 'badgearoo' ); ?></option>
+												<option value="year" <?php if ( $condition->expiry_unit == 'year' ) { echo 'selected="selected"'; }?>><?php _e( 'Year(s)', 'badgearoo' ); ?></option>
 											</select>
-											<p class="description"><?php _e( 'Leave empty if assignmemt has no expiration.', 'user-badges' ); ?></p>
+											<p class="description"><?php _e( 'Leave empty if assignmemt has no expiration.', 'badgearoo' ); ?></p>
 										</td>
 										
 									</tr>
@@ -135,15 +135,15 @@ function ub_display_condition_meta_box( $condition, $is_closed = false ) {
 							<ul class="ub-step-list">
 								<?php
 								if ( count( $condition->steps ) == 0 ) {
-									$label = __( 'New Step', 'user-badges' );
+									$label = __( 'New Step', 'badgearoo' );
 									
-									$step = User_Badges::instance()->api->add_step( $condition->condition_id, $label );
+									$step = Badgearoo::instance()->api->add_step( $condition->condition_id, $label );
 									
 									array_push( $condition->steps, $step );
 								}
 								
 								foreach ( $condition->steps as $step ) {
-									ub_display_step( $step );
+									broo_display_step( $step );
 								}
 								?>
 							</ul>
@@ -153,8 +153,8 @@ function ub_display_condition_meta_box( $condition, $is_closed = false ) {
 				</table>
 			
 				<p>
-					<input type="submit" class="button button-primary save-condition-btn" value="<?php _e( 'Save Changes', 'user-badges' ); ?>" />
-					<input type="button" class="button button-secondary delete-condition-btn" value="<?php _e( 'Delete', 'user-badges' ); ?>" />
+					<input type="submit" class="button button-primary save-condition-btn" value="<?php _e( 'Save Changes', 'badgearoo' ); ?>" />
+					<input type="button" class="button button-secondary delete-condition-btn" value="<?php _e( 'Delete', 'badgearoo' ); ?>" />
 				</p>
 				
 				<?php 
@@ -173,24 +173,24 @@ function ub_display_condition_meta_box( $condition, $is_closed = false ) {
  * @param condition
  * @param echo
  */
-function ub_condition_status( $condition, $echo = true ) {
+function broo_condition_status( $condition, $echo = true ) {
 
 	$incomplete = false;
 	$messages = array();
 	
 	if ( strlen( $condition->name ) == 0 ) {
 		$incomplete = true;
-		array_push( $messages, __( 'Name required.', 'user-badges' ) );
+		array_push( $messages, __( 'Name required.', 'badgearoo' ) );
 	} 
 	
 	if ( count( $condition->badges ) == 0 && $condition->points == 0 ) {
 		$incomplete = true;
-		array_push( $messages, __( 'Badges or points assignment required.', 'user-badges' ) );
+		array_push( $messages, __( 'Badges or points assignment required.', 'badgearoo' ) );
 	}
 	
 	if ( count( $condition->steps ) == 0 ) {
 		$incomplete = true;
-		array_push( $messages, __( 'Condition must have steps.', 'user-badges' ) );
+		array_push( $messages, __( 'Condition must have steps.', 'badgearoo' ) );
 	}
 
 	$action_not_found = false;
@@ -203,13 +203,13 @@ function ub_condition_status( $condition, $echo = true ) {
 	}
 	
 	if ( $action_not_found ) {
-		array_push( $messages, __( 'Each step must have an action.', 'user-badges' ) );
+		array_push( $messages, __( 'Each step must have an action.', 'badgearoo' ) );
 	}
 	
 	$html = null;
 	
 	if ( $incomplete == true ) {
-		$html = '<span style="font-weight: 600; color: #555;"> - ' . __( 'Incomplete', 'user-badges' ) . '</span>';
+		$html = '<span style="font-weight: 600; color: #555;"> - ' . __( 'Incomplete', 'badgearoo' ) . '</span>';
 	}
 	
 	if ( $echo ) {
@@ -225,17 +225,17 @@ function ub_condition_status( $condition, $echo = true ) {
  * @param unknown $step_id
  * @return string
  */
-function ub_display_step( $step ) {	
+function broo_display_step( $step ) {	
 	?>
 	<li id="step-<?php echo $step->step_id; ?>" class="ub-step ui-state-default">
-		<label for="label"><?php _e( 'Label', 'user-badges' ); ?></label>
+		<label for="label"><?php _e( 'Label', 'badgearoo' ); ?></label>
 		<input type="text" maxlength="50" name="label" value="<?php echo $step->label; ?>" class="regular-text" />
 		
 		<select name="action-name" class="action-name">
-			<option value=""><?php _e( 'Please select an action.', 'user-badges' ); ?>
+			<option value=""><?php _e( 'Please select an action.', 'badgearoo' ); ?>
 			<?php
 			
-			$actions = User_Badges::instance()->api->get_actions();
+			$actions = Badgearoo::instance()->api->get_actions();
 			
 			foreach ( $actions as $group => $group_actions ) {
 				?>
@@ -254,12 +254,12 @@ function ub_display_step( $step ) {
 		<div class="step-meta">			
 			<?php 
 			if ( isset( $step->action_name ) ) {
-				do_action( 'ub_step_meta', $step->step_id, $step->action_name );
+				do_action( 'broo_step_meta', $step->step_id, $step->action_name );
 			}
 			?>
 		</div>
 		
-		<a href="#" class="delete-step"><?php _e( 'Delete', 'user-badges' ); ?></a>
+		<a href="#" class="delete-step"><?php _e( 'Delete', 'badgearoo' ); ?></a>
 	</li>
 	<?php 
 }
@@ -268,19 +268,19 @@ function ub_display_step( $step ) {
 /**
  * Returns HTML for a new condition
  */
-function ub_add_condition() {
+function broo_add_condition() {
 	
 	$ajax_nonce = $_POST['nonce'];
-	if ( wp_verify_nonce( $ajax_nonce, User_Badges::ID.'-nonce' ) ) {
+	if ( wp_verify_nonce( $ajax_nonce, Badgearoo::ID.'-nonce' ) ) {
 
 		ob_start();
 	
 		global $wpdb;	
 		
 		$name = __( 'New Condition' );
-		$condition = User_Badges::instance()->api->add_condition( $name );
+		$condition = Badgearoo::instance()->api->add_condition( $name );
 		
-		ub_display_condition_meta_box( $condition, false );
+		broo_display_condition_meta_box( $condition, false );
 	
 		$html = ob_get_contents();
 		ob_end_clean();
@@ -297,19 +297,19 @@ function ub_add_condition() {
 /**
  * Returns HTML for a new step
  */
-function ub_add_step() {
+function broo_add_step() {
 	
 	$ajax_nonce = $_POST['nonce'];
-	if ( wp_verify_nonce( $ajax_nonce, User_Badges::ID.'-nonce' ) ) {
+	if ( wp_verify_nonce( $ajax_nonce, Badgearoo::ID.'-nonce' ) ) {
 
 		ob_start();
 		
-		$label = __( 'New Step', 'user-badges' );
+		$label = __( 'New Step', 'badgearoo' );
 		$condition_id = $_POST['conditionId'];
 		
-		$step = User_Badges::instance()->api->add_step( $condition_id, $label );
+		$step = Badgearoo::instance()->api->add_step( $condition_id, $label );
 	
-		ub_display_step( $step );
+		broo_display_step( $step );
 	
 		$html = ob_get_contents();
 		ob_end_clean();
@@ -326,13 +326,13 @@ function ub_add_step() {
 /**
  * Deletes a step
  */
-function ub_delete_step() {
+function broo_delete_step() {
 
 	$ajax_nonce = $_POST['nonce'];
-	if ( wp_verify_nonce( $ajax_nonce, User_Badges::ID.'-nonce' ) ) {
+	if ( wp_verify_nonce( $ajax_nonce, Badgearoo::ID.'-nonce' ) ) {
 		$step_id = $_POST['stepId'];
 
-		User_Badges::instance()->api->delete_step( $step_id );
+		Badgearoo::instance()->api->delete_step( $step_id );
 
 		echo json_encode( array(
 				'success' => true
@@ -346,13 +346,13 @@ function ub_delete_step() {
 /**
  * Deletes a condition
  */
-function ub_delete_condition() {
+function broo_delete_condition() {
 
 	$ajax_nonce = $_POST['nonce'];
-	if ( wp_verify_nonce( $ajax_nonce, User_Badges::ID.'-nonce' ) ) {
+	if ( wp_verify_nonce( $ajax_nonce, Badgearoo::ID.'-nonce' ) ) {
 		$condition_id = $_POST['conditionId'];
 
-		User_Badges::instance()->api->delete_condition( $condition_id );
+		Badgearoo::instance()->api->delete_condition( $condition_id );
 		
 		echo json_encode( array(
 				'success' => true
@@ -366,17 +366,17 @@ function ub_delete_condition() {
 /**
  * Returns HTML for step meta
  */
-function ub_step_meta() {
+function broo_step_meta() {
 	
 	$ajax_nonce = $_POST['nonce'];
-	if ( wp_verify_nonce( $ajax_nonce, User_Badges::ID.'-nonce' ) ) {
+	if ( wp_verify_nonce( $ajax_nonce, Badgearoo::ID.'-nonce' ) ) {
 		
 		$step_id = $_POST['stepId'];
 		$action_name = $_POST['actionName'];
 	
 		ob_start();
 		
-		do_action( 'ub_step_meta', $step_id, $action_name );
+		do_action( 'broo_step_meta', $step_id, $action_name );
 		
 		$html = ob_get_contents();
 		ob_end_clean();
@@ -392,10 +392,10 @@ function ub_step_meta() {
 /**
  * Saves a condition including steps and step meta values
  */
-function ub_save_condition() {
+function broo_save_condition() {
 	
 	$ajax_nonce = $_POST['nonce'];
-	if ( wp_verify_nonce( $ajax_nonce, User_Badges::ID.'-nonce' ) ) {
+	if ( wp_verify_nonce( $ajax_nonce, Badgearoo::ID.'-nonce' ) ) {
 		
 		$condition_id = ( isset( $_POST['conditionId'] ) && is_numeric( $_POST['conditionId'] ) ) ? intval( $_POST['conditionId'] ) : null;
 		$name = ( isset( $_POST['name'] ) ) ? $_POST['name'] : '';
@@ -412,7 +412,7 @@ function ub_save_condition() {
 		
 		if ( $condition_id != null ) {
 			
-			$condition = new UB_Condition( $condition_id, $name, $badges, $points, null, $enabled, $expiry_unit, $expiry_value, $recurring );
+			$condition = new BROO_Condition( $condition_id, $name, $badges, $points, null, $enabled, $expiry_unit, $expiry_value, $recurring );
 			
 			if ( is_array( $_POST['steps'] ) ) {
 				foreach ( $_POST['steps'] as $step ) {
@@ -426,24 +426,24 @@ function ub_save_condition() {
 							array_push( $step_meta, array( 'key' => $meta['key'], 'value' => $meta['value'] ) );
 						}
 					}
-					array_push( $condition->steps, new UB_Step( $step_id, $condition_id, $label, $action_name, null, $step_meta ) );
+					array_push( $condition->steps, new BROO_Step( $step_id, $condition_id, $label, $action_name, null, $step_meta ) );
 				}
 			}
 			
-			User_Badges::instance()->api->save_condition( $condition );
+			Badgearoo::instance()->api->save_condition( $condition );
 			
 			echo json_encode( array(
 					'success' => true,
-					'message' => __( 'Condition saved.', 'user-badges' ),
+					'message' => __( 'Condition saved.', 'badgearoo' ),
 					'data' => array( 
-							'name' => sprintf( __( 'Condition %d - %s', 'user-badges' ), $condition->condition_id, esc_html( $condition->name ) ),
-							'status' => ub_condition_status( $condition, false )
+							'name' => sprintf( __( 'Condition %d - %s', 'badgearoo' ), $condition->condition_id, esc_html( $condition->name ) ),
+							'status' => broo_condition_status( $condition, false )
 			) ) );
 			
 		} else {
 			echo json_encode( array(
 					'success' => false,
-					'message' => __( 'Unknown condition.', 'user-badges' )
+					'message' => __( 'Unknown condition.', 'badgearoo' )
 			) );
 		}
 	}

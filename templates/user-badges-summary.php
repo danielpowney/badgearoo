@@ -5,12 +5,12 @@
 
 
 ?>
-<div class="<?php if ( isset( $class ) ) { echo esc_attr( $class ); } ?> user-badges-summary">
+<div class="<?php if ( isset( $class ) ) { echo esc_attr( $class ); } ?> badgearoo-summary">
 
 	<?php 
 	foreach ( $badges as $badge ) {
 		
-		ub_get_template_part( 'badge', null, true, array(
+		broo_get_template_part( 'badge', null, true, array(
 				'badge_id' => $badge->id,
 				'show_title' => true,
 				'badge_theme' => $badge_theme,
@@ -27,7 +27,7 @@
 	
 	<?php
 	
-	ub_get_template_part( 'points', null, true, array(
+	broo_get_template_part( 'points', null, true, array(
 			'points' => $points
 	) );
 	

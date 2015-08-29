@@ -4,9 +4,9 @@
  * Template functions
  * 
  * Looks in the following directories in priority order for template files:
- * 1. wp-content/themes/CHILD_THEME/user-badges/{filename}
- * 2. wp-content/themes/PARENT_THEME/user-badges/{filename}
- * 3. wp-content/plugins/user-badges/templates/{filename}
+ * 1. wp-content/themes/CHILD_THEME/badgearoo/{filename}
+ * 2. wp-content/themes/PARENT_THEME/badgearoo/{filename}
+ * 3. wp-content/plugins/badgearoo/templates/{filename}
  */
 
 /**
@@ -19,11 +19,11 @@
  * @param string $slug
  * @param string $name Optional. Default null
  *
- * @uses  ub_locate_template()
+ * @uses  broo_locate_template()
  * @uses  load_template()
  * @uses  get_template_part()
  */
-function ub_get_template_part( $slug, $name = null, $load = true, $template_vars ) {
+function broo_get_template_part( $slug, $name = null, $load = true, $template_vars ) {
 	// Execute code for this part
 	do_action( 'get_template_part_' . $slug, $slug, $name );
  
@@ -34,10 +34,10 @@ function ub_get_template_part( $slug, $name = null, $load = true, $template_vars
 	$templates[] = $slug . '.php';
  
 	// Allow template parts to be filtered
-	$templates = apply_filters( 'ub_get_template_part', $templates, $slug, $name );
+	$templates = apply_filters( 'broo_get_template_part', $templates, $slug, $name );
  
 	// Return the part that is found
-	ub_locate_template( $templates, $load, false, $template_vars );
+	broo_locate_template( $templates, $load, false, $template_vars );
 }
 
 /**
@@ -57,7 +57,7 @@ function ub_get_template_part( $slug, $name = null, $load = true, $template_vars
  *                            Has no effect if $load is false.
  * @return string The template filename if one is located.
  */
-function ub_locate_template( $template_names, $load = false, $require_once = true, $template_vars ) {
+function broo_locate_template( $template_names, $load = false, $require_once = true, $template_vars ) {
 	// No file found yet
 	$located = false;
 
@@ -72,24 +72,24 @@ function ub_locate_template( $template_names, $load = false, $require_once = tru
 		$template_name = ltrim( $template_name, '/' );
 
 		// Check child theme first
-		if ( file_exists( trailingslashit( get_stylesheet_directory() ) . 'user-badges/' . $template_name ) ) {
-			$located = trailingslashit( get_stylesheet_directory() ) . 'user-badges/' . $template_name;
+		if ( file_exists( trailingslashit( get_stylesheet_directory() ) . 'badgearoo/' . $template_name ) ) {
+			$located = trailingslashit( get_stylesheet_directory() ) . 'badgearoo/' . $template_name;
 			break;
 
 			// Check parent theme next
-		} elseif ( file_exists( trailingslashit( get_template_directory() ) . 'user-badges/' . $template_name ) ) {
-			$located = trailingslashit( get_template_directory() ) . 'user-badges/' . $template_name;
+		} elseif ( file_exists( trailingslashit( get_template_directory() ) . 'badgearoo/' . $template_name ) ) {
+			$located = trailingslashit( get_template_directory() ) . 'badgearoo/' . $template_name;
 			break;
 
 			// Check theme compatibility last
-		} elseif ( file_exists( trailingslashit( ub_get_templates_dir() ) . $template_name ) ) {
-			$located = trailingslashit( ub_get_templates_dir() ) . $template_name;
+		} elseif ( file_exists( trailingslashit( broo_get_templates_dir() ) . $template_name ) ) {
+			$located = trailingslashit( broo_get_templates_dir() ) . $template_name;
 			break;
 		}
 	}
 
 	if ( ( true == $load ) && ! empty( $located ) ) {
-		ub_load_template( $located, $require_once, $template_vars );
+		broo_load_template( $located, $require_once, $template_vars );
 	}
 
 	return $located;
@@ -99,7 +99,7 @@ function ub_locate_template( $template_names, $load = false, $require_once = tru
  * 
  * Taken from WordPress template.php
  * 
- * Require the template file with WordPress environment and User Badges plugin params
+ * Require the template file with WordPress environment and Badgearoo plugin params
  *
  * The globals are set up for the template file to ensure that the WordPress
  * environment is available from within the function. The query variables are
@@ -110,11 +110,11 @@ function ub_locate_template( $template_names, $load = false, $require_once = tru
  * @param string $_template_file Path to template file.
  * @param bool $require_once Whether to require_once or require. Default true.
  */
-function ub_load_template( $_template_file, $require_once = true, $template_vars = array() ) {
+function broo_load_template( $_template_file, $require_once = true, $template_vars = array() ) {
 	
 	global $authordata, $user_ID;
 	
-	apply_filters( 'ub_load_template_params', $template_vars ); // in case you want to add your own global variables or common data
+	apply_filters( 'broo_load_template_params', $template_vars ); // in case you want to add your own global variables or common data
 		
 	if ( $template_vars ) {
 		extract( $template_vars );
@@ -131,7 +131,7 @@ function ub_load_template( $_template_file, $require_once = true, $template_vars
  * 
  * @return relative path to plugin directory
  */
-function ub_get_templates_dir() {
+function broo_get_templates_dir() {
 	return plugin_dir_path( __FILE__ ) . '..' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR;
 }
 ?>

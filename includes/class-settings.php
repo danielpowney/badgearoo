@@ -5,7 +5,7 @@
 *
 * @author dpowney
 */
-class UB_Settings {
+class BROO_Settings {
 	
 	public $actions_enabled = null;
 	public $general_settings = array();
@@ -35,32 +35,32 @@ class UB_Settings {
 	
 	function default_settings() {
 		
-		$this->actions_enabled = (array) get_option( 'ub_actions_enabled' );
-		$this->general_settings = (array) get_option( 'ub_general_settings' );
+		$this->actions_enabled = (array) get_option( 'broo_actions_enabled' );
+		$this->general_settings = (array) get_option( 'broo_general_settings' );
 		
-		$this->actions_enabled = apply_filters( 'ub_default_actions_enabled', $this->actions_enabled );
+		$this->actions_enabled = apply_filters( 'broo_default_actions_enabled', $this->actions_enabled );
 		
-		$assignment_moderator_notification_email_template = __( 'Hello,<br /><br />'
-				. 'A new assignment #{assignment_id} for "{display_name}" requires moderation.<br /><br />'
-				. '{assignment_details}<br />Date: {date}<br /><br />{assignment_moderation_link}<br /><br />'
-				. 'Thank you.', 'user-badges' );
+		$assignment_moderator_notification_email_template = __( "Hello,\r\n\r\n"
+				. "A new assignment #{assignment_id} for \"{display_name}\" requires moderation.\r\n\r\n"
+				. "{assignment_details}\r\nDate: {date}\r\n\r\n{assignment_moderation_link}\r\n\r\n"
+				. "Thank you.", 'badgearoo' );
 		
 		$this->general_settings = array_merge( array(
-				'ub_assignment_auto_approve'					=> true,
-				'ub_assignment_notify_moderators'				=> false,
-				'ub_assignment_moderators'						=> get_option( 'admin_email' ),
-				'ub_assignment_moderation_notification_from'	=> get_option( 'blogname' ),
-				'ub_assignment_moderation_notification_email'	=> get_option( 'admin_email' ),
-				'ub_assignment_moderation_notification_subject' => __( 'New Assignment', 'user-badges' ),
-				'ub_assignment_moderation_notification_heading'	=> __( 'New Assignment', 'user-badges' ),
-				'ub_assignment_moderation_notification_template' => $assignment_moderator_notification_email_template,
-				'ub_show_user_assignment_modal'					=> true,
-				'ub_enable_badge_permalink'						=> true,
-				'ub_default_badge_style'						=> 'none'
+				'broo_assignment_auto_approve'					=> true,
+				'broo_assignment_notify_moderators'				=> false,
+				'broo_assignment_moderators'						=> get_option( 'admin_email' ),
+				'broo_assignment_moderation_notification_from'	=> get_option( 'blogname' ),
+				'broo_assignment_moderation_notification_email'	=> get_option( 'admin_email' ),
+				'broo_assignment_moderation_notification_subject' => __( 'New Assignment', 'badgearoo' ),
+				'broo_assignment_moderation_notification_heading'	=> __( 'New Assignment', 'badgearoo' ),
+				'broo_assignment_moderation_notification_template' => $assignment_moderator_notification_email_template,
+				'broo_show_user_assignment_modal'					=> true,
+				'broo_enable_badge_permalink'						=> true,
+				'broo_badge_theme'								=> 'light'
 		), $this->general_settings );
 		
-		update_option( 'ub_actions_enabled', $this->actions_enabled );
-		update_option( 'ub_general_settings', $this->general_settings);
+		update_option( 'broo_actions_enabled', $this->actions_enabled );
+		update_option( 'broo_general_settings', $this->general_settings);
 	}
 	
 	/**
@@ -68,139 +68,139 @@ class UB_Settings {
 	 */
 	function register_general_settings() {
 	
-		register_setting( 'ub_general_settings', 'ub_general_settings', array( &$this, 'sanitize_general_settings' ) );
+		register_setting( 'broo_general_settings', 'broo_general_settings', array( &$this, 'sanitize_general_settings' ) );
 	
-		add_settings_section( 'section_general', __( 'General', 'user-badges' ), array( &$this, 'section_general_desc' ), 'ub_general_settings' );
-		add_settings_section( 'section_moderation', __( 'Moderation', 'user-badges' ), array( &$this, 'section_moderation_desc' ), 'ub_general_settings' );
+		add_settings_section( 'section_general', __( 'General', 'badgearoo' ), array( &$this, 'section_general_desc' ), 'broo_general_settings' );
+		add_settings_section( 'section_moderation', __( 'Moderation', 'badgearoo' ), array( &$this, 'section_moderation_desc' ), 'broo_general_settings' );
 		
 		$setting_fields = array(
-			'ub_show_user_assignment_modal' => array(
-					'title' 	=> __( 'Show Assignment Modal', 'user-badges' ),
+			'broo_show_user_assignment_modal' => array(
+					'title' 	=> __( 'Show Assignment Modal', 'badgearoo' ),
 					'callback' 	=> 'field_checkbox',
-					'page' 		=> 'ub_general_settings',
+					'page' 		=> 'broo_general_settings',
 					'section' 	=> 'section_general',
 					'args' => array(
-							'option_name' 	=> 'ub_general_settings',
-							'setting_id' 	=> 'ub_show_user_assignment_modal',
-							'label' 		=> __( 'Do you want the user to see a popup message on page load upon assignment of badges and points?', 'user-badges' )
+							'option_name' 	=> 'broo_general_settings',
+							'setting_id' 	=> 'broo_show_user_assignment_modal',
+							'label' 		=> __( 'Do you want the user to see a popup message on page load upon assignment of badges and points?', 'badgearoo' )
 					)
 			
 			),
-			'ub_enable_badge_permalink' => array(
-					'title' 	=> __( 'Enable Badge Permalink', 'user-badges' ),
+			'broo_enable_badge_permalink' => array(
+					'title' 	=> __( 'Enable Badge Permalink', 'badgearoo' ),
 					'callback' 	=> 'field_checkbox',
-					'page' 		=> 'ub_general_settings',
+					'page' 		=> 'broo_general_settings',
 					'section' 	=> 'section_general',
 					'args' => array(
-							'option_name' 	=> 'ub_general_settings',
-							'setting_id' 	=> 'ub_enable_badge_permalink',
-							'label' 		=> __( 'Do you want to enable the badge permalink?', 'user-badges' )
+							'option_name' 	=> 'broo_general_settings',
+							'setting_id' 	=> 'broo_enable_badge_permalink',
+							'label' 		=> __( 'Do you want to enable the badge permalink?', 'badgearoo' )
 					)			
 			),
-			'ub_badge_theme' => array(
-					'title' 	=> __( 'Badge Theme', 'user-badges' ),
+			'broo_badge_theme' => array(
+					'title' 	=> __( 'Badge Theme', 'badgearoo' ),
 					'callback' 	=> 'field_select',
-					'page' 		=> 'ub_general_settings',
+					'page' 		=> 'broo_general_settings',
 					'section' 	=> 'section_general',
 					'args' => array(
-							'option_name' 	=> 'ub_general_settings',
-							'setting_id' 	=> 'ub_badge_theme',
-							'label' 		=> __( 'CSS theme to apply to badges.', 'user-badges' ),
+							'option_name' 	=> 'broo_general_settings',
+							'setting_id' 	=> 'broo_badge_theme',
+							'label' 		=> __( 'CSS theme to apply to badges.', 'badgearoo' ),
 							'select_options' => array(
-									'icon'	=> __( 'Icon', 'user-badges' ),
-									'light' 		=> __( 'Light', 'user-badges' ),
-									'dark' 			=> __( 'Dark', 'user-badges' ),
-									'html' 			=> __( 'Custom HTML', 'user-badges' )
+									'icon'	=> __( 'Icon', 'badgearoo' ),
+									'light' 		=> __( 'Light', 'badgearoo' ),
+									'dark' 			=> __( 'Dark', 'badgearoo' ),
+									'html' 			=> __( 'Custom HTML', 'badgearoo' )
 							)
 					)
 			),
-			'ub_assignment_auto_approve' => array( 
-					'title' 	=> __( 'Auto Approve Assignments', 'user-badges' ),
+			'broo_assignment_auto_approve' => array( 
+					'title' 	=> __( 'Auto Approve Assignments', 'badgearoo' ),
 					'callback' 	=> 'field_checkbox',
-					'page' 		=> 'ub_general_settings',
+					'page' 		=> 'broo_general_settings',
 					'section' 	=> 'section_moderation',
 					'args' => array( 
-							'option_name' 	=> 'ub_general_settings',
-							'setting_id' 	=> 'ub_assignment_auto_approve',
-							'label' 		=> __( 'Automatically approve user assignment of new badges and points.', 'user-badges' )
+							'option_name' 	=> 'broo_general_settings',
+							'setting_id' 	=> 'broo_assignment_auto_approve',
+							'label' 		=> __( 'Automatically approve user assignment of new badges and points.', 'badgearoo' )
 					)
 					 
 			),
-			'ub_assignment_notify_moderators' => array(
-					'title' 	=> __( 'Enable Assignment Moderator Notifications', 'user-badges' ),
+			'broo_assignment_notify_moderators' => array(
+					'title' 	=> __( 'Enable Assignment Moderator Notifications', 'badgearoo' ),
 					'callback' 	=> 'field_checkbox',
-					'page' 		=> 'ub_general_settings',
+					'page' 		=> 'broo_general_settings',
 					'section' 	=> 'section_moderation',
 					'args' => array(
-							'option_name' 	=> 'ub_general_settings',
-							'setting_id' 	=> 'ub_assignment_notify_moderators',
-							'label' 		=> __( 'Send email notifications for new assignments of badges or points which require moderation.', 'user-badges' )
+							'option_name' 	=> 'broo_general_settings',
+							'setting_id' 	=> 'broo_assignment_notify_moderators',
+							'label' 		=> __( 'Send email notifications for new assignments of badges or points which require moderation.', 'badgearoo' )
 					)
 			),
-			'ub_assignment_moderators' => array(
-					'title' 	=> __( 'Moderators', 'user-badges' ),
+			'broo_assignment_moderators' => array(
+					'title' 	=> __( 'Moderators', 'badgearoo' ),
 					'callback' 	=> 'field_textarea',
-					'page' 		=> 'ub_general_settings',
+					'page' 		=> 'broo_general_settings',
 					'section' 	=> 'section_moderation',
 					'args' => array(
-							'option_name' 	=> 'ub_general_settings',
-							'setting_id' 	=> 'ub_assignment_moderators',
-							'label' 		=> __( 'Who should receive the assignment moderation notification?', 'user-badges' ),
-							'footer' 		=> __('Enter the email address(es), one per line.', 'user-badges' )
+							'option_name' 	=> 'broo_general_settings',
+							'setting_id' 	=> 'broo_assignment_moderators',
+							'label' 		=> __( 'Who should receive the assignment moderation notification?', 'badgearoo' ),
+							'footer' 		=> __('Enter the email address(es), one per line.', 'badgearoo' )
 					)
 			),
-			'ub_assignment_moderation_notification_from' => array(
-				'title' 	=> __( 'From Name', 'user-badges' ),
+			'broo_assignment_moderation_notification_from' => array(
+				'title' 	=> __( 'From Name', 'badgearoo' ),
 					'callback' 	=> 'field_input',
-					'page' 		=> 'ub_general_settings',
+					'page' 		=> 'broo_general_settings',
 					'section' 	=> 'section_moderation',
 					'args' => array(
-							'option_name' 	=> 'ub_general_settings',
-							'setting_id' 	=> 'ub_assignment_moderation_notification_from',
-							'label' 		=> __( 'The name assignment moderation notifications are said to come from.', 'user-badges' )
+							'option_name' 	=> 'broo_general_settings',
+							'setting_id' 	=> 'broo_assignment_moderation_notification_from',
+							'label' 		=> __( 'The name assignment moderation notifications are said to come from.', 'badgearoo' )
 				)
 			),
-			'ub_assignment_moderation_notification_email' => array(
-					'title' 	=> __( 'From Email', 'user-badges' ),
+			'broo_assignment_moderation_notification_email' => array(
+					'title' 	=> __( 'From Email', 'badgearoo' ),
 					'callback' 	=> 'field_input',
-					'page' 		=> 'ub_general_settings',
+					'page' 		=> 'broo_general_settings',
 					'section' 	=> 'section_moderation',
 					'args' => array(
-							'option_name' 	=> 'ub_general_settings',
-							'setting_id' 	=> 'ub_assignment_moderation_notification_email',
-							'label' 		=> __( 'Email to send assignment moderation notifications from.', 'user-badges' )
+							'option_name' 	=> 'broo_general_settings',
+							'setting_id' 	=> 'broo_assignment_moderation_notification_email',
+							'label' 		=> __( 'Email to send assignment moderation notifications from.', 'badgearoo' )
 					)
 			),
-			'ub_assignment_moderation_notification_subject' => array(
-					'title' 	=> __( 'Email Subject', 'user-badges' ),
+			'broo_assignment_moderation_notification_subject' => array(
+					'title' 	=> __( 'Email Subject', 'badgearoo' ),
 					'callback' 	=> 'field_input',
-					'page' 		=> 'ub_general_settings',
+					'page' 		=> 'broo_general_settings',
 					'section' 	=> 'section_moderation',
 					'args' => array(
-							'option_name' 	=> 'ub_general_settings',
-							'setting_id' 	=> 'ub_assignment_moderation_notification_subject',
-							'label' 		=> __( 'Enter the subject line for the assignment moderation notification email', 'user-badges' )
+							'option_name' 	=> 'broo_general_settings',
+							'setting_id' 	=> 'broo_assignment_moderation_notification_subject',
+							'label' 		=> __( 'Enter the subject line for the assignment moderation notification email', 'badgearoo' )
 					)
 			),
-			'ub_assignment_moderation_notification_heading' => array(
-					'title' 	=> __( 'Email Heading', 'user-badges' ),
+			'broo_assignment_moderation_notification_heading' => array(
+					'title' 	=> __( 'Email Heading', 'badgearoo' ),
 					'callback' 	=> 'field_input',
-					'page' 		=> 'ub_general_settings',
+					'page' 		=> 'broo_general_settings',
 					'section' 	=> 'section_moderation',
 					'args' => array(
-							'option_name' 	=> 'ub_general_settings',
-							'setting_id' 	=> 'ub_assignment_moderation_notification_heading',
-							'label' 		=> __( 'Enter the heading for the assignment moderation notification email', 'user-badges' )
+							'option_name' 	=> 'broo_general_settings',
+							'setting_id' 	=> 'broo_assignment_moderation_notification_heading',
+							'label' 		=> __( 'Enter the heading for the assignment moderation notification email', 'badgearoo' )
 					)
 			),
-			'ub_assignment_moderation_notification_template' => array(
-					'title' 	=> __( 'Email Template', 'user-badges' ),
+			'broo_assignment_moderation_notification_template' => array(
+					'title' 	=> __( 'Email Template', 'badgearoo' ),
 					'callback' 	=> 'field_editor',
-					'page' 		=> 'ub_general_settings',
+					'page' 		=> 'broo_general_settings',
 					'section' 	=> 'section_moderation',
 					'args' => array(
-							'option_name' 	=> 'ub_general_settings',
-							'setting_id' 	=> 'ub_assignment_moderation_notification_template',
+							'option_name' 	=> 'broo_general_settings',
+							'setting_id' 	=> 'broo_assignment_moderation_notification_template',
 							'footer' 		=> __( 'Enter the email that is sent to a moderator to notify them new assignment required approval. HTML is accepted. Available template tags:<br />'
 									. '{display_name} - The user\'s display name<br />'
 									. '{username} - The user\'s username on the site<br />'
@@ -209,7 +209,7 @@ class UB_Settings {
 									. '{assignment_id} - The unique ID number for this assignment<br />'
 									. '{date} - The date of the assignment<br />'
 									. '{assignment_details} - A list of badges and points<br />'
-									. '{assignment_moderation_link} - Link to assignments page', 'user-badges' ),
+									. '{assignment_moderation_link} - Link to assignments page', 'badgearoo' ),
 					)
 			),
 		);
@@ -225,7 +225,7 @@ class UB_Settings {
 	 */
 	function section_moderation_desc() {
 		?>
-		<p><?php _e( 'Moderation settings for user assignment of badges and points.', 'user-badges' ); ?></p>
+		<p><?php _e( 'Moderation settings for user assignment of badges and points.', 'badgearoo' ); ?></p>
 		<?php
 	}
 	
@@ -234,7 +234,7 @@ class UB_Settings {
 	 */
 	function section_general_desc() {
 		?>
-			<p><?php _e( 'Misc settings.', 'user-badges' ); ?></p>
+			<p><?php _e( 'Misc settings.', 'badgearoo' ); ?></p>
 			<?php
 		}
 	
@@ -338,34 +338,34 @@ class UB_Settings {
 	 */
 	function sanitize_general_settings( $input ) {
 		
-		if ( isset( $input['ub_show_user_assignment_modal'] ) && $input['ub_show_user_assignment_modal'] == 'true' ) {
-			$input['ub_show_user_assignment_modal'] = true;
+		if ( isset( $input['broo_show_user_assignment_modal'] ) && $input['broo_show_user_assignment_modal'] == 'true' ) {
+			$input['broo_show_user_assignment_modal'] = true;
 		} else {
-			$input['ub_show_user_assignment_modal'] = false;
+			$input['broo_show_user_assignment_modal'] = false;
 		}
 		
-		if ( isset( $input['ub_enable_badge_permalink'] ) && $input['ub_enable_badge_permalink'] == 'true' ) {
-			$input['ub_enable_badge_permalink'] = true;
+		if ( isset( $input['broo_enable_badge_permalink'] ) && $input['broo_enable_badge_permalink'] == 'true' ) {
+			$input['broo_enable_badge_permalink'] = true;
 		} else {
-			$input['ub_enable_badge_permalink'] = false;
+			$input['broo_enable_badge_permalink'] = false;
 		}
 		
-		if ( isset( $input['ub_assignment_auto_approve'] ) && $input['ub_assignment_auto_approve'] == 'true' ) {
-			$input['ub_assignment_auto_approve'] = true;
+		if ( isset( $input['broo_assignment_auto_approve'] ) && $input['broo_assignment_auto_approve'] == 'true' ) {
+			$input['broo_assignment_auto_approve'] = true;
 		} else {
-			$input['ub_assignment_auto_approve'] = false;
+			$input['broo_assignment_auto_approve'] = false;
 		}
 		
-		if ( isset( $input['ub_assignment_notify_moderators'] ) && $input['ub_assignment_notify_moderators'] == 'true' ) {
-			$input['ub_assignment_notify_moderators'] = true;
+		if ( isset( $input['broo_assignment_notify_moderators'] ) && $input['broo_assignment_notify_moderators'] == 'true' ) {
+			$input['broo_assignment_notify_moderators'] = true;
 		} else {
-			$input['ub_assignment_notify_moderators'] = false;
+			$input['broo_assignment_notify_moderators'] = false;
 		}
 		
-		$assignment_moderators = preg_split( '/[\r\n,]+/', $input['ub_assignment_moderators'], -1, PREG_SPLIT_NO_EMPTY );
+		$assignment_moderators = preg_split( '/[\r\n,]+/', $input['broo_assignment_moderators'], -1, PREG_SPLIT_NO_EMPTY );
 		foreach ( $assignment_moderators as $email ) {
 			if (! is_email( $email ) ) {
-				add_settings_error( 'ub_general_settings', 'invalid_assignment_moderators', sprintf( __( 'Moderator email  "%s" is invalid.', 'user-badges' ), $email ) );
+				add_settings_error( 'broo_general_settings', 'invalid_assignment_moderators', sprintf( __( 'Moderator email  "%s" is invalid.', 'badgearoo' ), $email ) );
 				break;
 			}
 		}

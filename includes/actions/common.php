@@ -3,50 +3,50 @@
  * WordPress predefined actions
  */
 
-define( 'UB_WP_PUBLISH_POST_ACTION', 'wp_publish_post' );
-define( 'UB_WP_SUBMIT_COMMENT_ACTION', 'wp_submit_comment' );
-define( 'UB_WP_LOGIN_ACTION', 'wp_login' );
-define( 'UB_WP_REGISTER_ACTION', 'wp_register' );
-define( 'UB_WP_PROFILE_UPDATE_ACTION', 'wp_profile_update' );
+define( 'BROO_WP_PUBLISH_POST_ACTION', 'wp_publish_post' );
+define( 'BROO_WP_SUBMIT_COMMENT_ACTION', 'wp_submit_comment' );
+define( 'BROO_WP_LOGIN_ACTION', 'wp_login' );
+define( 'BROO_WP_REGISTER_ACTION', 'wp_register' );
+define( 'BROO_WP_PROFILE_UPDATE_ACTION', 'wp_profile_update' );
 
 // Non WordPress
-define( 'UB_MIN_POINTS_ACTION', 'ub_min_points' );
+define( 'BROO_MIN_POINTS_ACTION', 'broo_min_points' );
 
-function ub_init_common_actions( $ub_actions ) {
+function broo_init_common_actions( $broo_actions ) {
 	
-	$ub_actions[UB_WP_PUBLISH_POST_ACTION] = array(
-			'description' => __( 'User publishes a post.', 'user-badges' ),
-			'source' =>	__( 'WordPress', 'user-badges' )
+	$broo_actions[BROO_WP_PUBLISH_POST_ACTION] = array(
+			'description' => __( 'User publishes a post.', 'badgearoo' ),
+			'source' =>	__( 'WordPress', 'badgearoo' )
 	);
 	
-	$ub_actions[UB_WP_SUBMIT_COMMENT_ACTION] = array(
-			'description' => __( 'User submits a comment.', 'user-badges' ),
-			'source' =>	__( 'WordPress', 'user-badges' )
+	$broo_actions[BROO_WP_SUBMIT_COMMENT_ACTION] = array(
+			'description' => __( 'User submits a comment.', 'badgearoo' ),
+			'source' =>	__( 'WordPress', 'badgearoo' )
 	);
 	
-	$ub_actions[UB_WP_LOGIN_ACTION] = array(
-			'description' => __( 'User logs in.', 'user-badges' ),
-			'source' =>	__( 'WordPress', 'user-badges' )
+	$broo_actions[BROO_WP_LOGIN_ACTION] = array(
+			'description' => __( 'User logs in.', 'badgearoo' ),
+			'source' =>	__( 'WordPress', 'badgearoo' )
 	);
 	
-	$ub_actions[UB_WP_REGISTER_ACTION] = array(
-			'description' => __( 'Register user.', 'user-badges' ),
-			'source' =>	__( 'WordPress', 'user-badges' )
+	$broo_actions[BROO_WP_REGISTER_ACTION] = array(
+			'description' => __( 'Register user.', 'badgearoo' ),
+			'source' =>	__( 'WordPress', 'badgearoo' )
 	);
 	
-	$ub_actions[UB_WP_PROFILE_UPDATE_ACTION] = array(
+	$broo_actions[BROO_WP_PROFILE_UPDATE_ACTION] = array(
 			'description' => __( 'User updates their profile.' ),
 			'source' => __( 'WordPress')
 	);
 	
-	$ub_actions[UB_MIN_POINTS_ACTION] = array(
-			'description' => __( 'Minimum points.', 'user-badges' ),
-			'source' =>	__( 'User Badges', 'user-badges' )
+	$broo_actions[BROO_MIN_POINTS_ACTION] = array(
+			'description' => __( 'Minimum points.', 'badgearoo' ),
+			'source' =>	__( 'Badgearoo', 'badgearoo' )
 	);
 	
-	return $ub_actions;
+	return $broo_actions;
 }
-add_filter( 'ub_init_actions', 'ub_init_common_actions', 10, 1 );
+add_filter( 'broo_init_actions', 'broo_init_common_actions', 10, 1 );
 
 
 /**
@@ -54,45 +54,45 @@ add_filter( 'ub_init_actions', 'ub_init_common_actions', 10, 1 );
  * 
  * @param actions
  */
-function ub_add_common_actions( $actions = array() ) {
+function broo_add_common_actions( $actions = array() ) {
 	
-	$actions_enabled = (array) get_option( 'ub_actions_enabled' );
+	$actions_enabled = (array) get_option( 'broo_actions_enabled' );
 	
-	if ( isset( $actions[UB_WP_PUBLISH_POST_ACTION] ) && $actions[UB_WP_PUBLISH_POST_ACTION]['enabled'] == true ) {
-		add_action( 'transition_post_status',  'ub_transition_post_status', 10, 3 );
-		add_filter( 'ub_condition_step_check_wp_publish_post', 'ub_condition_step_check_publish_post', 10, 4 );
+	if ( isset( $actions[BROO_WP_PUBLISH_POST_ACTION] ) && $actions[BROO_WP_PUBLISH_POST_ACTION]['enabled'] == true ) {
+		add_action( 'transition_post_status',  'broo_transition_post_status', 10, 3 );
+		add_filter( 'broo_condition_step_check_wp_publish_post', 'broo_condition_step_check_publish_post', 10, 4 );
 	}
 	
-	if ( isset( $actions[UB_WP_SUBMIT_COMMENT_ACTION] ) && $actions[UB_WP_SUBMIT_COMMENT_ACTION]['enabled'] == true ) {
-		add_action( 'comment_post', 'ub_submit_comment', 10, 2 );
-		add_filter( 'ub_condition_step_check_wp_submit_comment', 'ub_condition_step_check_count', 10, 4 );
+	if ( isset( $actions[BROO_WP_SUBMIT_COMMENT_ACTION] ) && $actions[BROO_WP_SUBMIT_COMMENT_ACTION]['enabled'] == true ) {
+		add_action( 'comment_post', 'broo_submit_comment', 10, 2 );
+		add_filter( 'broo_condition_step_check_wp_submit_comment', 'broo_condition_step_check_count', 10, 4 );
 	}
 	
-	if ( isset( $actions[UB_WP_LOGIN_ACTION] ) && $actions[UB_WP_LOGIN_ACTION]['enabled'] == true ) {
-		add_action( 'wp_login', 'ub_user_login', 10, 2 );
-		add_filter( 'ub_condition_step_check_wp_login', 'ub_condition_step_check_count', 10, 4 );
+	if ( isset( $actions[BROO_WP_LOGIN_ACTION] ) && $actions[BROO_WP_LOGIN_ACTION]['enabled'] == true ) {
+		add_action( 'wp_login', 'broo_user_login', 10, 2 );
+		add_filter( 'broo_condition_step_check_wp_login', 'broo_condition_step_check_count', 10, 4 );
 	}
 	
-	if ( isset( $actions[UB_WP_REGISTER_ACTION] ) && $actions[UB_WP_REGISTER_ACTION]['enabled'] == true ) {
-		add_action( 'wp_register', 'ub_wp_register', 10, 1 );
-		add_filter( 'ub_condition_step_check_wp_register', 'ub_condition_step_check_count', 10, 4 );
+	if ( isset( $actions[BROO_WP_REGISTER_ACTION] ) && $actions[BROO_WP_REGISTER_ACTION]['enabled'] == true ) {
+		add_action( 'wp_register', 'broo_wp_register', 10, 1 );
+		add_filter( 'broo_condition_step_check_wp_register', 'broo_condition_step_check_count', 10, 4 );
 	}
 	
-	if ( isset( $actions[UB_WP_PROFILE_UPDATE_ACTION] ) && $actions[UB_WP_PROFILE_UPDATE_ACTION]['enabled'] == true ) {
-		add_action( 'profile_update', 'ub_wp_profile_update', 10, 2 );
-		add_filter( 'ub_condition_step_check_wp_profile_update', 'ub_condition_step_check_count', 10, 4 );
+	if ( isset( $actions[BROO_WP_PROFILE_UPDATE_ACTION] ) && $actions[BROO_WP_PROFILE_UPDATE_ACTION]['enabled'] == true ) {
+		add_action( 'profile_update', 'broo_wp_profile_update', 10, 2 );
+		add_filter( 'broo_condition_step_check_wp_profile_update', 'broo_condition_step_check_count', 10, 4 );
 	}
 	
-	if ( isset( $actions[UB_MIN_POINTS_ACTION] ) && $actions[UB_MIN_POINTS_ACTION]['enabled'] == true ) {
-		add_filter( 'ub_condition_step_check_ub_min_points', 'ub_condition_step_check_points', 10, 4 );
+	if ( isset( $actions[BROO_MIN_POINTS_ACTION] ) && $actions[BROO_MIN_POINTS_ACTION]['enabled'] == true ) {
+		add_filter( 'broo_condition_step_check_broo_min_points', 'broo_condition_step_check_points', 10, 4 );
 	}
 	
 	
-	add_filter('ub_step_meta_count_enabled', 'ub_step_meta_count_enabled', 10, 2 );
-	add_filter('ub_step_meta_post_type_enabled', 'ub_step_meta_post_type_enabled', 10, 2 );
-	add_filter('ub_step_meta_points_enabled', 'ub_step_meta_points_enabled', 10, 2 );
+	add_filter('broo_step_meta_count_enabled', 'broo_step_meta_count_enabled', 10, 2 );
+	add_filter('broo_step_meta_post_type_enabled', 'broo_step_meta_post_type_enabled', 10, 2 );
+	add_filter('broo_step_meta_points_enabled', 'broo_step_meta_points_enabled', 10, 2 );
 }
-add_action( 'ub_init_actions_complete', 'ub_add_common_actions' );
+add_action( 'broo_init_actions_complete', 'broo_add_common_actions' );
 
 
 /**
@@ -102,10 +102,10 @@ add_action( 'ub_init_actions_complete', 'ub_add_common_actions' );
  * @param unknown $action
  * @return boolean|unknown
  */
-function ub_step_meta_count_enabled( $enabled, $action ) {
+function broo_step_meta_count_enabled( $enabled, $action ) {
 	
-	if ( $action == UB_WP_LOGIN_ACTION || $action == UB_WP_PUBLISH_POST_ACTION 
-			|| $action == UB_WP_SUBMIT_COMMENT_ACTION || $action == UB_WP_PROFILE_UPDATE_ACTION ) {
+	if ( $action == BROO_WP_LOGIN_ACTION || $action == BROO_WP_PUBLISH_POST_ACTION 
+			|| $action == BROO_WP_SUBMIT_COMMENT_ACTION || $action == BROO_WP_PROFILE_UPDATE_ACTION ) {
 		return true;
 	}
 	
@@ -120,9 +120,9 @@ function ub_step_meta_count_enabled( $enabled, $action ) {
  * @param unknown $action
  * @return boolean|unknown
  */
-function ub_step_meta_post_type_enabled( $enabled, $action ) {
+function broo_step_meta_post_type_enabled( $enabled, $action ) {
 	
-	if ( $action == UB_WP_PUBLISH_POST_ACTION ) {
+	if ( $action == BROO_WP_PUBLISH_POST_ACTION ) {
 		return true;
 	}
 	
@@ -137,9 +137,9 @@ function ub_step_meta_post_type_enabled( $enabled, $action ) {
  * @param unknown $action
  * @return boolean
  */
-function ub_step_meta_points_enabled( $enabled, $action ) {
+function broo_step_meta_points_enabled( $enabled, $action ) {
 
-	if ( $action == UB_MIN_POINTS_ACTION  ) {
+	if ( $action == BROO_MIN_POINTS_ACTION  ) {
 		return true;
 	}
 
@@ -153,20 +153,20 @@ function ub_step_meta_points_enabled( $enabled, $action ) {
  * @param unknown $step_id
  * @param unknown $action
  */
-function ub_step_meta_points( $step_id, $action  ) {
+function broo_step_meta_points( $step_id, $action  ) {
 
-	$step_meta_enabled = apply_filters( 'ub_step_meta_points_enabled', false, $action );
+	$step_meta_enabled = apply_filters( 'broo_step_meta_points_enabled', false, $action );
 
 	if ( $step_meta_enabled ) {
-		$points = User_Badges::instance()->api->get_step_meta_value( $step_id, 'points' );
+		$points = Badgearoo::instance()->api->get_step_meta_value( $step_id, 'points' );
 		?>
 		<span class="step-meta-value">
-			<input name="points" type="number" value="<?php echo $points; ?>" class="small-text" />&nbsp;<?php _e( 'points', 'user-badges' ); ?>
+			<input name="points" type="number" value="<?php echo $points; ?>" class="small-text" />&nbsp;<?php _e( 'points', 'badgearoo' ); ?>
 		</span>
 		<?php
 	}
 }
-add_action( 'ub_step_meta', 'ub_step_meta_points', 10, 2 );
+add_action( 'broo_step_meta', 'broo_step_meta_points', 10, 2 );
 
 
 /**
@@ -175,20 +175,20 @@ add_action( 'ub_step_meta', 'ub_step_meta_points', 10, 2 );
  * @param unknown $step_id
  * @param unknown $action
  */
-function ub_step_meta_count( $step_id, $action  ) {
+function broo_step_meta_count( $step_id, $action  ) {
 
-	$step_meta_enabled = apply_filters( 'ub_step_meta_count_enabled', false, $action );
+	$step_meta_enabled = apply_filters( 'broo_step_meta_count_enabled', false, $action );
 
 	if ( $step_meta_enabled ) {
-		$count = User_Badges::instance()->api->get_step_meta_value( $step_id, 'count' );
+		$count = Badgearoo::instance()->api->get_step_meta_value( $step_id, 'count' );
 		?>
 		<span class="step-meta-value">
-			<input name="count" type="number" value="<?php echo $count; ?>" class="small-text" />&nbsp;<?php _e( 'time(s)', 'user-badges' ); ?>
+			<input name="count" type="number" value="<?php echo $count; ?>" class="small-text" />&nbsp;<?php _e( 'time(s)', 'badgearoo' ); ?>
 		</span>
 		<?php
 	}
 }
-add_action( 'ub_step_meta', 'ub_step_meta_count', 10, 2 );
+add_action( 'broo_step_meta', 'broo_step_meta_count', 10, 2 );
 
 
 /**
@@ -197,17 +197,17 @@ add_action( 'ub_step_meta', 'ub_step_meta_count', 10, 2 );
  * @param unknown $step_id
  * @param unknown $action
  */
-function ub_step_meta_post_type( $step_id, $action  ) {
+function broo_step_meta_post_type( $step_id, $action  ) {
 
-	$step_meta_enabled = apply_filters( 'ub_step_meta_post_type_enabled', false, $action );
+	$step_meta_enabled = apply_filters( 'broo_step_meta_post_type_enabled', false, $action );
 
 	if ( $step_meta_enabled ) {
-		$value = User_Badges::instance()->api->get_step_meta_value( $step_id, 'post_type' );
+		$value = Badgearoo::instance()->api->get_step_meta_value( $step_id, 'post_type' );
 		?>
 		<span class="step-meta-value">
-			<label for="post_type"><?php _e( 'Post Type', 'user-badges' ); ?></label>
+			<label for="post_type"><?php _e( 'Post Type', 'badgearoo' ); ?></label>
 			<select name="post_type">
-				<option value=""><?php _e( 'All', 'user-badges'); ?></option>
+				<option value=""><?php _e( 'All', 'badgearoo'); ?></option>
 				<?php 
 				$post_types = get_post_types( array( 'public' => true ), 'objects' );
 				foreach ( $post_types as $post_type ) {
@@ -218,7 +218,7 @@ function ub_step_meta_post_type( $step_id, $action  ) {
 		<?php
 	}
 }
-add_action( 'ub_step_meta', 'ub_step_meta_post_type', 10, 2 );
+add_action( 'broo_step_meta', 'broo_step_meta_post_type', 10, 2 );
 
 
 /**
@@ -227,19 +227,19 @@ add_action( 'ub_step_meta', 'ub_step_meta_post_type', 10, 2 );
  * @param array $actions_enabled
  * @return $actions_enabled:
  */
-function ub_default_common_actions_enabled( $actions_enabled ) {
+function broo_default_common_actions_enabled( $actions_enabled ) {
 	
 	return array_merge( array(
-			UB_WP_PUBLISH_POST_ACTION			=> true,
-			UB_WP_SUBMIT_COMMENT_ACTION			=> true,
-			UB_WP_LOGIN_ACTION					=> false,
-			UB_WP_REGISTER_ACTION				=> false,
-			UB_MIN_POINTS_ACTION				=> true,
-			UB_WP_PROFILE_UPDATE_ACTION			=> false
+			BROO_WP_PUBLISH_POST_ACTION			=> true,
+			BROO_WP_SUBMIT_COMMENT_ACTION			=> true,
+			BROO_WP_LOGIN_ACTION					=> false,
+			BROO_WP_REGISTER_ACTION				=> false,
+			BROO_MIN_POINTS_ACTION				=> true,
+			BROO_WP_PROFILE_UPDATE_ACTION			=> false
 	), $actions_enabled );
 
 }
-add_filter( 'ub_default_actions_enabled', 'ub_default_common_actions_enabled', 10, 1 );
+add_filter( 'broo_default_actions_enabled', 'broo_default_common_actions_enabled', 10, 1 );
 
 /**
  * When a post changes status, check if it's just been published
@@ -248,7 +248,7 @@ add_filter( 'ub_default_actions_enabled', 'ub_default_common_actions_enabled', 1
  * @param unknown $old_status
  * @param unknown $post
  */
-function ub_transition_post_status( $new_status, $old_status, $post = null ) {
+function broo_transition_post_status( $new_status, $old_status, $post = null ) {
 
 	if ( $post == null ) {
 		return;
@@ -262,7 +262,7 @@ function ub_transition_post_status( $new_status, $old_status, $post = null ) {
 		// get user id
 		$user_id = $post->post_author;
 
-		User_Badges::instance()->api->add_user_action( UB_WP_PUBLISH_POST_ACTION, $user_id, array(
+		Badgearoo::instance()->api->add_user_action( BROO_WP_PUBLISH_POST_ACTION, $user_id, array(
 				'post_type' => $post_type ,
 				'post_id' => $post->ID
 		) );
@@ -277,13 +277,13 @@ function ub_transition_post_status( $new_status, $old_status, $post = null ) {
  * @param unknown $comment_id
  * @param unknown $comment_approved
  */
-function ub_submit_comment( $comment_id, $comment_approved = null) {
+function broo_submit_comment( $comment_id, $comment_approved = null) {
 	$comment = get_comment( $comment_id );
 
 	$user_id = $comment->user_id;
 
 	if ( $user_id != 0 ) {
-		User_Badges::instance()->api->add_user_action( UB_WP_SUBMIT_COMMENT_ACTION, $user_id, array( 'comment_id' => $comment_id ) );
+		Badgearoo::instance()->api->add_user_action( BROO_WP_SUBMIT_COMMENT_ACTION, $user_id, array( 'comment_id' => $comment_id ) );
 	}
 }
 
@@ -294,8 +294,8 @@ function ub_submit_comment( $comment_id, $comment_approved = null) {
  * @param unknown $user_login
  * @param unknown $user
  */
-function ub_user_login( $user_login, $user ) {
-	User_Badges::instance()->api->add_user_action( UB_WP_REGISTER_ACTION, $user->ID );
+function broo_user_login( $user_login, $user ) {
+	Badgearoo::instance()->api->add_user_action( BROO_WP_REGISTER_ACTION, $user->ID );
 }
 
 
@@ -303,8 +303,8 @@ function ub_user_login( $user_login, $user ) {
  * Whenever a user registers
  * @param unknown $user_id
  */
-function ub_wp_register( $user_id ) {
-	User_Badges::instance()->api->add_user_action( UB_WP_REGISTER_ACTION, $user_id );
+function broo_wp_register( $user_id ) {
+	Badgearoo::instance()->api->add_user_action( BROO_WP_REGISTER_ACTION, $user_id );
 }
 
 
@@ -317,8 +317,8 @@ function ub_wp_register( $user_id ) {
  * @param unknown $meta_key
  * @param unknown $meta_value
  */
-function ub_wp_profile_update( $user_id, $old_user_data ) {
-	User_Badges::instance()->api->add_user_action( UB_WP_PROFILE_UPDATE_ACTION, $user_id, array() );
+function broo_wp_profile_update( $user_id, $old_user_data ) {
+	Badgearoo::instance()->api->add_user_action( BROO_WP_PROFILE_UPDATE_ACTION, $user_id, array() );
 }
 
 
@@ -331,16 +331,16 @@ function ub_wp_profile_update( $user_id, $old_user_data ) {
  * @param string $action_name
  * @return boolean
  */
-function ub_condition_step_check_count( $step_result, $step, $user_id, $action_name ) {
+function broo_condition_step_check_count( $step_result, $step, $user_id, $action_name ) {
 
 	if ( $step_result == false ) { // no need to continue
 		return $step_result;
 	}
 
-	$meta_count = User_Badges::instance()->api->get_step_meta_value( $step->step_id, 'count' );
+	$meta_count = Badgearoo::instance()->api->get_step_meta_value( $step->step_id, 'count' );
 
 	global $wpdb;
-	$query = 'SELECT COUNT(*) FROM ' . $wpdb->prefix . UB_USER_ACTION_TABLE_NAME . ' WHERE action_name = "'
+	$query = 'SELECT COUNT(*) FROM ' . $wpdb->prefix . BROO_USER_ACTION_TABLE_NAME . ' WHERE action_name = "'
 			. esc_sql( $step->action_name ) . '" and user_id = ' . $user_id;
 
 	$db_count = $wpdb->get_var( $query );
@@ -362,18 +362,18 @@ function ub_condition_step_check_count( $step_result, $step, $user_id, $action_n
  * @param string $action_name
  * @return boolean
  */
-function ub_condition_step_check_publish_post( $step_result, $step, $user_id, $action_name ) {
+function broo_condition_step_check_publish_post( $step_result, $step, $user_id, $action_name ) {
 
 	if ( $step_result == false ) { // no need to continue
 		return $step_result;
 	}
 
-	$meta_count = User_Badges::instance()->api->get_step_meta_value( $step->step_id, 'count' );
-	$meta_post_type = User_Badges::instance()->api->get_step_meta_value( $step->step_id, 'post_type' );
+	$meta_count = Badgearoo::instance()->api->get_step_meta_value( $step->step_id, 'count' );
+	$meta_post_type = Badgearoo::instance()->api->get_step_meta_value( $step->step_id, 'post_type' );
 
 	global $wpdb;
-	$query = 'SELECT COUNT(*) FROM ' . $wpdb->prefix . UB_USER_ACTION_TABLE_NAME
-			. ' ua INNER JOIN ' . $wpdb->prefix . UB_USER_ACTION_META_TABLE_NAME
+	$query = 'SELECT COUNT(*) FROM ' . $wpdb->prefix . BROO_USER_ACTION_TABLE_NAME
+			. ' ua INNER JOIN ' . $wpdb->prefix . BROO_USER_ACTION_META_TABLE_NAME
 			. ' uam ON uam.user_action_id = ua.id WHERE ua.action_name = "'
 			. esc_sql( $action_name ) . '" AND ua.user_id = ' . $user_id
 			. ' AND uam.meta_key = "post_type"';
@@ -400,17 +400,17 @@ function ub_condition_step_check_publish_post( $step_result, $step, $user_id, $a
  * @param string $action_name
  * @return unknown
  */
-function ub_condition_step_check_points( $step_result, $step, $user_id, $action_name ) {
+function broo_condition_step_check_points( $step_result, $step, $user_id, $action_name ) {
 
 	if ( $step_result == false ) { // no need to continue
 		return $step_result;
 	}
 
-	$value = User_Badges::instance()->api->get_step_meta_value( $step->step_id, 'points' );
+	$value = Badgearoo::instance()->api->get_step_meta_value( $step->step_id, 'points' );
 
 	global $wpdb;
 
-	$points = $wpdb->get_var( 'SELECT COUNT(*) FROM ' . $wpdb->prefix . UB_USER_ACTION_TABLE_NAME . ' WHERE action_name = "' . esc_sql( $action ) . '" AND user_id = ' . $user_id );
+	$points = $wpdb->get_var( 'SELECT COUNT(*) FROM ' . $wpdb->prefix . BROO_USER_ACTION_TABLE_NAME . ' WHERE action_name = "' . esc_sql( $action ) . '" AND user_id = ' . $user_id );
 
 	if ( intval( $points ) < intval( $value ) ) {
 		return false;

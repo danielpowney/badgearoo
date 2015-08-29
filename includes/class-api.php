@@ -6,7 +6,7 @@
  * @author dpowney
  *
  */
-interface UB_API {
+interface BROO_API {
 	
 	/**
 	 * Adds assignment (e.g. badge, points) to a user if they do not have it already
@@ -195,11 +195,11 @@ interface UB_API {
  * @author dpowney
  *
  */
-class UB_API_Impl implements UB_API {
+class BROO_API_Impl implements BROO_API {
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see UB_API::add_user_assignment()
+	 * @see BROO_API::add_user_assignment()
 	 */
 	public function add_user_assignment( $condition_id = null, $user_id = 0, $type = 'badge', $value = 0, $expiry_dt = null ) {
 		
@@ -207,8 +207,8 @@ class UB_API_Impl implements UB_API {
 			return;
 		}
 		
-		$general_settings = (array) get_option( 'ub_general_settings' );
-		$assignment_auto_approve = $general_settings['ub_assignment_auto_approve'];
+		$general_settings = (array) get_option( 'broo_general_settings' );
+		$assignment_auto_approve = $general_settings['broo_assignment_auto_approve'];
 		
 		global $wpdb;
 		
@@ -217,7 +217,7 @@ class UB_API_Impl implements UB_API {
 		if ( $condition_id ) {
 			
 			$query = 'SELECT ua.id, ua.value, ua.status, c.recurring, c.expiry_unit, c.expiry_value FROM ' 
-					. $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME . ' ua, ' . $wpdb->prefix . UB_CONDITION_TABLE_NAME . ' c'
+					. $wpdb->prefix . BROO_USER_ASSIGNMENT_TABLE_NAME . ' ua, ' . $wpdb->prefix . BROO_CONDITION_TABLE_NAME . ' c'
 					. ' WHERE ua.condition_id = c.condition_id AND ua.condition_id = ' . esc_sql( $condition_id ) 
 					. ' AND ua.type = "' . esc_sql( $type ) . '"';
 			
@@ -263,7 +263,7 @@ class UB_API_Impl implements UB_API {
 				array_push( $format, '%s' );
 			}
 			
-			$result = $wpdb->update( $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME,
+			$result = $wpdb->update( $wpdb->prefix . BROO_USER_ASSIGNMENT_TABLE_NAME,
 					$data,
 					$where,
 					$format,
@@ -272,7 +272,7 @@ class UB_API_Impl implements UB_API {
 			
 			$assignment_id = $wpdb->insert_id;
 			
-			do_action( 'ub_update_user_assignment', $assignment_id, $condition_id, $user_id, $type, $value, $status );
+			do_action( 'broo_update_user_assignment', $assignment_id, $condition_id, $user_id, $type, $value, $status );
 			
 		} else {
 			
@@ -300,20 +300,20 @@ class UB_API_Impl implements UB_API {
 				array_push( $format, '%s' );
 			}
 			
-			$wpdb->insert( $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME, 
+			$wpdb->insert( $wpdb->prefix . BROO_USER_ASSIGNMENT_TABLE_NAME, 
 					$data, 
 					$format
 			);
 			
 			$assignment_id = $wpdb->insert_id;
 			
-			do_action( 'ub_add_user_assignment', $assignment_id, $condition_id, $user_id, $type, $value, $created_dt, $status );
+			do_action( 'broo_add_user_assignment', $assignment_id, $condition_id, $user_id, $type, $value, $created_dt, $status );
 		}
 	}
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see UB_API::delete_assignment()
+	 * @see BROO_API::delete_assignment()
 	 */
 	public function delete_assignments( $filters = array() ) {
 		
@@ -327,7 +327,7 @@ class UB_API_Impl implements UB_API {
 		
 		global $wpdb;
 		
-		$query = 'DELETE FROM ' . $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME;
+		$query = 'DELETE FROM ' . $wpdb->prefix . BROO_USER_ASSIGNMENT_TABLE_NAME;
 		
 		$added_to_query = false;
 		
@@ -396,7 +396,7 @@ class UB_API_Impl implements UB_API {
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see UB_API::delete_assignment()
+	 * @see BROO_API::delete_assignment()
 	 */
 	public function delete_assignment( $assignment_id = null, $condition_id = null, $user_id = 0, $type = 'badge', $value = 0 ) {
 		
@@ -434,12 +434,12 @@ class UB_API_Impl implements UB_API {
 			
 		}
 	
-		$result = $wpdb->delete( $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME, $where, $where_format );
+		$result = $wpdb->delete( $wpdb->prefix . BROO_USER_ASSIGNMENT_TABLE_NAME, $where, $where_format );
 	}
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see UB_API::get_assignments()
+	 * @see BROO_API::get_assignments()
 	 */
 	public function get_assignments( $filters = array(), $is_count = false ) {
 		
@@ -466,7 +466,7 @@ class UB_API_Impl implements UB_API {
 			$query .= ' a.*, u.user_login';
 		}
 		
-		$query .= ' FROM ' . $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME . ' a LEFT JOIN ' . $wpdb->posts . ' p'
+		$query .= ' FROM ' . $wpdb->prefix . BROO_USER_ASSIGNMENT_TABLE_NAME . ' a LEFT JOIN ' . $wpdb->posts . ' p'
 				. ' ON ( a.type = "badge" AND a.value = p.ID AND p.post_status = "publish" )';
 		
 		if ( ! $is_count ) {
@@ -561,13 +561,13 @@ class UB_API_Impl implements UB_API {
 		
 		foreach ( $results as $row ) {
 
-			$condition = User_Badges::instance()->api->get_condition( $row->condition_id );
+			$condition = Badgearoo::instance()->api->get_condition( $row->condition_id );
 			
 			$badge = null;
 			$points = null;
 			
 			if ( $row->type == 'badge' ) {
-				$badge = User_Badges::instance()->api->get_badge( $row->value );
+				$badge = Badgearoo::instance()->api->get_badge( $row->value );
 			} else {
 				$points = intval( $row->value );
 			}
@@ -593,26 +593,26 @@ class UB_API_Impl implements UB_API {
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see UB_API::get_assignment()
+	 * @see BROO_API::get_assignment()
 	 */
 	public function get_assignment( $assignment_id ) {
 
 		global $wpdb;
 	
-		$query .= 'SELECT a.*, u.user_login FROM ' . $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME . ' a, ' . $wpdb->users
+		$query .= 'SELECT a.*, u.user_login FROM ' . $wpdb->prefix . BROO_USER_ASSIGNMENT_TABLE_NAME . ' a, ' . $wpdb->users . ' u'
 				. ' WHERE       a.id = %d AND u.ID = a.user_id';
 	
 		$row = $wpdb->get_row( $wpdb->prepare( $query, $assignment_id ) );
 	
 		if ( $row ) {
 			
-			$condition = User_Badges::instance()->api->get_condition( $row->condition_id );
+			$condition = Badgearoo::instance()->api->get_condition( $row->condition_id );
 				
 			$badge = null;
 			$points = null;
 				
 			if ( $row->type == 'badge' ) {
-				$badge = User_Badges::instance()->api->get_badge( $row->value );
+				$badge = Badgearoo::instance()->api->get_badge( $row->value );
 			} else {
 				$points = intval( $row->value );
 			}
@@ -639,7 +639,7 @@ class UB_API_Impl implements UB_API {
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see UB_API::get_user_badges()
+	 * @see BROO_API::get_user_badges()
 	 */
 	public function get_user_badges( $user_id, $filters = array() ) {
 		
@@ -651,7 +651,7 @@ class UB_API_Impl implements UB_API {
 		global $wpdb;
 		
 		$query = 'SELECT	a.value AS badge_id
-				FROM        ' . $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME . ' a
+				FROM        ' . $wpdb->prefix . BROO_USER_ASSIGNMENT_TABLE_NAME . ' a
 							LEFT JOIN ' . $wpdb->posts . ' p ON ( a.type = "badge" AND a.value = p.ID AND p.post_status = "publish" ) 
 				WHERE       ( ( a.type = "badge" AND p.post_status = "publish" ) OR ( a.type = "points" ) )'
 							. ' AND a.user_id = %d AND a.type = "badge"'
@@ -696,7 +696,7 @@ class UB_API_Impl implements UB_API {
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see UB_API::get_user_points()
+	 * @see BROO_API::get_user_points()
 	 */
 	public function get_user_points( $user_id, $filters = array() ) {
 		
@@ -707,7 +707,7 @@ class UB_API_Impl implements UB_API {
 		
 		global $wpdb;
 		
-		$query = 'SELECT SUM(CASE WHEN type = "points" THEN value ELSE 0 END) AS points FROM wp_ub_user_assignment WHERE user_id = ' 
+		$query = 'SELECT SUM(CASE WHEN type = "points" THEN value ELSE 0 END) AS points FROM wp_broo_user_assignment WHERE user_id = ' 
 				. $user_id . ' AND ( NOW() <= expiry_dt OR expiry_dt IS NULL ) AND status = "approved"';
 		
 		$added_to_query = true;
@@ -741,7 +741,7 @@ class UB_API_Impl implements UB_API {
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see UB_API::get_badge()
+	 * @see BROO_API::get_badge()
 	 */
 	public function get_badge( $badge_id = 0, $load_users = false ) {
 		if ( $badge_id == 0 ) {
@@ -760,7 +760,7 @@ class UB_API_Impl implements UB_API {
 				
 				$rows = $wpdb->get_results( $wpdb->prepare( '
 						SELECT      DISTINCT( user_id ) AS user_id
-						FROM        ' . $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME . '
+						FROM        ' . $wpdb->prefix . BROO_USER_ASSIGNMENT_TABLE_NAME . '
 						WHERE       value = %d AND type = "badge" 
 									AND ( NOW() <= expiry_dt OR expiry_dt IS NULL )
 									AND status = "approved"',
@@ -774,7 +774,7 @@ class UB_API_Impl implements UB_API {
 				$wpdb->show_errors();
 			}
 		
-			return new UB_Badge( 
+			return new BROO_Badge( 
 					$badge_id,
 					$post->post_title,
 					$post->post_content,
@@ -789,30 +789,30 @@ class UB_API_Impl implements UB_API {
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see UB_API::add_user_action()
+	 * @see BROO_API::add_user_action()
 	 */
 	public function add_user_action( $action_name, $user_id, $meta = array() ) {
 		
 		global $wpdb;
 		
-		$wpdb->insert( $wpdb->prefix . UB_USER_ACTION_TABLE_NAME, array( 'user_id' => $user_id, 'action_name' => $action_name ), array( '%d', '%s') );	
+		$wpdb->insert( $wpdb->prefix . BROO_USER_ACTION_TABLE_NAME, array( 'user_id' => $user_id, 'action_name' => $action_name ), array( '%d', '%s') );	
 		$user_action_id = $wpdb->insert_id;
 		
 		foreach ( $meta as $meta_key => $meta_value )  {
 			
-			$wpdb->insert( $wpdb->prefix . UB_USER_ACTION_META_TABLE_NAME, 
+			$wpdb->insert( $wpdb->prefix . BROO_USER_ACTION_META_TABLE_NAME, 
 					array( 'user_action_id' => $user_action_id, 'meta_key' => $meta_key, 'meta_value' => $meta_value ), 
 					array( '%d', '%s', '%s')
 			);
 				
 		}
 		
-		ub_check_conditions( $action_name, $user_id );
+		broo_check_conditions( $action_name, $user_id );
 	}
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see UB_API::add_step()
+	 * @see BROO_API::add_step()
 	 */
 	public function add_step( $condition_id, $label ) {
 		
@@ -820,45 +820,45 @@ class UB_API_Impl implements UB_API {
 		
 		global $wpdb;
 		
-		$wpdb->insert( $wpdb->prefix . UB_CONDITION_STEP_TABLE_NAME ,
+		$wpdb->insert( $wpdb->prefix . BROO_CONDITION_STEP_TABLE_NAME ,
 				array( 'condition_id' => $condition_id, 'label' => $label, 'created_dt' => $created_dt ),
 				array( '%s', '%s', '%s')
 		);
 		$step_id = $wpdb->insert_id;
 		
-		return new UB_Step( $step_id, $condition_id, $label, null, $created_dt );
+		return new BROO_Step( $step_id, $condition_id, $label, null, $created_dt );
 	}
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see UB_API::add_condition()
+	 * @see BROO_API::add_condition()
 	 */
 	public function add_condition( $name ) {
 		global $wpdb;
 		
 		$created_dt = current_time('mysql');
 		
-		$wpdb->insert( $wpdb->prefix . UB_CONDITION_TABLE_NAME , array( 'name' => $name, 'created_dt' => $created_dt, 'enabled' => true ), array( '%s', '%s', '%d' ) );
+		$wpdb->insert( $wpdb->prefix . BROO_CONDITION_TABLE_NAME , array( 'name' => $name, 'created_dt' => $created_dt, 'enabled' => true ), array( '%s', '%s', '%d' ) );
 		$condition_id = $wpdb->insert_id;
 		
-		return new UB_Condition( $condition_id, $name, array(), 0, $created_dt, true, null );
+		return new BROO_Condition( $condition_id, $name, array(), 0, $created_dt, true, null );
 	}
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see UB_API::get_conditions()
+	 * @see BROO_API::get_conditions()
 	 */
 	public function get_conditions( $filters = array() ) {
 		global $wpdb;
 		
-		$query = 'SELECT * FROM ' . $wpdb->prefix . UB_CONDITION_TABLE_NAME;
+		$query = 'SELECT * FROM ' . $wpdb->prefix . BROO_CONDITION_TABLE_NAME;
 		
 		$results = $wpdb->get_results( $query );
 		
 		$conditions = array();
 		foreach ( $results as $row ) {
 			$badges = ( strlen( trim ( $row->badges ) ) == 0 ) ? array() : preg_split( '/[\s,]+/', $row->badges );
-			array_push( $conditions, new UB_Condition( $row->condition_id, $row->name, $badges, $row->points, $row->created_dt, 
+			array_push( $conditions, new BROO_Condition( $row->condition_id, $row->name, $badges, $row->points, $row->created_dt, 
 					$row->enabled, $row->expiry_unit, $row->expiry_value, $row->recurring ) );
 		}
 		
@@ -867,18 +867,18 @@ class UB_API_Impl implements UB_API {
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see UB_API::get_conditions()
+	 * @see BROO_API::get_conditions()
 	 */
 	public function get_condition( $condition_id ) {
 		global $wpdb;
 	
-		$query = 'SELECT * FROM ' . $wpdb->prefix . UB_CONDITION_TABLE_NAME . ' WHERE condition_id = ' . intval( $condition_id );
+		$query = 'SELECT * FROM ' . $wpdb->prefix . BROO_CONDITION_TABLE_NAME . ' WHERE condition_id = ' . intval( $condition_id );
 	
 		$row = $wpdb->get_row( $query );
 	
 		if ( $row != null ) {
 			$badges = ( strlen( trim ( $row->badges ) ) == 0 ) ? array() : preg_split( '/[\s,]+/', $row->badges );
-			return new UB_Condition( $row->condition_id, $row->name, $badges, $row->points, $row->created_dt, 
+			return new BROO_Condition( $row->condition_id, $row->name, $badges, $row->points, $row->created_dt, 
 					$row->enabled, $row->expiry_unit, $row->expiry_value, $row->recurring );
 		}
 		
@@ -887,7 +887,7 @@ class UB_API_Impl implements UB_API {
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see UB_API::get_badges()
+	 * @see BROO_API::get_badges()
 	 */
 	public function get_badges( $filters = array( 'badge_ids' => array() ), $load_users = false ) {
 		
@@ -910,7 +910,7 @@ class UB_API_Impl implements UB_API {
 				
 				$user_rows = $wpdb->get_results( $wpdb->prepare( '
 							SELECT      DISTINCT( user_id ) AS user_id
-							FROM        ' . $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME . '
+							FROM        ' . $wpdb->prefix . BROO_USER_ASSIGNMENT_TABLE_NAME . '
 							WHERE       value = %d AND type = "badge"
 										AND ( NOW() <= expiry_dt OR expiry_dt IS NULL )
 										AND status = "approved"',
@@ -922,7 +922,7 @@ class UB_API_Impl implements UB_API {
 				}
 			}
 
-			$badge = new UB_Badge(
+			$badge = new BROO_Badge(
 					$row->ID,
 					$row->post_title,
 					$row->post_content,
@@ -939,12 +939,12 @@ class UB_API_Impl implements UB_API {
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see UB_API::get_actions()
+	 * @see BROO_API::get_actions()
 	 */
 	public function get_actions( $filters = array( ) ) {
 		global $wpdb;
 		
-		$query = 'SELECT * FROM ' . $wpdb->prefix . UB_ACTION_TABLE_NAME . ' ORDER BY source';
+		$query = 'SELECT * FROM ' . $wpdb->prefix . BROO_ACTION_TABLE_NAME . ' ORDER BY source';
 		
 		$results = $wpdb->get_results( $query );
 		
@@ -953,7 +953,7 @@ class UB_API_Impl implements UB_API {
 			if ( ! isset( $actions[$row->source] ) ) {
 				$actions[$row->source]= array();
 			}
-			array_push( $actions[$row->source], new UB_Action( $row->name, $row->description, $row->source ) );
+			array_push( $actions[$row->source], new BROO_Action( $row->name, $row->description, $row->source ) );
 		}
 		
 		return $actions;
@@ -961,12 +961,12 @@ class UB_API_Impl implements UB_API {
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see UB_API::delete_step()
+	 * @see BROO_API::delete_step()
 	 */
 	public function delete_step( $step_id ) {
 		global $wpdb;
 		
-		$wpdb->delete( $wpdb->prefix . UB_CONDITION_STEP_TABLE_NAME ,
+		$wpdb->delete( $wpdb->prefix . BROO_CONDITION_STEP_TABLE_NAME ,
 				array( 'step_id' => $step_id ),
 				array( '%d' )
 		);
@@ -974,31 +974,31 @@ class UB_API_Impl implements UB_API {
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see UB_API::delete_condition()
+	 * @see BROO_API::delete_condition()
 	 */
 	public function delete_condition( $condition_id ) {
 		global $wpdb;
 		
-		$wpdb->delete( $wpdb->prefix . UB_CONDITION_TABLE_NAME ,
+		$wpdb->delete( $wpdb->prefix . BROO_CONDITION_TABLE_NAME ,
 				array( 'condition_id' => $condition_id ),
 				array( '%d' )
 		);
 		
-		$steps = $wpdb->get_col( $wpdb->prepare( 'SELECT step_id FROM ' . $wpdb->prefix . UB_CONDITION_STEP_TABLE_NAME . ' WHERE condition_id = %d', $condition_id ) );
+		$steps = $wpdb->get_col( $wpdb->prepare( 'SELECT step_id FROM ' . $wpdb->prefix . BROO_CONDITION_STEP_TABLE_NAME . ' WHERE condition_id = %d', $condition_id ) );
 		
-		$wpdb->delete( $wpdb->prefix . UB_CONDITION_STEP_TABLE_NAME ,
+		$wpdb->delete( $wpdb->prefix . BROO_CONDITION_STEP_TABLE_NAME ,
 				array( 'condition_id' => $condition_id ),
 				array( '%d' )
 		);
 		
-		$wpdb->query( 'DELETE FROM ' . $wpdb->prefix . UB_CONDITION_STEP_META_TABLE_NAME . ' WHERE step_id IN ( ' . implode(',', $steps ) . ')' );
+		$wpdb->query( 'DELETE FROM ' . $wpdb->prefix . BROO_CONDITION_STEP_META_TABLE_NAME . ' WHERE step_id IN ( ' . implode(',', $steps ) . ')' );
 
-		$wpdb->query( 'DELETE FROM ' . $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME . ' WHERE condition_id = ' . $condition_id );
+		$wpdb->query( 'DELETE FROM ' . $wpdb->prefix . BROO_USER_ASSIGNMENT_TABLE_NAME . ' WHERE condition_id = ' . $condition_id );
 	}
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see UB_API::save_condition()
+	 * @see BROO_API::save_condition()
 	 */
 	public function save_condition( $condition ) {
 		
@@ -1017,7 +1017,7 @@ class UB_API_Impl implements UB_API {
 		);
 		$format = array( '%s', '%s', '%d', '%d', '%d', '%s', '%d' );
 
-		$result = $wpdb->update( $wpdb->prefix . UB_CONDITION_TABLE_NAME , 
+		$result = $wpdb->update( $wpdb->prefix . BROO_CONDITION_TABLE_NAME , 
 				$data,
 				array( 'condition_id' => $condition->condition_id ),
 				$format,
@@ -1031,13 +1031,13 @@ class UB_API_Impl implements UB_API {
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see UB_API::save_step()
+	 * @see BROO_API::save_step()
 	 */
 	public function save_step( $step ) {
 		
 		global $wpdb;
 		
-		$wpdb->update( $wpdb->prefix . UB_CONDITION_STEP_TABLE_NAME ,
+		$wpdb->update( $wpdb->prefix . BROO_CONDITION_STEP_TABLE_NAME ,
 				array( 'label' => $step->label, 'action_name' => $step->action_name ),
 				array( 'step_id' => $step->step_id ),
 				array( '%s', '%s' ),
@@ -1052,34 +1052,34 @@ class UB_API_Impl implements UB_API {
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see UB_API::save_step_meta()
+	 * @see BROO_API::save_step_meta()
 	 */
 	public function save_step_meta( $step_id, $meta_key, $meta_value = '' ) {
 			
 		global $wpdb;
 		
-		$exists = $wpdb->get_var( 'SELECT COUNT(*) FROM ' . $wpdb->prefix . UB_CONDITION_STEP_META_TABLE_NAME . ' WHERE step_id = ' . esc_sql( $step_id ) . ' AND meta_key = "' . esc_sql( $meta_key ) . '"' );
+		$exists = $wpdb->get_var( 'SELECT COUNT(*) FROM ' . $wpdb->prefix . BROO_CONDITION_STEP_META_TABLE_NAME . ' WHERE step_id = ' . esc_sql( $step_id ) . ' AND meta_key = "' . esc_sql( $meta_key ) . '"' );
 		
 		if ( $exists ) { // > 0
-			$result = $wpdb->update( $wpdb->prefix . UB_CONDITION_STEP_META_TABLE_NAME,
+			$result = $wpdb->update( $wpdb->prefix . BROO_CONDITION_STEP_META_TABLE_NAME,
 					array( 'meta_value' => $meta_value ),
 					array( 'step_id' => $step_id, 'meta_key' => $meta_key ),
 					array( '%s' ),
 					array( '%d', '%s' )
 			);
 		} else {
-			$wpdb->insert( $wpdb->prefix . UB_CONDITION_STEP_META_TABLE_NAME , array( 'step_id' => $step_id, 'meta_key' => $meta_key, 'meta_value' => $meta_value ), array( '%d', '%s', '%s' ) );
+			$wpdb->insert( $wpdb->prefix . BROO_CONDITION_STEP_META_TABLE_NAME , array( 'step_id' => $step_id, 'meta_key' => $meta_key, 'meta_value' => $meta_value ), array( '%d', '%s', '%s' ) );
 		}
 	}
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see UB_API::get_step_meta_value()
+	 * @see BROO_API::get_step_meta_value()
 	 */
 	public function get_step_meta_value( $step_id, $meta_key ) {
 		global $wpdb;
 		
-		$value = $wpdb->get_var( 'SELECT meta_value FROM ' . $wpdb->prefix . UB_CONDITION_STEP_META_TABLE_NAME . ' WHERE step_id = ' . esc_sql( $step_id ) . ' AND meta_key = "' . esc_sql( $meta_key ) . '"' );
+		$value = $wpdb->get_var( 'SELECT meta_value FROM ' . $wpdb->prefix . BROO_CONDITION_STEP_META_TABLE_NAME . ' WHERE step_id = ' . esc_sql( $step_id ) . ' AND meta_key = "' . esc_sql( $meta_key ) . '"' );
 	
 		if ( $value == null ) {
 			$value = '';
@@ -1090,14 +1090,14 @@ class UB_API_Impl implements UB_API {
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see UB_API::add_user_action_meta($action_name, $meta_key, $meta_value)
+	 * @see BROO_API::add_user_action_meta($action_name, $meta_key, $meta_value)
 	 */
 	public function add_user_action_meta( $user_action_id, $meta_key, $meta_value = '' ) {
 		global $wpdb;
 		
 		// TODO replace if id exists
 		
-		$wpdb->insert( $wpdb->prefix . UB_USER_ACTION_META_TABLE_NAME ,
+		$wpdb->insert( $wpdb->prefix . BROO_USER_ACTION_META_TABLE_NAME ,
 				array( 'user_action_id' => $user_action_id, 'meta_key' => $meta_key, 'meta_value' => $meta_value ),
 				array( '%s', '%s', '%s')
 		);

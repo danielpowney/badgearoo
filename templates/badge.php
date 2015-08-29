@@ -6,7 +6,7 @@
 <div class="ub-badge-container">
 
 	<?php
-	ub_get_template_part( 'badge-theme', $badge_theme, true, array(
+	broo_get_template_part( 'badge-theme', $badge_theme, true, array(
 			'badge_theme' => $badge_theme,
 			'badge_id' => $badge_id,
 			'badge_icon' => $badge_icon,

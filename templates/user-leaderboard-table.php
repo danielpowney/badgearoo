@@ -6,10 +6,10 @@
 <table class="user-leaderboard-table">
 	<thead>
 		<tr>
-			<th><?php _e( 'Rank', 'user-badges' ); ?></th>
-			<th><?php _e( 'User', 'user-badges' ); ?></th>
-			<th><?php _e( 'Points', 'user-badges' ); ?></th>
-			<th><?php _e( 'Badges', 'user-badges' ); ?></th>
+			<th><?php _e( 'Rank', 'badgearoo' ); ?></th>
+			<th><?php _e( 'User', 'badgearoo' ); ?></th>
+			<th><?php _e( 'Points', 'badgearoo' ); ?></th>
+			<th><?php _e( 'Badges', 'badgearoo' ); ?></th>
 		</tr>
 	</thead>
 	<tbody>

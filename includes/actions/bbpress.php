@@ -24,31 +24,31 @@ define( 'BBP_NEW_TOPIC_ACTION', 'bbp_new_topic' );
 define( 'BBP_CLOSED_TOPIC_ACTION', 'bbp_closed_topic' );
 
 
-function ub_init_bbp_actions( $ub_actions ) {
+function broo_init_bbp_actions( $broo_actions ) {
 
-	$ub_actions[BBP_NEW_FORUM_ACTION] = array(
-			'description' => __( 'Creates a new forum (outside wp-admin).', 'user-badges' ),
-			'source' =>	__( 'bbPress', 'user-badges' )
+	$broo_actions[BBP_NEW_FORUM_ACTION] = array(
+			'description' => __( 'Creates a new forum (outside wp-admin).', 'badgearoo' ),
+			'source' =>	__( 'bbPress', 'badgearoo' )
 	);
 	
-	$ub_actions[BBP_NEW_REPLY_ACTION] = array(
-			'description' => __( 'Replies to forum topic (outside wp-admin).', 'user-badges' ),
-			'source' =>	__( 'bbPress', 'user-badges' )
+	$broo_actions[BBP_NEW_REPLY_ACTION] = array(
+			'description' => __( 'Replies to forum topic (outside wp-admin).', 'badgearoo' ),
+			'source' =>	__( 'bbPress', 'badgearoo' )
 	);
 	
-	$ub_actions[BBP_NEW_TOPIC_ACTION] = array(
-			'description' => __( 'Adds a new forum topic (outside wp-admin).', 'user-badges' ),
-			'source' =>	__( 'bbPress', 'user-badges' )
+	$broo_actions[BBP_NEW_TOPIC_ACTION] = array(
+			'description' => __( 'Adds a new forum topic (outside wp-admin).', 'badgearoo' ),
+			'source' =>	__( 'bbPress', 'badgearoo' )
 	);
 	
-	$ub_actions[BBP_CLOSED_TOPIC_ACTION] = array(
-			'description' => __( 'Closes a forum topic.', 'user-badges' ),
-			'source' =>	__( 'bbPress', 'user-badges' )
+	$broo_actions[BBP_CLOSED_TOPIC_ACTION] = array(
+			'description' => __( 'Closes a forum topic.', 'badgearoo' ),
+			'source' =>	__( 'bbPress', 'badgearoo' )
 	);
 
-	return $ub_actions;
+	return $broo_actions;
 }
-add_filter( 'ub_init_actions', 'ub_init_bbp_actions', 10, 1 );
+add_filter( 'broo_init_actions', 'broo_init_bbp_actions', 10, 1 );
 
 
 /**
@@ -56,35 +56,35 @@ add_filter( 'ub_init_actions', 'ub_init_bbp_actions', 10, 1 );
  *
  * @param actions
 */
-function ub_add_bbp_actions( $actions = array() ) {
+function broo_add_bbp_actions( $actions = array() ) {
 
-	$actions_enabled = (array) get_option( 'ub_actions_enabled' );
+	$actions_enabled = (array) get_option( 'broo_actions_enabled' );
 
 	if ( isset( $actions[BBP_NEW_FORUM_ACTION] ) && $actions[BBP_NEW_FORUM_ACTION]['enabled'] == true ) {
-		add_action( 'bbp_new_forum',  'ub_bbp_new_forum', 10, 1 );
-		add_filter( 'ub_condition_step_check_bbp_new_forum', 'ub_condition_step_check_count', 10, 4 );
+		add_action( 'bbp_new_forum',  'broo_bbp_new_forum', 10, 1 );
+		add_filter( 'broo_condition_step_check_bbp_new_forum', 'broo_condition_step_check_count', 10, 4 );
 	}
 	
 	if ( isset( $actions[BBP_NEW_REPLY_ACTION] ) && $actions[BBP_NEW_REPLY_ACTION]['enabled'] == true ) {
-		add_action( 'bbp_new_reply',  'ub_bbp_new_reply', 10, 7 );
-		add_filter( 'ub_condition_step_check_bbp_new_reply', 'ub_condition_step_check_count', 10, 4 );
+		add_action( 'bbp_new_reply',  'broo_bbp_new_reply', 10, 7 );
+		add_filter( 'broo_condition_step_check_bbp_new_reply', 'broo_condition_step_check_count', 10, 4 );
 	}
 	
 	if ( isset( $actions[BBP_NEW_TOPIC_ACTION] ) && $actions[BBP_NEW_TOPIC_ACTION]['enabled'] == true ) {
-		add_action( 'bbp_new_topic',  'ub_bbp_new_topic', 10, 4 );
-		add_filter( 'ub_condition_step_check_bbp_new_topic', 'ub_condition_step_check_count', 10, 4 );
+		add_action( 'bbp_new_topic',  'broo_bbp_new_topic', 10, 4 );
+		add_filter( 'broo_condition_step_check_bbp_new_topic', 'broo_condition_step_check_count', 10, 4 );
 	}
 	
 	if ( isset( $actions[BBP_CLOSED_TOPIC_ACTION] ) && $actions[BBP_CLOSED_TOPIC_ACTION]['enabled'] == true ) {
-		add_action( 'bbp_closed_topic',  'ub_bbp_closed_topic', 10, 1 );
-		add_filter( 'ub_condition_step_check_bbp_closed_topic', 'ub_condition_step_check_count', 10, 4 );
+		add_action( 'bbp_closed_topic',  'broo_bbp_closed_topic', 10, 1 );
+		add_filter( 'broo_condition_step_check_bbp_closed_topic', 'broo_condition_step_check_count', 10, 4 );
 	}
 
-	add_filter('ub_step_meta_count_enabled', 'ub_bbp_step_meta_count_enabled', 10, 2 );
+	add_filter('broo_step_meta_count_enabled', 'broo_bbp_step_meta_count_enabled', 10, 2 );
 }
 
 
-add_action( 'ub_init_actions_complete', 'ub_add_bbp_actions' );
+add_action( 'broo_init_actions_complete', 'broo_add_bbp_actions' );
 
 /**
  * Sets whether step meta count is enabled
@@ -93,7 +93,7 @@ add_action( 'ub_init_actions_complete', 'ub_add_bbp_actions' );
  * @param unknown $action
  * @return boolean|unknown
 */
-function ub_bbp_step_meta_count_enabled( $enabled, $action ) {
+function broo_bbp_step_meta_count_enabled( $enabled, $action ) {
 
 	if ( $action == BBP_CLOSED_TOPIC_ACTION || $action == BBP_NEW_FORUM_ACTION 
 			|| $action == BBP_NEW_REPLY_ACTION || $action == BBP_NEW_TOPIC_ACTION ) {
@@ -110,7 +110,7 @@ function ub_bbp_step_meta_count_enabled( $enabled, $action ) {
  * @param array $actions_enabled
  * @return $actions_enabled:
  */
-function ub_default_bbp_actions_enabled( $actions_enabled ) {
+function broo_default_bbp_actions_enabled( $actions_enabled ) {
 
 	return array_merge( array(
 			BBP_CLOSED_TOPIC_ACTION		=> false,
@@ -120,7 +120,7 @@ function ub_default_bbp_actions_enabled( $actions_enabled ) {
 	), $actions_enabled );
 
 }
-add_filter( 'ub_default_actions_enabled', 'ub_default_bbp_actions_enabled', 10, 1 );
+add_filter( 'broo_default_actions_enabled', 'broo_default_bbp_actions_enabled', 10, 1 );
 
 
 /**
@@ -128,7 +128,7 @@ add_filter( 'ub_default_actions_enabled', 'ub_default_bbp_actions_enabled', 10, 
  * 
  * @param unknown $params
  */
-function ub_bbp_new_forum( $params = array() ) {
+function broo_bbp_new_forum( $params = array() ) {
 	
 	/* 
 	 * array(
@@ -145,7 +145,7 @@ function ub_bbp_new_forum( $params = array() ) {
 
 	$user_id = $params['forum_author'];
 
-	User_Badges::instance()->api->add_user_action( BBP_NEW_FORUM_ACTION, $user_id );
+	Badgearoo::instance()->api->add_user_action( BBP_NEW_FORUM_ACTION, $user_id );
 }
 
 /**
@@ -159,12 +159,12 @@ function ub_bbp_new_forum( $params = array() ) {
  * @param unknown $is_edit
  * @param unknown $reply_to
  */
-function ub_bbp_new_reply( $reply_id, $topic_id, $forum_id, $anonymous_data, $reply_author, $is_edit, $reply_to ) {
+function broo_bbp_new_reply( $reply_id, $topic_id, $forum_id, $anonymous_data, $reply_author, $is_edit, $reply_to ) {
 
 	$user_id = $reply_author;
 	
 	if ( $user_id != 0 ) {
-		User_Badges::instance()->api->add_user_action( BBP_NEW_REPLY_ACTION, $user_id );
+		Badgearoo::instance()->api->add_user_action( BBP_NEW_REPLY_ACTION, $user_id );
 	}
 }
 
@@ -177,12 +177,10 @@ function ub_bbp_new_reply( $reply_id, $topic_id, $forum_id, $anonymous_data, $re
  * @param unknown $anonymous_data
  * @param unknown $topic_author
  */
-function ub_bbp_new_topic( $topic_id = 0, $forum_id = 0, $anonymous_data = false, $topic_author = 0 ) {
-	
-	echo 'hello world again!!!!!!' . var_dump( $topic_author );
+function broo_bbp_new_topic( $topic_id = 0, $forum_id = 0, $anonymous_data = false, $topic_author = 0 ) {
 	
 	if ( $topic_author != 0 ) {
-		User_Badges::instance()->api->add_user_action( BBP_NEW_TOPIC_ACTION, $topic_author );
+		Badgearoo::instance()->api->add_user_action( BBP_NEW_TOPIC_ACTION, $topic_author );
 	}
 	
 }
@@ -192,12 +190,12 @@ function ub_bbp_new_topic( $topic_id = 0, $forum_id = 0, $anonymous_data = false
  * 
  * @param unknown $topic_id
  */
-function ub_bbp_closed_topic( $topic_id ) {
+function broo_bbp_closed_topic( $topic_id ) {
 	
 	$user_id = 1; // TODO
 	
 	if ( $user_id != 0 ) {
-		User_Badges::instance()->api->add_user_action( BBP_CLOSED_TOPIC_ACTION, $user_id );
+		Badgearoo::instance()->api->add_user_action( BBP_CLOSED_TOPIC_ACTION, $user_id );
 	}
 	
 }

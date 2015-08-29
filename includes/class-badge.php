@@ -5,7 +5,7 @@
  * @author dpowney
  *
  */
-class UB_Badge {
+class BROO_Badge {
 	
 	public $id = 0;
 	public $title = null;
@@ -28,9 +28,9 @@ class UB_Badge {
 		$this->excerpt = $excerpt;
 		$this->created_dt = $created_dt;
 		$this->users = $users;
-		$this->badge_icon = get_post_meta( $id, 'ub_badge_icon', true );
-		$this->badge_html = get_post_meta( $id, 'ub_badge_html', true );
-		$this->badge_color = get_post_meta( $id, 'ub_badge_color', true );
+		$this->badge_icon = get_post_meta( $id, 'broo_badge_icon', true );
+		$this->badge_html = get_post_meta( $id, 'broo_badge_html', true );
+		$this->badge_color = get_post_meta( $id, 'broo_badge_color', true );
 		
 		if ( $this->badge_color == null || $this->badge_color == '' ) {
 			$this->badge_color = '#fc0'; // default to Gold
