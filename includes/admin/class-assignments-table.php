@@ -171,66 +171,63 @@ class UB_Assignments_Table extends WP_List_Table {
 		$expired = isset( $_REQUEST['expired'] ) ? true : false;
 		$order_by = 'created_dt';
 
-		$query = 'SELECT * FROM ' . $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME;
+		$query = 'SELECT * FROM ' . $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME . ' a LEFT JOIN ' . $wpdb->posts . ' p'
+				. ' ON ( a.type = "badge" AND a.value = p.ID AND p.post_status = "publish" )'
+				. ' WHERE ( ( a.type = "badge" AND p.post_status = "publish" ) OR ( a.type = "points" ) )';
 		
-		if ( $user_id != 0 || $badge_id != 0 || $type || $status || ! $expired ) {
+		$added_to_query = true;
 			
-			$query .= ' WHERE';
-			$added_to_query = false;
-			
-			if ( $user_id != 0 ) {
-				$query .= ' user_id = ' . $user_id;
-				$added_to_query = true;
-			}
-			
-			if ( $badge_id != 0 ) {
-				if ( $added_to_query ) {
-					$query .= ' AND';
-				}
-				
-				$query .= ' badge_id = ' . $badge_id;
-				$added_to_query = true;
-			}
-			
-			if ( $type ) {
-				if ( $added_to_query ) {
-					$query .= ' AND';
-				}
-			
-				$query .= ' type = "' . esc_sql( $type ) . '"';
-				$added_to_query = true;
-			}
-			
-			if ( $status ) {
-				if ( $added_to_query ) {
-					$query .= ' AND';
-				}
-					
-				$query .= ' status = "' . esc_sql( $status ) . '"';
-				$added_to_query = true;
-			}
-			
-			if ( ! $expired ) {
-				if ( $added_to_query ) {
-					$query .= ' AND';
-				}
-					
-				$query .= ' ( expiry_dt >= NOW() OR expiry_dt IS NULL )';
-				$added_to_query = true;
-			}
-			
+		if ( $user_id != 0 ) {
+			$query .= ' a.user_id = ' . $user_id;
+			$added_to_query = true;
 		}
 		
+		if ( $badge_id != 0 ) {
+			if ( $added_to_query ) {
+				$query .= ' AND';
+			}
+			
+			$query .= ' a.badge_id = ' . $badge_id;
+			$added_to_query = true;
+		}
+		
+		if ( $type ) {
+			if ( $added_to_query ) {
+				$query .= ' AND';
+			}
+		
+			$query .= ' a.type = "' . esc_sql( $type ) . '"';
+			$added_to_query = true;
+		}
+		
+		if ( $status ) {
+			if ( $added_to_query ) {
+				$query .= ' AND';
+			}
+				
+		$query .= ' a.status = "' . esc_sql( $status ) . '"';
+			$added_to_query = true;
+		}
+		
+		if ( ! $expired ) {
+			if ( $added_to_query ) {
+				$query .= ' AND';
+			}
+				
+			$query .= ' ( a.expiry_dt >= NOW() OR a.expiry_dt IS NULL )';
+			$added_to_query = true;
+		}
+			
 		if ( isset( $_REQUEST['order-by'] ) && strlen( trim( $_REQUEST['order-by'] ) ) > 0 ) {
 			$order_by = $_REQUEST['order-by'];
 		}
-		
+			
 		if ( $order_by == 'oldest' ) {
-			$query .= ' ORDER BY created_dt ASC';
+			$query .= ' ORDER BY a.created_dt ASC';
 		} else if ( $order_by == 'expires' ) {
-			$query .= ' ORDER BY expiry_dt ASC';
+			$query .= ' ORDER BY a.expiry_dt ASC';
 		} else {
-			$query .= ' ORDER BY created_dt DESC';
+			$query .= ' ORDER BY a.created_dt DESC';
 		}
 		
 		// pagination
@@ -283,57 +280,42 @@ class UB_Assignments_Table extends WP_List_Table {
 	function set_view_counts( $params = array() ) {
 		
 		global $wpdb;
-		$query = 'SELECT COUNT(*) FROM ' . $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME;
+		$query = 'SELECT COUNT(*) FROM ' . $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME . ' a LEFT JOIN ' . $wpdb->posts . ' p'
+				. ' ON ( a.type = p.post_type AND a.value = p.ID AND p.post_status = "publish" )'
+				. ' WHERE ( ( a.type = "badge" AND p.post_status = "publish" ) OR ( a.type = "points" ) )';
 		
-		$added_to_query = false;
-		if ( ( isset( $params['user_id'] ) && $params['user_id'] != 0 ) 
-				|| ( isset( $params['badge_id'] ) && $params['badge_id'] != 0 ) 
-				|| isset( $params['type'] ) || isset( $params['status'] ) 
-				|| ( isset( $params['expired'] ) && ! $params['expired'] ) ) {
+		$added_to_query = true;
 			
-			$query .= ' WHERE';
-				
-			if ( isset ( $params['user_id'] ) && $params['user_id'] != 0 ) {
-				$query .= ' user_id = ' . intval( $params['user_id'] );
-				$added_to_query = true;
+		if ( isset ( $params['user_id'] ) && $params['user_id'] != 0 ) {
+			$query .= ' a.user_id = ' . intval( $params['user_id'] );
+			$added_to_query = true;
+		}
+			
+		if ( isset ( $params['badge_id'] ) && $params['badge_id'] != 0 ) {
+			if ( $added_to_query ) {
+				$query .= ' AND';
+			}
+	
+			$query .= ' a.id = ' . intval( $params['badge_id'] );
+			$added_to_query = true;
+		}
+			
+		if ( isset( $params['type'] ) ) {
+			if ( $added_to_query ) {
+				$query .= ' AND';
 			}
 				
-			if ( isset ( $params['badge_id'] ) && $params['badge_id'] != 0 ) {
-				if ( $added_to_query ) {
-					$query .= ' AND';
-				}
+			$query .= ' a.type = "' . esc_sql( $params['type'] ) . '"';
+			$added_to_query = true;
+		}
 		
-				$query .= ' id = ' . intval( $params['badge_id'] );
-				$added_to_query = true;
+		if ( isset( $params['expired'] ) && ! $params['expired'] ) {
+			if ( $added_to_query ) {
+				$query .= ' AND';
 			}
 				
-			if ( isset( $params['type'] ) ) {
-				if ( $added_to_query ) {
-					$query .= ' AND';
-				}
-					
-				$query .= ' type = "' . esc_sql( $params['type'] ) . '"';
-				$added_to_query = true;
-			}
-			
-			if ( isset( $params['expired'] ) && ! $params['expired'] ) {
-				if ( $added_to_query ) {
-					$query .= ' AND';
-				}
-					
-				$query .= ' ( expiry_dt >= NOW() OR expiry_dt IS NULL )';
-				$added_to_query = true;
-			}
-			
-			if ( isset( $params['status'] ) ) {
-				if ( $added_to_query ) {
-					$query .= ' AND';
-				}
-					
-				$query .= ' status = "' . esc_sql( $params['status'] ) . '"';
-				$added_to_query = true;
-			}
-				
+			$query .= ' ( a.expiry_dt >= NOW() OR a.expiry_dt IS NULL )';
+			$added_to_query = true;
 		}
 		
 		$this->total_count = intval( $wpdb->get_var( $query ) );
@@ -344,9 +326,9 @@ class UB_Assignments_Table extends WP_List_Table {
 			$query .= ' AND';
 		}
 		
-		$this->approved_count = intval( $wpdb->get_var( $query . ' status = "approved"' ) );
-		$this->pending_count = intval( $wpdb->get_var( $query . ' status = "pending"' ) );
-		$this->unapproved_count = intval( $wpdb->get_var( $query . ' status = "unapproved"' ) );
+		$this->approved_count = intval( $wpdb->get_var( $query . ' a.status = "approved"' ) );
+		$this->pending_count = intval( $wpdb->get_var( $query . ' a.status = "pending"' ) );
+		$this->unapproved_count = intval( $wpdb->get_var( $query . ' a.status = "unapproved"' ) );
 	
 	}
 	

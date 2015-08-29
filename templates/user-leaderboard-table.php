@@ -18,7 +18,7 @@
 		foreach ( $user_rows as $user_row ) {
 			?>
 			<tr class="user-row">
-				<td class="rank"><?php echo $rank; ?></td>
+				<td><span class="ub-rank"><?php echo $rank; ?></span></td>
 				<td class="user-meta">
 				
 					<?php
@@ -33,8 +33,8 @@
 					</span>
 				</td>
 				<?php if ( $show_points ) { ?>
-					<td class="ub-points">
-						<?php echo $user_row['points']; ?>
+					<td>
+						<span class="ub-points"><?php echo $user_row['points']; ?></span>
 					</td>
 				<?php }
 				if ( $show_badges == true) {

@@ -35,8 +35,7 @@
 				}
 
 				$user = get_user_by( 'id', $assignment['user_id'] );
-				?>
-				<a href="<?php echo get_author_posts_url( $assignment['user_id'] ); ?>"><?php echo esc_html( $user->display_name ); ?></a>
+				?>&nbsp;<?php _e('by'); ?>&nbsp;<a href="<?php echo get_author_posts_url( $assignment['user_id'] ); ?>"><?php echo esc_html( $user->display_name ); ?></a>
 				<span class="ub-time-diff"><?php printf( __( '%s ago', 'user-badges' ), human_time_diff( strtotime( $assignment['created_dt'] ), strtotime( get_date_from_gmt( date( 'Y-m-d H:i:s' ) ) ) ) ); ?></span>
 			</div>
 			<?php

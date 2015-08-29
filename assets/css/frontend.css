@@ -176,15 +176,17 @@ a.ub-badge-theme-light, a.ub-badge-theme-dark {
     vertical-align: middle; 
 }
 
-.ub-badge-container + .ub-badge-container {
-	margin-top: 5px;
+.ub-badge-container, .ub-points, .ub-assignment {
+	display: block;
+	margin-bottom: 5px;
+}
+.ub-assignment .ub-points, .user-leaderboard-table .ub-points {
+	display: inline-block;
+	margin-bottom: 0px;
 }
 
 .ub-assignment .ub-badge-container {
 	display: inline-block;
-}
-.ub-assignment + .ub-assignment{
-	margin-top: 10px;
 }
 .ub-assignment .ub-time-diff {
 	font-style: italic;

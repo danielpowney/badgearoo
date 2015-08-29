@@ -458,9 +458,12 @@ function ub_get_user_leaderboard( $filters = array() ) {
 		$order_by = 'count_badges';
 	}
 	
-	$query = 'SELECT user_id, display_name, SUM(CASE WHEN type = "badge" THEN 1 ELSE 0 END) AS count_badges, '
-			. 'SUM(CASE WHEN type = "points" THEN value ELSE 0 END) AS points FROM wp_ub_user_assignment, ' . $wpdb->users
-			. ' u WHERE user_id = u.ID';
+	$query = 'SELECT a.user_id, u.display_name, SUM(CASE WHEN a.type = "badge" THEN 1 ELSE 0 END) AS count_badges, '
+			. 'SUM(CASE WHEN a.type = "points" THEN a.value ELSE 0 END) AS points FROM ' 
+			. $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME . ' a LEFT JOIN ' . $wpdb->posts . ' p'
+			. ' ON ( a.type = "badge" AND a.value = p.ID AND p.post_status = "publish" ) LEFT JOIN ' 
+			. $wpdb->users . ' u ON a.user_id = u.ID WHERE ( ( a.type = "badge" AND p.post_status = "publish" )'
+			. ' OR ( a.type = "points" ) )';
 	
 	$added_to_query = true;
 	
@@ -481,7 +484,7 @@ function ub_get_user_leaderboard( $filters = array() ) {
 		$query .= ' created_dt >= "' . esc_sql( $from_date ) . '"';
 		$added_to_query = true;
 	}
-	
+
 	$query .= ' GROUP BY user_id ORDER BY ' . $order_by . ' DESC';
 	
 	$rows = $wpdb->get_results( $query, ARRAY_A );

@@ -8,8 +8,15 @@ $title = apply_filters( 'widget_title', get_the_author_meta( 'display_name' ) );
 		
 echo "$before_title" . esc_html( $title ) . "$after_title";
 
+$user_biography = get_the_author_meta( 'description' );
+
+if ( $user_biography && strlen( $user_biography ) > 0 ) {
+	?><p class="ub-user-biography"><?php echo $user_biography; ?></p><?php
+}
+
 do_action( 'ub_user_badges_widget_before_badges' );
 ?>
+
 
 <div class="badges">
 	<?php echo get_the_author_meta( 'badges' ); ?>

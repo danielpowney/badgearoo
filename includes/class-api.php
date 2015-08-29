@@ -463,22 +463,18 @@ class UB_API_Impl implements UB_API {
 		if ( $is_count ) {
 			$query .= ' COUNT(*) ';
 		} else {
-			$query .= ' a.*, u.user_login ';
+			$query .= ' a.*, u.user_login';
 		}
 		
-		$query .= 'FROM ' . $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME . ' a';
-		
-		$added_to_query = false;
+		$query .= ' FROM ' . $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME . ' a LEFT JOIN ' . $wpdb->posts . ' p'
+				. ' ON ( a.type = "badge" AND a.value = p.ID AND p.post_status = "publish" )';
 		
 		if ( ! $is_count ) {
-			$query .= ', ' . $wpdb->users . ' u WHERE a.user_id = u.ID';
-			$added_to_query = true;
+			$query .= ' LEFT JOIN ' . $wpdb->users . ' u ON a.user_id = u.ID';
 		}
 		
-		if ( ! $added_to_query && count( $filters ) > 0 ) {
-			$query .= ' WHERE';
-			$added_to_query = false;
-		}
+		$added_to_query = true;
+		$query .= ' WHERE ( ( a.type = "badge" AND p.post_status = "publish" ) OR ( a.type = "points" ) )';
 		
 		if ( $user_id && $user_id != 0 ) {
 			if ( $added_to_query ) {
@@ -558,7 +554,7 @@ class UB_API_Impl implements UB_API {
 		if ( $is_count) {
 			return $wpdb->get_var( $query );
 		}
-
+		
 		$results = $wpdb->get_results( $query );
 		
 		$assignments = array();
@@ -654,11 +650,13 @@ class UB_API_Impl implements UB_API {
 		
 		global $wpdb;
 		
-		$query = 'SELECT	value AS badge_id
-				FROM        ' . $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME . '
-				WHERE       user_id = %d AND type = "badge"'
-							. ' AND ( NOW() <= expiry_dt OR expiry_dt IS NULL )'
-							. ' AND status = "approved"';
+		$query = 'SELECT	a.value AS badge_id
+				FROM        ' . $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME . ' a
+							LEFT JOIN ' . $wpdb->posts . ' p ON ( a.type = "badge" AND a.value = p.ID AND p.post_status = "publish" ) 
+				WHERE       ( ( a.type = "badge" AND p.post_status = "publish" ) OR ( a.type = "points" ) )'
+							. ' AND a.user_id = %d AND a.type = "badge"'
+							. ' AND ( NOW() <= a.expiry_dt OR a.expiry_dt IS NULL )'
+							. ' AND a.status = "approved"';
 		
 		$added_to_query = true;
 		
@@ -667,7 +665,7 @@ class UB_API_Impl implements UB_API {
 				$query .= ' AND';
 			}
 		
-			$query .= ' created_dt <= "' . esc_sql( $to_date ) . '"';
+			$query .= ' a.created_dt <= "' . esc_sql( $to_date ) . '"';
 			$added_to_query = true;
 		}
 		
@@ -676,11 +674,9 @@ class UB_API_Impl implements UB_API {
 				$query .= ' AND';
 			}
 		
-			$query .= ' created_dt >= "' . esc_sql( $from_date ) . '"';
+			$query .= ' a.created_dt >= "' . esc_sql( $from_date ) . '"';
 			$added_to_query = true;
 		}
-		
-		
 
 		$user_badges_results = $wpdb->get_results( $wpdb->prepare( $query, $user_id ) );
 		
@@ -893,22 +889,14 @@ class UB_API_Impl implements UB_API {
 	 * (non-PHPdoc)
 	 * @see UB_API::get_badges()
 	 */
-	public function get_badges( $filters = array( 'status' => 'publish', 'badge_ids' => array() ), $load_users = false ) {
+	public function get_badges( $filters = array( 'badge_ids' => array() ), $load_users = false ) {
 		
 		global $wpdb;
 				
-		$query = 'SELECT * FROM ' . $wpdb->posts . ' WHERE post_type = "badge"';
-				
-		if ( isset( $filters['status'] ) ) {
-			$query .= ' AND post_status = "' . esc_sql( $filters['status'] ) . '"';
-		}
+		$query = 'SELECT * FROM ' . $wpdb->posts . ' WHERE post_type = "badge" AND post_status = "publish"';
 		
 		if ( isset( $filters['badge_ids'] ) && is_array( $filters['badge_ids'] ) 
 				&& count( $filters['badge_ids'] ) > 0 ) {
-					
-					
-			// TODO WPML
-			
 			$query .= ' AND ID IN (' . implode( ',', $filters['badge_ids'] ) . ')';
 		}
 		
