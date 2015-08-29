@@ -550,37 +550,41 @@ function ub_user_dashboard($atts) {
 	
 	$user_id = get_current_user_id();
 	
-	if ( $user_id == 0 ) {
-		// TODO
-	}
-	
-	$assignments = User_Badges::instance()->api->get_assignments( array( 
-			'user_id' => $user_id,
-			'limit' => $limit, 
-			'offset' => $offset,
-			'to_date' => $to_date,
-			'from_date' => $from_date,
-			'type' => $type
-	), false );
-	
-	$count_assignments = User_Badges::instance()->api->get_assignments( array(
-			'user_id' => $user_id, 
-			'to_date' => $to_date,
-			'from_date' => $from_date,
-			'type' => $type
-	), true );
-
-	$points = User_Badges::instance()->api->get_user_points( $user_id, array( 'to_date' => $to_date, 'from_date' => $from_date ) );
-	$badges = User_Badges::instance()->api->get_user_badges( $user_id, array( 'to_date' => $to_date, 'from_date' => $from_date ) );
-	
-	// count badges by id
+	$assignments = null;
+	$count_assignments = null;
+	$points = null;
+	$badges = array();
 	$badge_count_lookup = array();
-	foreach ( $badges as $index => $badge ) {
-		if ( ! isset( $badge_count_lookup[$badge->id] ) ) {
-			$badge_count_lookup[$badge->id] = 1;
-		} else {
-			$badge_count_lookup[$badge->id]++;
-			unset( $badges[$index] );
+	
+	if ( $user_id != 0 ) {
+			
+		$assignments = User_Badges::instance()->api->get_assignments( array( 
+				'user_id' => $user_id,
+				'limit' => $limit, 
+				'offset' => $offset,
+				'to_date' => $to_date,
+				'from_date' => $from_date,
+				'type' => $type
+		), false );
+		
+		$count_assignments = User_Badges::instance()->api->get_assignments( array(
+				'user_id' => $user_id, 
+				'to_date' => $to_date,
+				'from_date' => $from_date,
+				'type' => $type
+		), true );
+	
+		$points = User_Badges::instance()->api->get_user_points( $user_id, array( 'to_date' => $to_date, 'from_date' => $from_date ) );
+		$badges = User_Badges::instance()->api->get_user_badges( $user_id, array( 'to_date' => $to_date, 'from_date' => $from_date ) );
+		
+		// count badges by id
+		foreach ( $badges as $index => $badge ) {
+			if ( ! isset( $badge_count_lookup[$badge->id] ) ) {
+				$badge_count_lookup[$badge->id] = 1;
+			} else {
+				$badge_count_lookup[$badge->id]++;
+				unset( $badges[$index] );
+			}
 		}
 	}
 	
@@ -613,7 +617,8 @@ function ub_user_dashboard($atts) {
 			'offset' => $offset,
 			'count_assignments' => $count_assignments,
 			'badge_theme' => $general_settings['ub_badge_theme'],
-			'enable_badge_permalink' => $general_settings['ub_enable_badge_permalink']
+			'enable_badge_permalink' => $general_settings['ub_enable_badge_permalink'],
+			'user_id' => $user_id
 	) );
 	$html .= ob_get_contents();
 	ob_end_clean();

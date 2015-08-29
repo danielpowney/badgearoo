@@ -88,7 +88,7 @@ function ub_about_page() {
 		
 			<div class="changelog">
 					
-				<p class="about-description"><?php _e( 'Create your own badges and points system for WordPress users. You can manually assign badges or configure automatic assignment of predefined badges to to users.', 'user-badges' ); ?></p>
+				<p class="about-description"><?php _e( 'Create your own badges and points system for WordPress users. You can configure automatic assignment or manually assign badges and points to users.', 'user-badges' ); ?></p>
 				
 				<div class="feature-section col two-col">
 					<div class="col-1">

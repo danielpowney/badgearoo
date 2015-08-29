@@ -9,78 +9,85 @@
 	<h2><?php _e( 'User Dashboard', 'user-badges' ); ?></h2>
 	
 	<?php 
-	if ( $show_filters == true ) { 
-		ub_get_template_part( 'user-dashboard', 'filters', true, array( 
-				'to_date' => $to_date, 
-				'from_date' => $from_date, 
-				'type' => $type
-		) );
-	}
+	if ( $user_id == 0 ) {
+		?>
+		<p><?php _e( 'You must be logged in to view your user dashboard.', 'user-badges' ); ?></p>
+		<?php
+	} else {
 	
-	if ( $show_points || $show_badges ) { ?>
-		<table class="ub-user-dashboard-summary">
-			<tbody>
-				<tr>
-					<th scope="col"><?php _e( 'Assignments', 'user-badges' ); ?></th>
-					<td>
-						<?php echo $count_assignments; ?>
-					 </td>
-				</tr>
-				<?php if ( $show_points && $type != 'badge' ) { ?>
+		if ( $show_filters == true ) { 
+			ub_get_template_part( 'user-dashboard', 'filters', true, array( 
+					'to_date' => $to_date, 
+					'from_date' => $from_date, 
+					'type' => $type
+			) );
+		}
+		
+		if ( $show_points || $show_badges ) { ?>
+			<table class="ub-user-dashboard-summary">
+				<tbody>
 					<tr>
-						<th scope="col"><?php _e( 'Points', 'user-badges' ); ?></th>
+						<th scope="col"><?php _e( 'Assignments', 'user-badges' ); ?></th>
 						<td>
-							<?php 
-							ub_get_template_part( 'points', null, true, array(
-									'points' => $points
-							) );
-						 	?>
+							<?php echo $count_assignments; ?>
 						 </td>
 					</tr>
-				<?php }
-				if ( $show_badges && $type != 'points' ) { ?>
-					<tr>
-						<th scope="col"><?php _e( 'Badges', 'user-badges' ); ?></th>
-						<td>
-							<?php 
-							if ( count( $badges ) > 0 ) {
-								
-								foreach ( $badges as $badge ) {
+					<?php if ( $show_points && $type != 'badge' ) { ?>
+						<tr>
+							<th scope="col"><?php _e( 'Points', 'user-badges' ); ?></th>
+							<td>
+								<?php 
+								ub_get_template_part( 'points', null, true, array(
+										'points' => $points
+								) );
+							 	?>
+							 </td>
+						</tr>
+					<?php }
+					if ( $show_badges && $type != 'points' ) { ?>
+						<tr>
+							<th scope="col"><?php _e( 'Badges', 'user-badges' ); ?></th>
+							<td>
+								<?php 
+								if ( count( $badges ) > 0 ) {
 									
-									ub_get_template_part( 'badge', null, true, array(
-											'badge_id' => $badge->id,
-											'show_title' => true,
-											'badge_theme' => $badge_theme,
-											'badge_icon' => $badge->badge_icon,
-											'badge_html' => $badge->badge_html,
-											'badge_color' => $badge->badge_color,
-											'excerpt' => $badge->excerpt,
-											'title' => $badge->title,
-											'content' => $badge->content,
-											'enable_badge_permalink' => $enable_badge_permalink,
-											'badge_count' => isset( $badge_count_lookup[$badge->id] ) ? $badge_count_lookup[$badge->id] : 1,
-									) );
+									foreach ( $badges as $badge ) {
+										
+										ub_get_template_part( 'badge', null, true, array(
+												'badge_id' => $badge->id,
+												'show_title' => true,
+												'badge_theme' => $badge_theme,
+												'badge_icon' => $badge->badge_icon,
+												'badge_html' => $badge->badge_html,
+												'badge_color' => $badge->badge_color,
+												'excerpt' => $badge->excerpt,
+												'title' => $badge->title,
+												'content' => $badge->content,
+												'enable_badge_permalink' => $enable_badge_permalink,
+												'badge_count' => isset( $badge_count_lookup[$badge->id] ) ? $badge_count_lookup[$badge->id] : 1,
+										) );
+									}
+								} else {
+									_e( 'No badges', 'user-badges' );
 								}
-							} else {
-								_e( 'No badges', 'user-badges' );
-							}
-						 ?>
-						</td>
-					</tr>
-				<?php } ?>
-			</tbody>
-		</table>
-	<?php }
-	
-	if ( $show_assignments ) {
-		ub_get_template_part( 'user-dashboard', 'assignments', true, array(
-				'assignments' => $assignments,
-				'limit' => $limit,
-				'offset' => $offset,
-				'count_assignments' => $count_assignments,
-				'badge_theme' => $badge_theme,
-				'enable_badge_permalink' => $enable_badge_permalink
-		) );
+							 ?>
+							</td>
+						</tr>
+					<?php } ?>
+				</tbody>
+			</table>
+		<?php }
+		
+		if ( $show_assignments ) {
+			ub_get_template_part( 'user-dashboard', 'assignments', true, array(
+					'assignments' => $assignments,
+					'limit' => $limit,
+					'offset' => $offset,
+					'count_assignments' => $count_assignments,
+					'badge_theme' => $badge_theme,
+					'enable_badge_permalink' => $enable_badge_permalink
+			) );
+		}
 	}
 	?>
 </div>
