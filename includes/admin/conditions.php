@@ -56,9 +56,31 @@ function broo_display_condition_meta_box( $condition, $is_closed = false ) {
 			<span>
 				<?php printf( __( 'Condition %d - %s', 'badgearoo' ), $condition->condition_id, esc_html( $condition->name ) ); ?>
 			</span>
-			<?php broo_condition_status( $condition ); ?>
+			<?php 
+			$condition_status = broo_condition_status( $condition );
+			
+			$status_html = null;
+			if ( $condition_status['incomplete'] == true ) {
+				echo '<span style="font-weight: 600; color: #555;"> - ' . __( 'Incomplete', 'badgearoo' ) . '</span>';
+			}
+			?>
 		</h3>
 		<div class="inside">
+		
+			<?php 
+			if ( $condition_status['incomplete'] && count( $condition_status['messages'] ) > 0 ) {
+				?>
+				<div class="update-nag" style="margin: 10px 0 10px !important; display: block;">
+					<?php 
+					foreach ( $condition_status['messages'] as $message ) {
+						?><p><?php echo $message; ?></p><?php
+					}
+					?>
+				</div>
+				<?php
+			}
+			?>
+			
 			<form method="post" class="condition">
 				<?php wp_nonce_field('closedpostboxes', 'closedpostboxesnonce', false ); ?>
 				<?php wp_nonce_field('meta-box-order', 'meta-box-order-nonce', false ); ?>
@@ -173,7 +195,7 @@ function broo_display_condition_meta_box( $condition, $is_closed = false ) {
  * @param condition
  * @param echo
  */
-function broo_condition_status( $condition, $echo = true ) {
+function broo_condition_status( $condition ) {
 
 	$incomplete = false;
 	$messages = array();
@@ -206,17 +228,12 @@ function broo_condition_status( $condition, $echo = true ) {
 		array_push( $messages, __( 'Each step must have an action.', 'badgearoo' ) );
 	}
 	
-	$html = null;
+	// TODO check each condition is enabled...
 	
-	if ( $incomplete == true ) {
-		$html = '<span style="font-weight: 600; color: #555;"> - ' . __( 'Incomplete', 'badgearoo' ) . '</span>';
-	}
-	
-	if ( $echo ) {
-		echo $html;
-	}
-	
-	return $html;
+	return array( 
+			'incomplete' => $incomplete,
+			'messages' => $messages
+	);
 }
 
 /**
@@ -406,6 +423,24 @@ function broo_save_condition() {
 		$expiry_unit = ( isset( $_POST['expiryUnit'] ) ) ? $_POST['expiryUnit'] : '';
 		$recurring = ( isset( $_POST['recurring'] ) && $_POST['recurring'] == 'true' ) ? true : false;
 		
+		$steps = array();
+		if ( is_array( $_POST['steps'] ) ) {
+			foreach ( $_POST['steps'] as $step ) {
+				$step_id = intval( $step['stepId'] );
+				$action_name = $step['actionName']; // do we need to check action_name is valid?
+				$label = $step['label'];
+					
+				$step_meta = array();
+				if ( is_array( $step['stepMeta'] )) {
+					foreach ( $step['stepMeta'] as $meta ) {
+						array_push( $step_meta, array( 'key' => $meta['key'], 'value' => $meta['value'] ) );
+					}
+				}
+					
+				array_push( $steps, new BROO_Step( $step_id, $condition_id, $label, $action_name, null, $step_meta ) );
+			}
+		}
+		
 		$badges = array_filter( $badges ); // removes empty array elements if they are there
 		
 		// TODO sanitize input here
@@ -413,31 +448,33 @@ function broo_save_condition() {
 		if ( $condition_id != null ) {
 			
 			$condition = new BROO_Condition( $condition_id, $name, $badges, $points, null, $enabled, $expiry_unit, $expiry_value, $recurring );
-			
-			if ( is_array( $_POST['steps'] ) ) {
-				foreach ( $_POST['steps'] as $step ) {
-					$step_id = intval( $step['stepId'] );
-					$action_name = $step['actionName']; // do we need to check action_name is valid?
-					$label = $step['label'];
-					
-					$step_meta = array();
-					if ( is_array( $step['stepMeta'] )) {
-						foreach ( $step['stepMeta'] as $meta ) {
-							array_push( $step_meta, array( 'key' => $meta['key'], 'value' => $meta['value'] ) );
-						}
-					}
-					array_push( $condition->steps, new BROO_Step( $step_id, $condition_id, $label, $action_name, null, $step_meta ) );
-				}
-			}
+			$condition->steps = $steps;
 			
 			Badgearoo::instance()->api->save_condition( $condition );
 			
+			$condition_status = broo_condition_status( $condition );
+			
+			$status_html = null;
+			if ( $condition_status['incomplete'] == true ) {
+				$status_html = '<span style="font-weight: 600; color: #555;"> - ' . __( 'Incomplete', 'badgearoo' ) . '</span>';
+			}
+			
+			$messages_html = '<div class="updated" style="margin: 10px 0 10px !important; display: block;"><p>' . __( 'Condition saved.', 'badgearoo' ) . '</p></div>';
+			
+			if ( count( $condition_status['messages'] ) > 0 ) {
+				$messages_html .= '<div class="update-nag" style="margin: 10px 0 10px !important; display: block;">';
+				foreach ( $condition_status['messages'] as $message ) {
+					$messages_html .= '<p>' . $message . '</p>';
+				}
+				$messages_html .= '</div>';
+			}
+			
 			echo json_encode( array(
 					'success' => true,
-					'message' => __( 'Condition saved.', 'badgearoo' ),
 					'data' => array( 
 							'name' => sprintf( __( 'Condition %d - %s', 'badgearoo' ), $condition->condition_id, esc_html( $condition->name ) ),
-							'status' => broo_condition_status( $condition, false )
+							'status_html' => $status_html,
+							'messages_html' => $messages_html
 			) ) );
 			
 		} else {

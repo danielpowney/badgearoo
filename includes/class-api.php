@@ -635,8 +635,6 @@ class BROO_API_Impl implements BROO_API {
 	
 	}
 	
-	
-	
 	/**
 	 * (non-PHPdoc)
 	 * @see BROO_API::get_user_badges()

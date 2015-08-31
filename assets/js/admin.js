@@ -98,14 +98,20 @@ jQuery(document).ready(function($) {
 			var jsonResponse = jQuery.parseJSON(response);
 			
 			// remove any previous message
-			jQuery("div#condition-" + conditionId + " div.updated").remove();
+			jQuery("div#condition-" + conditionId + " div.updated, div#condition-" + conditionId 
+					+ " div.error, div#condition-" + conditionId + " div.update-nag").remove();
 			
 			if (jsonResponse.success == true) {
-				jQuery("<div class=\"updated\" style=\"margin: 10px 0 10px;\"><p>" + jsonResponse.message + "</p></div>").insertBefore("div#condition-" + conditionId + " form");
+				
+				if ( jsonResponse.data.messages_html ) {
+					jQuery(jsonResponse.data.messages_html).insertBefore("div#condition-" + conditionId + " form");
+				}
+				
 				jQuery("div#condition-" + conditionId + " h3 span").remove();
+				
 				var html = '<span>' + jsonResponse.data.name + '</span>';
-				if ( jsonResponse.data.status ) {
-					html += jsonResponse.data.status;
+				if ( jsonResponse.data.status_html ) {
+					html += jsonResponse.data.status_html;
 				}
 				jQuery("div#condition-" + conditionId + " h3").append(html);
 			}
@@ -543,5 +549,15 @@ jQuery(document).ready(function($) {
 		// stop event
 		event.preventDefault();
 	}
+	
+
+	
+	jQuery('.color-picker').wpColorPicker({
+	    defaultColor: false,
+	    change: function(event, ui){},
+	    clear: function() {},
+	    hide: true,
+	    palettes: true
+	});
 
 });

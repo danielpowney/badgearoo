@@ -16,7 +16,7 @@ class BROO_Settings {
 	function __construct() {
 		
 		if ( is_admin() ) {
-			add_action( 'admin_init', array( &$this, 'default_settings' ) );
+			add_action( 'admin_init', array( &$this, 'default_settings' ), 10, 0 );
 		}
 		
 		if ( is_admin() && ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) ) {

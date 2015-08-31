@@ -36,7 +36,7 @@ define( 'NEW_USER_ASSIGNMENTS_COOKIE', 'broo_new_assignment' );
  * @param unknown $created_dt
  * @param unknown $status
  */
-function broo_new_assignment( $assignment_id, $condition_id, $user_id, $type, $value, $created_dt, $status ) {
+function broo_add_new_user_assignment_cookie( $assignment_id, $condition_id, $user_id, $type, $value, $created_dt, $status ) {
 	
 	if ( $status == 'approved' ) {
 		
@@ -72,7 +72,9 @@ function broo_new_assignment( $assignment_id, $condition_id, $user_id, $type, $v
 	}
 }
 
+
 $general_settings = (array) get_option( 'broo_general_settings' );
+
 if ( $general_settings['broo_show_user_assignment_modal'] ) {
-	add_action( 'broo_add_user_assignment', 'broo_new_assignment', 10, 7 );
+	add_action( 'broo_add_user_assignment', 'broo_add_new_user_assignment_cookie', 10, 7 );
 }

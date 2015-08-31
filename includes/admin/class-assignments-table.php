@@ -191,7 +191,7 @@ class BROO_Assignments_Table extends WP_List_Table {
 				$query .= ' AND';
 			}
 			
-			$query .= ' a.badge_id = ' . $badge_id;
+			$query .= ' a.type = "badge" && a.value = ' . $badge_id;
 			$added_to_query = true;
 		}
 		

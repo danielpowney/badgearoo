@@ -36,12 +36,11 @@ function broo_manage_user_badges_columns( $custom_column, $column_name, $user_id
         	$index = 0;
 	        foreach ( $badges as $badge ) {
 	        	$attachment_img = wp_get_attachment_image_src( get_post_thumbnail_id( $badge->id ) );
-	        	$column_content .= '<a href="' . get_edit_post_link( $badge->id ) . '">' . $badge->title;
-
-	       		if ( $badge_count_lookup[$badge->id] && $badge_count_lookup[$badge->id] > 1 ) {
-					$column_content .= ' (' . $badge_count_lookup[$badge->id] . ')';
-				} 
-				$column_content	.= '</a>';
+	        	$column_content .= '<a href="' . get_edit_post_link( $badge->id ) . '">' . $badge->title . '</a>';
+				
+	        	if ( $badge_count_lookup[$badge->id] && $badge_count_lookup[$badge->id] > 1 ) {
+	        		$column_content .= '&nbsp;&#215;&nbsp;' . $badge_count_lookup[$badge->id];
+	        	}
 	        	
 	        	if ( $index < $count-1 ) {
 	        		$column_content .= ', ';
@@ -101,18 +100,32 @@ function broo_show_user_profile( $user ) {
 					
 					$user_badges = Badgearoo::instance()->api->get_user_badges( $user->ID );
 					
+					$badge_count_lookup = array();
 					$selected = array();
-					foreach ( $user_badges as $user_badge ) {
-						array_push( $selected, $user_badge->id );
+					foreach ( $user_badges as $index => $badge ) {
+						if ( ! isset( $badge_count_lookup[$badge->id] ) ) {
+							$badge_count_lookup[$badge->id] = 1;
+						} else {
+							$badge_count_lookup[$badge->id]++;
+							unset( $user_badges[$index] );
+						}
+						array_push( $selected, $badge->id );
 					}
-								
+							
 					$index = 0;
 					$count = count( $badges );
 					foreach ( $badges as $badge ) {
 						$is_selected = in_array( $badge->id, $selected );
 						?>
 						<input type="checkbox" name="badges[]" value="<?php echo $badge->id; ?>"<?php if ( $is_selected  == true) { echo 'checked'; } ?> />
-						<label><a href="<?php echo get_edit_post_link( $badge->id ); ?>"><?php echo $badge->title; ?></a></label>
+						<label>
+							<a href="<?php echo get_edit_post_link( $badge->id ); ?>"><?php echo $badge->title; ?></a>
+							<?php 
+							if ( isset( $badge_count_lookup[$badge->id] ) && $badge_count_lookup[$badge->id] && $badge_count_lookup[$badge->id] > 1 ) {
+			        			?>&nbsp;&#215;&nbsp;<?php echo $badge_count_lookup[$badge->id];
+			        		}
+			        		?>
+			        	</label>
 						<?php 
 						if ( $index < ( $count-1) ) {
 							echo '<br />';
