@@ -51,7 +51,7 @@ The following widgets are available:
     
 = GitHub =
 
-
+https://github.com/danielpowney/badgearoo/
 
 == Installation ==
 
