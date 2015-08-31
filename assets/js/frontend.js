@@ -18,7 +18,7 @@ jQuery(document).ready(function() {
 		});
 	});
 	
-	jQuery(".user-dashboard-assignments .ub-more-btn").on("click", function(e) {
+	jQuery(".user-dashboard-assignments .broo-more-btn").on("click", function(e) {
 		
 		e.preventDefault();
 		
@@ -40,7 +40,7 @@ jQuery(document).ready(function() {
 				var countAssignments = jQuery(".user-dashboard-assignments input[name=count-assignments]").val();
 				
 				if ( jsonResponse.data.offset >= countAssignments ) {
-					jQuery(".user-dashboard-assignments .ub-more-btn").remove();
+					jQuery(".user-dashboard-assignments .broo-more-btn").remove();
 				}
 			}
 		});

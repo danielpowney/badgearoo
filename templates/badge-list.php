@@ -4,7 +4,7 @@
  */
 ?>
 
-<div class="<?php if ( isset( $class ) ) { echo esc_attr( $class ); } ?> ub-badge-list">
+<div class="<?php if ( isset( $class ) ) { echo esc_attr( $class ); } ?> broo-badge-list">
 	
 	<?php
 	

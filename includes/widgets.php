@@ -13,7 +13,7 @@ class BROO_User_Details_Widget extends WP_Widget {
 		$id_base = 'broo_user_badges';
 		$name = __( 'Badgearoo User Badges', 'badgearoo' );
 		$widget_opts = array(
-				'classname' => 'ub-badgearoo-widget',
+				'classname' => 'broo-badgearoo-widget',
 				'description' => __( 'Shows the post author details including any badges and points they have.', 'badgearoo' )
 		);
 		$control_ops = array( 'width' => 400, 'height' => 350 );
@@ -126,7 +126,7 @@ class BROO_Recent_Assignments_Widget extends WP_Widget {
 		$id_base = 'broo_recent_assignments';
 		$name = __( 'Badgearoo Recent Assignments', 'badgearoo' );
 		$widget_opts = array(
-				'classname' => 'ub-recent-assignments-widget',
+				'classname' => 'broo-recent-assignments-widget',
 				'description' => __( 'Shows recent user assignments of badges and points.', 'badgearoo' )
 		);
 		$control_ops = array( 'width' => 400, 'height' => 350 );
@@ -177,7 +177,7 @@ class BROO_Recent_Assignments_Widget extends WP_Widget {
 				'limit' => $limit,
 				'before_title' => $before_title,
 				'after_title' => $after_title,
-				'class' => 'ub-recent-assignments-widget',
+				'class' => 'broo-recent-assignments-widget',
 				'badge_theme' => $general_settings['broo_badge_theme'],
 				'enable_badge_permalink' => $general_settings['broo_enable_badge_permalink']
 		) );

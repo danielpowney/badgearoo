@@ -54,9 +54,9 @@ function display_badge_theme_meta_box( $post ) {
 			<tr>
 				<th scope="row"><?php _e( 'Badge Color', 'badgearoo' ); ?></th>
 				<td>
-					<input type="text" class="color-picker" name="ub-badge-color" value="<?php echo $badge_color; ?>" />					
+					<input type="text" class="color-picker" name="broo-badge-color" value="<?php echo $badge_color; ?>" />					
 					
-					<p><input type="checkbox" name="ub-badge-no-color" value="true" <?php checked( true, $badge_theme_no_color, true ); ?> />
+					<p><input type="checkbox" name="broo-badge-no-color" value="true" <?php checked( true, $badge_theme_no_color, true ); ?> />
 					<label><?php _e( 'Ignore badge color.', 'badgearoo' ); ?></label></p>
 					<p class="description"><?php _e( 'Used by light and dark badge themes to show a badge color. E.g. #c96 for Bronze, #c5c5c5 for Silver and #fc0 for Gold.', 'badgearoo' ); ?></p>
 				</td>
@@ -64,23 +64,23 @@ function display_badge_theme_meta_box( $post ) {
 			<tr>
 				<th scope="row"><?php _e( 'Badge Icon', 'badgearoo' ); ?></th>
 				<td>
-					<input type="submit" id="ub-badge-icon-upload-btn" class="button" value="<?php _e( 'Upload', 'badgearoo' ); ?>">
+					<input type="submit" id="broo-badge-icon-upload-btn" class="button" value="<?php _e( 'Upload', 'badgearoo' ); ?>">
 					
 					<?php 
 					if ( strlen( $badge_icon ) > 0 ) {
 						?>
-						<img id="ub-badge-icon-preview" src="<?php echo $badge_icon; ?>" />
+						<img id="broo-badge-icon-preview" src="<?php echo $badge_icon; ?>" />
 						<?php
 					} 
 					?>
 					<p class="description"><?php _e( 'This is used by the icon and title theme. Upload a icon image for this badge. A badge icon is optional. Recommended icon size 32 pixels by 32 pixels.', 'badgearoo' ); ?></p>
-					<input type="hidden" name="ub-badge-icon" id="ub-badge-icon" value="<?php echo $badge_icon; ?>" />
+					<input type="hidden" name="broo-badge-icon" id="broo-badge-icon" value="<?php echo $badge_icon; ?>" />
 				</td>
 			</tr>
 			<tr>
 				<th scope="row"><?php _e( 'Custom HTML', 'badgearoo' ); ?></th>
 				<td>
-					<textarea name="ub-badge-html" rows="5" cols="40" class="widefat"><?php echo $badge_html; ?></textarea>
+					<textarea name="broo-badge-html" rows="5" cols="40" class="widefat"><?php echo $badge_html; ?></textarea>
 					
 					<p class="description">
 						<?php _e( 'This is used for the custom HTML theme. Available template tags: <br>'
@@ -139,18 +139,18 @@ function save_badge_meta( $post_id, $post, $update ) {
 	}
 	
 	$badge_icon = '';
-	if ( isset( $_POST['ub-badge-icon'] ) ) {
-		$badge_icon = $_POST['ub-badge-icon'];
+	if ( isset( $_POST['broo-badge-icon'] ) ) {
+		$badge_icon = $_POST['broo-badge-icon'];
 	}
 	
 	$badge_html = '';
-	if ( isset( $_POST['ub-badge-html'] ) ) {
-		$badge_html = $_POST['ub-badge-html'];
+	if ( isset( $_POST['broo-badge-html'] ) ) {
+		$badge_html = $_POST['broo-badge-html'];
 	}
 	
 	$badge_color = '';
-	if ( isset( $_POST['ub-badge-color'] ) ) {
-		$badge_color = $_POST['ub-badge-color'];
+	if ( isset( $_POST['broo-badge-color'] ) ) {
+		$badge_color = $_POST['broo-badge-color'];
 	}
 	
 	// Update the post meta fields

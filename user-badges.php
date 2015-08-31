@@ -360,10 +360,10 @@ class Badgearoo {
 				'ajax_nonce' => wp_create_nonce( Badgearoo::ID.'-nonce' )
 		);
 		
-		wp_enqueue_script( 'ub-admin-script', plugins_url('assets' . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'admin.js', __FILE__), array('jquery'), Badgearoo::VERSION, true );
-		wp_localize_script( 'ub-admin-script', 'broo_admin_data', $config_array );
+		wp_enqueue_script( 'broo-admin-script', plugins_url('assets' . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'admin.js', __FILE__), array('jquery'), Badgearoo::VERSION, true );
+		wp_localize_script( 'broo-admin-script', 'broo_admin_data', $config_array );
 
-		wp_enqueue_style( 'ub-admin-style', plugins_url( 'assets' . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'admin.css', __FILE__ ) );
+		wp_enqueue_style( 'broo-admin-style', plugins_url( 'assets' . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'admin.css', __FILE__ ) );
 		
 		wp_enqueue_script ( 'common' );
 		wp_enqueue_script( 'wp-lists' );
@@ -392,11 +392,11 @@ class Badgearoo {
 				'show_user_assignment_modal' => $general_settings['broo_show_user_assignment_modal']
 		);
 
-		wp_enqueue_style( 'ub-frontend-style', plugins_url( 'assets' . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'frontend.css', __FILE__ ) );
+		wp_enqueue_style( 'broo-frontend-style', plugins_url( 'assets' . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'frontend.css', __FILE__ ) );
 		
 		wp_enqueue_script( 'js-cookie-script', plugins_url('assets' . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'js.cookie.js', __FILE__), array(), Badgearoo::VERSION, true );
-		wp_enqueue_script( 'ub-frontend-script', plugins_url('assets' . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'frontend.js', __FILE__), array( 'jquery', 'js-cookie-script' ), Badgearoo::VERSION, true );
-		wp_localize_script( 'ub-frontend-script', 'broo_frontend_data', $config_array );
+		wp_enqueue_script( 'broo-frontend-script', plugins_url('assets' . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'frontend.js', __FILE__), array( 'jquery', 'js-cookie-script' ), Badgearoo::VERSION, true );
+		wp_localize_script( 'broo-frontend-script', 'broo_frontend_data', $config_array );
 		
 	}
 	

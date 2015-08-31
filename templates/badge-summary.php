@@ -1,12 +1,12 @@
-<div class="<?php if ( isset( $class ) ) { echo esc_attr( $class ); } ?> ub-badge-summary">
+<div class="<?php if ( isset( $class ) ) { echo esc_attr( $class ); } ?> broo-badge-summary">
 
-	<div class="ub-badge-main">
+	<div class="broo-badge-main">
 		<h2><?php echo $title; ?></h2>
 	</div>
 	
-	<div class="ub-badge-description"><?php echo $content; ?></div>
+	<div class="broo-badge-description"><?php echo $content; ?></div>
 	
-	<div class="ub-users-count">
+	<div class="broo-users-count">
 		<?php 
 		if ( $users_count == 0 ) {
 			_e( 'No users have earned this badge.', 'badgearoo' );
@@ -18,11 +18,11 @@
 		?>
 	</div>
 	
-	<div class="ub-users">
+	<div class="broo-users">
 		<?php
 		foreach ( $users as $user ) {
 			?>
-			<div class="ub-user">
+			<div class="broo-user">
 				<?php
 				echo get_avatar( $user->ID );
 				?>

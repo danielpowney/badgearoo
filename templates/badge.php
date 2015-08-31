@@ -3,7 +3,7 @@
  * Badge template
  */
 ?>
-<div class="ub-badge-container">
+<div class="broo-badge-container">
 
 	<?php
 	broo_get_template_part( 'badge-theme', $badge_theme, true, array(
@@ -16,7 +16,7 @@
 			'title' => $title,
 			'content' => $content,
 			'enable_badge_permalink' => $enable_badge_permalink,
-			'class' => 'ub-badge-theme-' .  $badge_theme
+			'class' => 'broo-badge-theme-' .  $badge_theme
 	) );
 	
 	if ( isset( $badge_count ) && $badge_count > 1 ) {

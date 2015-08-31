@@ -9,10 +9,10 @@ if ( isset( $enable_badge_permalink ) && $enable_badge_permalink ) {
 } else {
 	?><div<?php
 }
-?> class="<?php if ( isset( $class ) ) { echo esc_attr( $class ); } ?> ub-badge" title="<?php echo $excerpt; ?>"><?php
+?> class="<?php if ( isset( $class ) ) { echo esc_attr( $class ); } ?> broo-badge" title="<?php echo $excerpt; ?>"><?php
 
 ?>
-<span class="ub-theme-color" style="background: <?php echo $badge_color; ?>;"></span>
+<span class="broo-theme-color" style="background: <?php echo $badge_color; ?>;"></span>
 <?php
 echo $title;
 		

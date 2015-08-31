@@ -75,7 +75,7 @@ function broo_settings_page() {
 			
 			if ( count( $action_sources ) > 0 ) { ?>
 				
-				<form method="post" id="ub-actions-form">
+				<form method="post" id="broo-actions-form">
 					<table class="form-table">
 						<tbody>
 							<?php 

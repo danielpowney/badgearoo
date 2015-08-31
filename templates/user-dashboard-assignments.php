@@ -13,7 +13,7 @@
 	<input type="hidden" name="type" value="<?php if ( isset( $_REQUEST['type'] ) ) { echo $_REQUEST['type']; } ?>" />
 	<input type="hidden" name="count-assignments" value="<?php echo $count_assignments; ?>" />
 	
-	<label class="ub-recent-assignments"><?php _e( 'Recent Assignments', 'badgearoo')?></label>
+	<label class="broo-recent-assignments"><?php _e( 'Recent Assignments', 'badgearoo')?></label>
 	<table>
 		<tr>
 			<th><?php _e( 'Assignment', 'badgearoo' ); ?></th>
@@ -34,6 +34,6 @@
 	
 	<?php 
 	if ( $limit < $count_assignments ) { ?>
-		<a href="#" class="ub-more-btn"><?php _e( 'Load more...', 'badgearoo' ); ?></a>
+		<a href="#" class="broo-more-btn"><?php _e( 'Load more...', 'badgearoo' ); ?></a>
 	<?php } ?>
 </div>

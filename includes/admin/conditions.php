@@ -85,7 +85,7 @@ function broo_display_condition_meta_box( $condition, $is_closed = false ) {
 				<?php wp_nonce_field('closedpostboxes', 'closedpostboxesnonce', false ); ?>
 				<?php wp_nonce_field('meta-box-order', 'meta-box-order-nonce', false ); ?>
 	
-				<table class="ub-condition">
+				<table class="broo-condition">
 					<tr>
 						<td>
 							<table class="form-table">
@@ -139,7 +139,7 @@ function broo_display_condition_meta_box( $condition, $is_closed = false ) {
 									<tr>
 										<th scope="row"><?php _e( 'Expiry', 'badgearoo' ); ?></th>
 										<td>
-											<input type="number" name="expiry-value" class="ub-expiry-value" value="<?php if ( $condition->expiry_value != 0 ) { echo $condition->expiry_value; } ?>" />
+											<input type="number" name="expiry-value" class="broo-expiry-value" value="<?php if ( $condition->expiry_value != 0 ) { echo $condition->expiry_value; } ?>" />
 											<select name="expiry-unit">
 												<option value="day" <?php if ( $condition->expiry_unit == 'day' ) { echo 'selected="selected"'; }?>><?php _e( 'Day(s)', 'badgearoo' ); ?></option>
 												<option value="week" <?php if ( $condition->expiry_unit == 'week' ) { echo 'selected="selected"'; }?>><?php _e( 'Week(s)', 'badgearoo' ); ?></option>
@@ -153,8 +153,8 @@ function broo_display_condition_meta_box( $condition, $is_closed = false ) {
 								</tbody>
 							</table>
 						</td>
-						<td class="ub-condition-steps">
-							<ul class="ub-step-list">
+						<td class="broo-condition-steps">
+							<ul class="broo-step-list">
 								<?php
 								if ( count( $condition->steps ) == 0 ) {
 									$label = __( 'New Step', 'badgearoo' );
@@ -244,7 +244,7 @@ function broo_condition_status( $condition ) {
  */
 function broo_display_step( $step ) {	
 	?>
-	<li id="step-<?php echo $step->step_id; ?>" class="ub-step ui-state-default">
+	<li id="step-<?php echo $step->step_id; ?>" class="broo-step ui-state-default">
 		<label for="label"><?php _e( 'Label', 'badgearoo' ); ?></label>
 		<input type="text" maxlength="50" name="label" value="<?php echo $step->label; ?>" class="regular-text" />
 		

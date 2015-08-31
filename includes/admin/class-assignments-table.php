@@ -395,20 +395,20 @@ class BROO_Assignments_Table extends WP_List_Table {
 			case 'status' :
 				$row_id = $item['id'];
 				?>
-				<div id="ub-status-text-<?php echo $row_id ?>">
-					<span id="ub-text-approve-<?php echo $row_id; ?>"<?php if ( $item[$column_name] != 'approved' ) { echo ' style="display: none"'; } ?>><?php _e( 'Approved', 'badgearoo' ); ?></span>
-					<span id="ub-text-pending-<?php echo $row_id; ?>"<?php if ( $item[$column_name] != 'pending' ) { echo ' style="display: none"'; } ?>><?php _e( 'Pending', 'badgearoo' ); ?></span>
-					<span id="ub-text-unapprove-<?php echo $row_id; ?>"<?php if ( $item[$column_name] != 'unapproved' ) { echo ' style="display: none"'; } ?>><?php _e( 'Unapproved', 'badgearoo' ); ?></span>
+				<div id="broo-status-text-<?php echo $row_id ?>">
+					<span id="broo-text-approve-<?php echo $row_id; ?>"<?php if ( $item[$column_name] != 'approved' ) { echo ' style="display: none"'; } ?>><?php _e( 'Approved', 'badgearoo' ); ?></span>
+					<span id="broo-text-pending-<?php echo $row_id; ?>"<?php if ( $item[$column_name] != 'pending' ) { echo ' style="display: none"'; } ?>><?php _e( 'Pending', 'badgearoo' ); ?></span>
+					<span id="broo-text-unapprove-<?php echo $row_id; ?>"<?php if ( $item[$column_name] != 'unapproved' ) { echo ' style="display: none"'; } ?>><?php _e( 'Unapproved', 'badgearoo' ); ?></span>
 				</div>
-				<div id="ub-row-actions-<?php echo $row_id; ?>" class="row-actions">
+				<div id="broo-row-actions-<?php echo $row_id; ?>" class="row-actions">
 					<?php 
 					if ( $item[$column_name] == 'approved' ) {
 						?>
-						<a href="#" id="ub-anchor-unapprove-<?php echo $row_id; ?>" class="ub-unapprove"><?php _e( 'Unapprove', 'badgearoo' ); ?></a>
+						<a href="#" id="broo-anchor-unapprove-<?php echo $row_id; ?>" class="broo-unapprove"><?php _e( 'Unapprove', 'badgearoo' ); ?></a>
 						<?php
 					} else {
 						?>
-						<a href="#" id="ub-anchor-unapprove-<?php echo $row_id; ?>" class="ub-approve"><?php _e( 'Approve', 'badgearoo' ); ?></a>
+						<a href="#" id="broo-anchor-unapprove-<?php echo $row_id; ?>" class="broo-approve"><?php _e( 'Approve', 'badgearoo' ); ?></a>
 						<?php
 					}
 					?>

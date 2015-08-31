@@ -4,7 +4,7 @@
  */
 ?>
 
-<div class="<?php if ( isset( $class ) ) { echo esc_attr( $class ); } ?> ub-user-dashboard">
+<div class="<?php if ( isset( $class ) ) { echo esc_attr( $class ); } ?> broo-user-dashboard">
 
 	<h2><?php _e( 'User Dashboard', 'badgearoo' ); ?></h2>
 	
@@ -24,7 +24,7 @@
 		}
 		
 		if ( $show_points || $show_badges ) { ?>
-			<table class="ub-user-dashboard-summary">
+			<table class="broo-user-dashboard-summary">
 				<tbody>
 					<tr>
 						<th scope="col"><?php _e( 'Assignments', 'badgearoo' ); ?></th>

@@ -1,4 +1,4 @@
-<div class="<?php if ( isset( $class ) ) { echo esc_attr( $class ); } ?> ub-condition">
+<div class="<?php if ( isset( $class ) ) { echo esc_attr( $class ); } ?> broo-condition">
 
 	<h2><?php echo $name; ?></h2>
 	
@@ -10,13 +10,13 @@
 	}
 	
 	if ( $show_steps && count( $steps ) > 0 ) { ?>
-		<label class="ub-steps"><?php _e( 'Steps:', 'badgearoo' ); ?></label>
+		<label class="broo-steps"><?php _e( 'Steps:', 'badgearoo' ); ?></label>
 		
-		<ul class="ub-steps">
+		<ul class="broo-steps">
 			<?php
 			foreach ( $steps as $step ) {
 				?>
-				<li class="ub-step"><?php echo $step->label; ?></li>
+				<li class="broo-step"><?php echo $step->label; ?></li>
 				<?php
 			}
 			?>
@@ -24,7 +24,7 @@
 	<?php }
 	
 	if ( $show_badges && count( $badges ) > 0 ) { ?>
-		<label class="ub-assignments"><?php _e( 'Assignments:', 'badgearoo' ); ?></label>
+		<label class="broo-assignments"><?php _e( 'Assignments:', 'badgearoo' ); ?></label>
 		<?php
 		foreach ( $badges as $badge ) {
 

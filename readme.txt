@@ -48,6 +48,10 @@ The following widgets are available:
 
     *   User Badges - Shows the post author details including any badges and points they have
     *   Recent Assignments - Shows recent user assignments of badges and points.
+    
+= GitHub =
+
+
 
 == Installation ==
 

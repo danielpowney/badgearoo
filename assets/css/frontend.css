@@ -1,11 +1,11 @@
 .badgearoo-widget h1, .badgearoo-widget h2, .badgearoo-widget h3, .badgearoo-widget h4, .badgearoo-widget h5, .badgearoo-widget h6 {
 	display: inline;
 }
-.badgearoo-widget img, .ub-condition .ub-badges .ub-badge img {
+.badgearoo-widget img, .broo-condition .broo-badges .broo-badge img {
 	margin-right: 2px;
 }
 
-.ub-condition, .ub-badge-summary, .user-leaderboard {
+.broo-condition, .broo-badge-summary, .user-leaderboard {
 	margin-bottom: 20px;
 }
 
@@ -13,30 +13,30 @@
 	margin-top: 10px;
 }
 
-.ub-condition label {
+.broo-condition label {
 	font-weight: bold;
 	display: block;
 }
-.ub-condition label.ub-assignments, .ub-condition label.ub-steps  {
+.broo-condition label.broo-assignments, .broo-condition label.broo-steps  {
 	margin-bottom: 10px;
 }
-.ub-condition .ub-points {
+.broo-condition .broo-points {
 	display: block;
 }
 
-.ub-badge-summary .ub-users .ub-user {
+.broo-badge-summary .broo-users .broo-user {
 	display: inline-block;
 	text-align: center;
 	margin-top: 10px;
 }
-.ub-badge-summary .ub-users-count {
+.broo-badge-summary .broo-users-count {
 	margin-bottom: 10px;
 }
-.ub-badge-summary .ub-badge-main {
+.broo-badge-summary .broo-badge-main {
 	text-align: left;
 	margin-bottom: 20px;
 }
-.ub-badge-summary .ub-badge-main h2, .ub-badge-summary .ub-badge-main img {
+.broo-badge-summary .broo-badge-main h2, .broo-badge-summary .broo-badge-main img {
 	margin-top: 0px;
 	margin-bottom: 0px;
 	display: inline-block;
@@ -46,7 +46,7 @@
  	 box-shadow: 0 0 0 0 #fff !important;
 }
 
-.ub-badge {
+.broo-badge {
 	cursor: pointer;
 	width: auto;
 	display: inline-block;
@@ -55,7 +55,7 @@
 #buddypress div#item-header ul {
 	margin-bottom: 0px;
 }
-#buddypress div#item-header ul.ub-badges li {
+#buddypress div#item-header ul.broo-badges li {
 	list-style: none;
 	float: none;
 	display: inline;
@@ -63,7 +63,7 @@
 }
 
 
-#buddypress div#item-header .ub-points {
+#buddypress div#item-header .broo-points {
 	padding: 5px 10px;
 }
 
@@ -72,16 +72,16 @@
   padding-bottom: 10px;
 }
 
-.badgearoo-summary ul.ub-badges li {
+.badgearoo-summary ul.broo-badges li {
 	list-style: none;
 }
 
-.ub-badge img {
+.broo-badge img {
 	-webkit-box-shadow: 0 0 0 0 #fff !important;  /* Safari 3-4, iOS 4.0.2 - 4.2, Android 2.3+ */
   	-moz-box-shadow: 0 0 0 0 #fff !important;  /* Firefox 3.5 - 3.6 */
  	 box-shadow: 0 0 0 0 #fff !important;
 }
-.ub-badge-summary  .ub-badge-description, .ub-badge-summary .ub-users-count {
+.broo-badge-summary  .broo-badge-description, .broo-badge-summary .broo-users-count {
 	display: block;
 	margin-top: 10px;
 }
@@ -96,7 +96,7 @@
 	max-width: 180px;
 }
 /*
-.user-leaderboard td.ub-badges, .user-leaderboard td.ub-points, .user-leaderboard td.rank {
+.user-leaderboard td.broo-badges, .user-leaderboard td.broo-points, .user-leaderboard td.rank {
 	text-align: center;
 }*/
 .user-leaderboard td.rank {
@@ -110,29 +110,29 @@
 	vertical-align: middle;
 }
 
-.ub-user-dashboard-summary .ub-badge {
+.broo-user-dashboard-summary .broo-badge {
 	display: inline-block;
 }
-.ub-user-dashboard form, .ub-user-dashboard-summary, .user-dashboard-assignments {
+.broo-user-dashboard form, .broo-user-dashboard-summary, .user-dashboard-assignments {
 	vertical-align: middle;
 }
-.ub-user-dashboard form {
+.broo-user-dashboard form {
 	margin-bottom: 10px;
 }
 
 .user-dashboard-assignments table {
 	width: auto;
 }
-.user-dashboard-assignments .ub-badge {
+.user-dashboard-assignments .broo-badge {
 	display: block;
 }
-.user-dashboard-assignments .ub-more-btn {
+.user-dashboard-assignments .broo-more-btn {
 	margin-bottom: 20px;
 	text-align: center;
 	display: inline-block;
 	width: auto;
 }
-.user-dashboard-assignments label.ub-recent-assignments {
+.user-dashboard-assignments label.broo-recent-assignments {
 	margin-bottom: 10px;
 	display: inline-block;
 }
@@ -141,27 +141,27 @@
 	margin-right: 10px;
 }
 
-.ub-badge-theme-dark {
+.broo-badge-theme-dark {
 	background-color: #333;
     border: 1px solid #333 !important;
     color: #fff;
 }
-.ub-badge-theme-light {
+.broo-badge-theme-light {
     border: 1px solid #e0e0e0 !important;
     color: #777;
     background: #f2f2f2;
 }
 
-a.ub-badge-theme-light, a.ub-badge-theme-dark {
+a.broo-badge-theme-light, a.broo-badge-theme-dark {
 	text-decoration: none !important;
 }
 
-.ub-badge-theme-icon img {
+.broo-badge-theme-icon img {
 	display: inline-block !important;
 }
 
 
-.ub-badge-theme-light, .ub-badge-theme-dark {  
+.broo-badge-theme-light, .broo-badge-theme-dark {  
     -webkit-transition: background, 0.3s, ease;
     -moz-transition: background, 0.3s, ease;
     -ms-transition: background, 0.3s, ease;
@@ -176,34 +176,34 @@ a.ub-badge-theme-light, a.ub-badge-theme-dark {
     vertical-align: middle; 
 }
 
-.ub-badge-container, .ub-points, .ub-assignment {
+.broo-badge-container, .broo-points, .broo-assignment {
 	display: block;
 	margin-bottom: 5px;
 }
-.ub-assignment .ub-points, .user-leaderboard-table .ub-points {
+.broo-assignment .broo-points, .user-leaderboard-table .broo-points {
 	display: inline-block;
 	margin-bottom: 0px;
 }
 
-.ub-assignment .ub-badge-container {
+.broo-assignment .broo-badge-container {
 	display: inline-block;
 }
-.ub-assignment .ub-time-diff {
+.broo-assignment .broo-time-diff {
 	font-style: italic;
 }
 
-.ub-badge-theme-light:hover {
+.broo-badge-theme-light:hover {
 	background: #e0e0e0;
     color: #777;
 }
 
-.ub-badge-theme-dark:hover {
+.broo-badge-theme-dark:hover {
 	background: #555;
     color: #fff;
     border-color: #555;
 }
 
-.ub-badge .ub-theme-color {
+.broo-badge .broo-theme-color {
 	width: 8px;
     height: 8px;
     border-radius: 50%;
