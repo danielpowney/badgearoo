@@ -30,7 +30,7 @@ The key features of the plugin are:
 *	Post author or user page badges & points widget
 *	Export user assignments to a CSV file
 *	Option to show a popup message on page load after a user is assigned badges and or points
-*	Fully WPML compatible
+*	Fully WPML compatible (v3.2)
 *	Developer API functions, hooks, filters and template tags to use in your theme
 *	In-built template system for customization
 

@@ -207,6 +207,11 @@ class BROO_API_Impl implements BROO_API {
 			return;
 		}
 		
+		$wpml_default_language = apply_filters( 'wpml_default_language', null ); // if this return null, WPML is not active
+		if ( $type == 'badge'  && $wpml_default_language != null ) { // for WPML, badge id may not be for default language
+			$value = apply_filters( 'wpml_object_id', $value, get_post_type( $value ), true, $wpml_default_language );
+		}
+		
 		$general_settings = (array) get_option( 'broo_general_settings' );
 		$assignment_auto_approve = $general_settings['broo_assignment_auto_approve'];
 		
@@ -325,6 +330,11 @@ class BROO_API_Impl implements BROO_API {
 				'badge_id' => null
 		) ) );
 		
+		$wpml_default_language = apply_filters( 'wpml_default_language', null ); // if this return null, WPML is not active
+		if ( isset( $badge_id ) && $wpml_default_language != null ) { // for WPML, badge id may not be for default language
+			$badge_id = apply_filters( 'wpml_object_id', $badge_id, get_post_type( $badge_id ), true, $wpml_default_language );
+		}
+		
 		global $wpdb;
 		
 		$query = 'DELETE FROM ' . $wpdb->prefix . BROO_USER_ASSIGNMENT_TABLE_NAME;
@@ -423,6 +433,12 @@ class BROO_API_Impl implements BROO_API {
 			}
 			
 			if ( $type = 'badge' ) {
+				
+				$wpml_default_language = apply_filters( 'wpml_default_language', null ); // if this return null, WPML is not active
+				if ( $wpml_default_language != null ) { // for WPML, badge id may not be for default language
+					$value = apply_filters( 'wpml_object_id', $value, get_post_type( $value ), true, $wpml_default_language );
+				}
+				
 				$where['value'] = $value;
 				array_push( $where_format, '%d' );
 			}
@@ -455,6 +471,11 @@ class BROO_API_Impl implements BROO_API {
 				'badge_id' => null
 				// TODO sort_by e.g. most_recent, oldest
 		) ) );
+		
+		$wpml_default_language = apply_filters( 'wpml_default_language', null ); // if this return null, WPML is not active
+		if ( isset( $badge_id ) && $wpml_default_language != null ) { // for WPML, badge id may not be for default language
+			$badge_id = apply_filters( 'wpml_object_id', $badge_id, get_post_type( $badge_id ), true, $wpml_default_language );
+		}
 		
 		global $wpdb;
 		
@@ -650,7 +671,7 @@ class BROO_API_Impl implements BROO_API {
 		
 		$query = 'SELECT	a.value AS badge_id
 				FROM        ' . $wpdb->prefix . BROO_USER_ASSIGNMENT_TABLE_NAME . ' a
-							LEFT JOIN ' . $wpdb->posts . ' p ON ( a.type = "badge" AND a.value = p.ID AND p.post_status = "publish" ) 
+							INNER JOIN ' . $wpdb->posts . ' p ON ( a.type = "badge" AND a.value = p.ID AND p.post_status = "publish" ) 
 				WHERE       ( ( a.type = "badge" AND p.post_status = "publish" ) OR ( a.type = "points" ) )'
 							. ' AND a.user_id = %d AND a.type = "badge"'
 							. ' AND ( NOW() <= a.expiry_dt OR a.expiry_dt IS NULL )'
@@ -746,23 +767,28 @@ class BROO_API_Impl implements BROO_API {
 			return null;
 		}
 		
+		$wpml_current_language = apply_filters( 'wpml_current_language', null ); // if this return null, WPML is not active
+		$badge_id = apply_filters( 'wpml_object_id', $badge_id, get_post_type( $badge_id), true, $wpml_current_language );		
+		
 		$post = get_post( $badge_id );
 
 		if ( $post != null ) {
 			
 			$users = array();
-			
 			if ( $load_users ) {
 				
 				global $wpdb;
 				
+				$wpml_default_language = apply_filters( 'wpml_default_language', null );
+				$badge_id = apply_filters( 'wpml_object_id', $post->ID, get_post_type( $post->ID ), true, $wpml_default_language );
+								
 				$rows = $wpdb->get_results( $wpdb->prepare( '
 						SELECT      DISTINCT( user_id ) AS user_id
 						FROM        ' . $wpdb->prefix . BROO_USER_ASSIGNMENT_TABLE_NAME . '
 						WHERE       value = %d AND type = "badge" 
 									AND ( NOW() <= expiry_dt OR expiry_dt IS NULL )
 									AND status = "approved"',
-						$badge_id
+						apply_filters( 'wpml_object_id', $badge_id, get_post_type( $badge_id ), true, $wpml_default_language )
 				) );
 				
 				foreach ( $rows as $row ) {
@@ -814,7 +840,7 @@ class BROO_API_Impl implements BROO_API {
 	 */
 	public function add_step( $condition_id, $label ) {
 		
-		$created_dt = current_time('mysql');
+		$created_dt = current_time('mysql');		
 		
 		global $wpdb;
 		
@@ -823,6 +849,8 @@ class BROO_API_Impl implements BROO_API {
 				array( '%s', '%s', '%s')
 		);
 		$step_id = $wpdb->insert_id;
+		
+		do_action( 'wpml_register_single_string', 'badgearoo', sprintf( __( 'Condition %d Step %d Label', 'badgearoo' ), $condition_id, $step_id ), $label );
 		
 		return new BROO_Step( $step_id, $condition_id, $label, null, $created_dt );
 	}
@@ -838,6 +866,8 @@ class BROO_API_Impl implements BROO_API {
 		
 		$wpdb->insert( $wpdb->prefix . BROO_CONDITION_TABLE_NAME , array( 'name' => $name, 'created_dt' => $created_dt, 'enabled' => true ), array( '%s', '%s', '%d' ) );
 		$condition_id = $wpdb->insert_id;
+		
+		do_action( 'wpml_register_single_string', 'badgearoo', sprintf( __( 'Condition %d Name', 'badgearoo' ), $condition_id ), $name );
 		
 		return new BROO_Condition( $condition_id, $name, array(), 0, $created_dt, true, null );
 	}
@@ -865,7 +895,7 @@ class BROO_API_Impl implements BROO_API {
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see BROO_API::get_conditions()
+	 * @see BROO_API::get_condition()
 	 */
 	public function get_condition( $condition_id ) {
 		global $wpdb;
@@ -876,8 +906,16 @@ class BROO_API_Impl implements BROO_API {
 	
 		if ( $row != null ) {
 			$badges = ( strlen( trim ( $row->badges ) ) == 0 ) ? array() : preg_split( '/[\s,]+/', $row->badges );
-			return new BROO_Condition( $row->condition_id, $row->name, $badges, $row->points, $row->created_dt, 
-					$row->enabled, $row->expiry_unit, $row->expiry_value, $row->recurring );
+			return new BROO_Condition( 
+					$row->condition_id, 
+					apply_filters( 'wpml_translate_single_string', $row->name, 'badgearoo', sprintf( __( 'Condition %d Name', 'badgearoo' ), $condition_id ) ),
+					$badges, 
+					$row->points, 
+					$row->created_dt, 
+					$row->enabled, 
+					$row->expiry_unit, 
+					$row->expiry_value, 
+					$row->recurring );
 		}
 		
 		return null;
@@ -889,22 +927,39 @@ class BROO_API_Impl implements BROO_API {
 	 */
 	public function get_badges( $filters = array( 'badge_ids' => array() ), $load_users = false ) {
 		
-		global $wpdb;
-				
-		$query = 'SELECT * FROM ' . $wpdb->posts . ' WHERE post_type = "badge" AND post_status = "publish"';
+		$wpml_current_language = apply_filters( 'wpml_current_language', null ); // if this return null, WPML is not active
+		$wpml_default_language = apply_filters( 'wpml_default_language', null ); // if this return null, WPML is not active
 		
-		if ( isset( $filters['badge_ids'] ) && is_array( $filters['badge_ids'] ) 
-				&& count( $filters['badge_ids'] ) > 0 ) {
-			$query .= ' AND ID IN (' . implode( ',', $filters['badge_ids'] ) . ')';
+		$wpml_active = ( $wpml_current_language || $wpml_default_language );
+		
+		if ( isset( $filters['badge_ids'] ) && $wpml_active ) { // for WPML, badge id may not be for default language
+			
+			$badge_ids = array();
+			foreach ( $filters['badge_ids'] as $badge_id ) {
+				array_push( $badge_ids, apply_filters( 'wpml_object_id', $badge_id,
+						get_post_type( $badge_id ), true, $wpml_current_language ) );
+			}
+			
+			$filters['badge_ids'] = $badge_ids;
 		}
 		
-		$results = $wpdb->get_results( $query );
+		$query = new WP_Query( array(
+				'post_type' => 'badge',
+				'post__in' => ( isset( $filters['badge_ids'] ) && count( $filters['badge_ids'] ) > 0 ) ? $filters['badge_ids'] : null
+		) );
+		
+		$posts = $query->get_posts();
+		
+		global $wpdb;
 		
 		$badges = array();
-		foreach ( $results as $row ) {
+		foreach ( $posts as $post ) {
 			
 			$users = array();
 			if ( $load_users == true ) {
+				
+				$wpml_default_language = apply_filters( 'wpml_default_language', null );
+				$badge_id = apply_filters( 'wpml_object_id', $post->ID, get_post_type( $post->ID ), true, $wpml_default_language );
 				
 				$user_rows = $wpdb->get_results( $wpdb->prepare( '
 							SELECT      DISTINCT( user_id ) AS user_id
@@ -912,7 +967,7 @@ class BROO_API_Impl implements BROO_API {
 							WHERE       value = %d AND type = "badge"
 										AND ( NOW() <= expiry_dt OR expiry_dt IS NULL )
 										AND status = "approved"',
-						$row->ID
+						$badge_id
 				) );
 				
 				foreach ( $user_rows as $user_row ) {
@@ -921,11 +976,11 @@ class BROO_API_Impl implements BROO_API {
 			}
 
 			$badge = new BROO_Badge(
-					$row->ID,
-					$row->post_title,
-					$row->post_content,
-					$row->post_excerpt,
-					$row->post_date,
+					$post->ID,
+					$post->post_title,
+					$post->post_content,
+					$post->post_excerpt,
+					$post->post_date,
 					$users
 			);
 			
@@ -1021,9 +1076,11 @@ class BROO_API_Impl implements BROO_API {
 				$format,
 				array( '%d' ) 
 		);
+			
+		do_action( 'wpml_register_single_string', 'badgearoo', sprintf( __( 'Condition %d Name', 'badgearoo' ), $condition->condition_id ), $condition->name );
 		
 		foreach ( $condition->steps as $step ) {
-			$this->save_step( $step );
+			$this->save_step( $step );			
 		}
 	}
 	
@@ -1046,6 +1103,7 @@ class BROO_API_Impl implements BROO_API {
 			$this->save_step_meta( $step->step_id, $meta['key'], $meta['value'] );
 		}
 		
+		do_action( 'wpml_register_single_string', 'badgearoo', sprintf( __( 'Condition %d Step %d Label', 'badgearoo' ), $step->condition_id, $step->step_id ), $step->label );
 	}
 	
 	/**

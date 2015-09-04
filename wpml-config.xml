@@ -1,0 +1,10 @@
+<wpml-config>
+    <admin-texts>
+        <key name="broo_general_settings">  
+            <key name="broo_assignment_moderation_notification_from" />
+            <key name="broo_assignment_moderation_notification_subject" />
+            <key name="broo_assignment_moderation_notification_heading" />
+            <key name="broo_assignment_moderation_notification_template" />
+        </key>
+    </admin-texts>    
+</wpml-config>

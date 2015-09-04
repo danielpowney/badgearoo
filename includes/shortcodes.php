@@ -259,18 +259,6 @@ function broo_badge_list( $atts ) {
 	
 	if ( isset( $badge_ids ) && strlen( trim( $badge_ids ) ) > 0 ) {
 		$badge_ids = explode( ',', $badge_ids );
-			
-		if ( function_exists( 'icl_object_id' ) ) {
-			$temp_badge_ids = array();
-	
-			foreach ( $badge_ids as $temp_badge_id ) {
-				global $sitepress;
-				array_push( $temp_badge_ids, icl_object_id( $temp_badge_id , get_post_type( $temp_badge_id ), true,
-						$sitepress->get_default_language() ) );
-			}
-			
-			$badge_ids = $temp_badge_ids;
-		}
 	} else {
 		$badge_ids = null;
 	}
@@ -690,8 +678,6 @@ function broo_user_dashboard_assignments_more() {
 					'enable_badge_permalink' => $general_settings['broo_enable_badge_permalink']
 			) );
 		}
-		
-		
 		
 		$html .= ob_get_contents();
 		ob_end_clean();

@@ -40,10 +40,13 @@ class BROO_Settings {
 		
 		$this->actions_enabled = apply_filters( 'broo_default_actions_enabled', $this->actions_enabled );
 		
-		$assignment_moderator_notification_email_template = __( "Hello,\r\n\r\n"
-				. "A new assignment #{assignment_id} for \"{display_name}\" requires moderation.\r\n\r\n"
-				. "{assignment_details}\r\nDate: {date}\r\n\r\n{assignment_moderation_link}\r\n\r\n"
-				. "Thank you.", 'badgearoo' );
+		$assignment_moderator_notification_email_template = 
+				__( "Hello,", 'badgearoo' ) . "\r\n\r\n"
+				. __( "A new assignment #{assignment_id} for \"{display_name}\" requires moderation.", 'badgearoo' ) . "\r\n\r\n"
+				. __( "{assignment_details}", 'badgearoo' ) . "\r\n" 
+				. __( "Date: {date}", 'badgearoo' ) . "\r\n\r\n" 
+				. __( "{assignment_moderation_link}", 'badgearoo' ) . "\r\n\r\n"
+				. __( "Thank you.", 'badgearoo' );
 		
 		$this->general_settings = array_merge( array(
 				'broo_assignment_auto_approve'					=> true,

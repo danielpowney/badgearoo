@@ -27,7 +27,13 @@ class BROO_Condition {
 		global $wpdb;
 		$results = $wpdb->get_results( 'SELECT * FROM ' . $wpdb->prefix . BROO_CONDITION_STEP_TABLE_NAME . ' WHERE condition_id = ' . $condition_id );
 		foreach ( $results as $row ) {
-			array_push( $this->steps, new BROO_Step( $row->step_id, $row->condition_id, $row->label, $row->action_name, $row->created_dt ) );
+			array_push( $this->steps, new BROO_Step( 
+					$row->step_id,
+					$row->condition_id,
+					apply_filters( 'wpml_translate_single_string', $row->label, 'badgearoo', sprintf( __( 'Condition %d Step %d Label', 'badgearoo' ), $row->condition_id, $row->step_id ) ),
+					$row->action_name, 
+					$row->created_dt
+			) );
 		}
 		$this->created_dt = $created_dt;
 		$this->expiry_unit = $expiry_unit;
