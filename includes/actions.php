@@ -48,7 +48,10 @@ function broo_add_new_user_assignment_cookie( $assignment_id, $condition_id, $us
 			// you can use this filter to only set the cookie for certain assignments
 			if ( apply_filters( 'broo_show_user_assignment_modal', true, $assignment ) ) {
 
-				$cookie_data = isset( $_COOKIE[NEW_USER_ASSIGNMENTS_COOKIE] ) ? $_COOKIE[NEW_USER_ASSIGNMENTS_COOKIE] : array();
+				$cookie_data = array();
+				if ( isset( $_COOKIE[NEW_USER_ASSIGNMENTS_COOKIE] ) ) {
+					$cookie_data = json_decode( stripslashes( $_COOKIE[NEW_USER_ASSIGNMENTS_COOKIE] ) );
+				}
 				
 				$message = '';
 				if ( $assignment['type'] == 'badge' ) {
@@ -65,8 +68,11 @@ function broo_add_new_user_assignment_cookie( $assignment_id, $condition_id, $us
 				) );
 				
 				$cookie_data = apply_filters( 'broo_new_user_assignment_cookie_data', $cookie_data, $assignment, $user );
-	
-				setcookie( NEW_USER_ASSIGNMENTS_COOKIE, json_encode( $cookie_data ), time()+3600, COOKIEPATH, COOKIE_DOMAIN );
+				$cookie_data = json_encode( $cookie_data, JSON_HEX_QUOT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT );
+				
+				setcookie( NEW_USER_ASSIGNMENTS_COOKIE, $cookie_data, time()+3600, COOKIEPATH, COOKIE_DOMAIN );
+				$_COOKIE[NEW_USER_ASSIGNMENTS_COOKIE] = $cookie_data; // since $_COOKIE is set when the page loads...
+				
 			}
 		}
 	}

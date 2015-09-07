@@ -126,18 +126,17 @@ function broo_about_page() {
 					<h3><?php _e( 'Easy Digital Downloads', 'badgearoo' ); ?></h3>
 					<ul>
 						<li><?php _e( 'User completed purchase.', 'badgearoo' ); ?></li>
-						
 					</ul>
-					 
 					
 				</div>
 				<div class="col">	
 					<h3><?php _e( 'WordPress', 'badgearoo' ); ?></h3>
 					<ul>
+						<li><?php _e( 'User publishes a post.', 'badgearoo' ); ?></li>
 						<li><?php _e( 'User logs in.', 'badgearoo' ); ?></li>
 						<li><?php _e( 'User updates their profile. ', 'badgearoo' ); ?></li>
-						<li><?php _e( 'Register user. ', 'badgearoo' ); ?></li>
-						<li><?php _e( ' User submits a comment..', 'badgearoo' ); ?></li>
+						<li><?php _e( 'Register user.', 'badgearoo' ); ?></li>
+						<li><?php _e( 'User submits a comment.', 'badgearoo' ); ?></li>
 					</ul>
 					
 					<h3><?php _e( 'Custom', 'badgearoo' ); ?></h3>

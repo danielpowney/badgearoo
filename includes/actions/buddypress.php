@@ -71,22 +71,22 @@ function broo_add_bp_actions( $actions = array() ) {
 	$actions_enabled = (array) get_option( 'broo_actions_enabled' );
 
 	if ( isset( $actions[BP_ACTIVITY_COMMENT_POSTED_ACTION] ) && $actions[BP_ACTIVITY_COMMENT_POSTED_ACTION]['enabled'] == true ) {
-		add_action( 'bp_activity_comment_posted',  'broo_bp_activity_comment_posted', 10, 3 );
+		add_action( 'bp_activity_comment_posted', 'broo_bp_activity_comment_posted', 10, 3 );
 		add_filter( 'broo_condition_step_check_bp_activity_comment_posted', 'broo_condition_step_check_bp_action_count', 10, 4 );
 	}
 	
 	if ( isset( $actions[BP_ACTIVITY_ADD_USER_FAVORITE_ACTION] ) && $actions[BP_ACTIVITY_ADD_USER_FAVORITE_ACTION]['enabled'] == true ) {
-		add_action( 'bp_activity_add_user_favorite',  'broo_bp_activity_add_user_favorite', 10, 2 );
+		add_action( 'bp_activity_add_user_favorite', 'broo_bp_activity_add_user_favorite', 10, 2 );
 		add_filter( 'broo_condition_step_check_bp_activity_add_user_favorite', 'broo_condition_step_check_bp_action_count', 10, 4 );
 	}
 	
 	if ( isset( $actions[BP_ACTIVITY_POST_TYPE_PUBLISHED_ACTION] ) && $actions[BP_ACTIVITY_POST_TYPE_PUBLISHED_ACTION]['enabled'] == true ) {
-		add_action( 'bp_activity_post_type_published',  'broo_bp_activity_post_type_published', 10, 2 );
+		add_action( 'bp_activity_post_type_published', 'broo_bp_activity_post_type_published', 10, 2 );
 		add_filter( 'broo_condition_step_check_bp_activity_post_type_published', 'broo_condition_step_check_bp_action_count', 10, 4 );
 	}
 	
 	if ( isset( $actions[BP_FRIENDS_FRIENDSHIP_REQUESTED_ACTION] ) && $actions[BP_FRIENDS_FRIENDSHIP_REQUESTED_ACTION]['enabled'] == true ) {
-		add_action( 'friends_friendship_requested',  'broo_friends_friendship_requested', 10, 4 );
+		add_action( 'friends_friendship_requested', 'broo_friends_friendship_requested', 10, 4 );
 		add_filter( 'broo_condition_step_check_friends_friendship_requested', 'broo_condition_step_check_bp_action_count', 10, 4 );
 	}
 	
@@ -96,7 +96,7 @@ function broo_add_bp_actions( $actions = array() ) {
 	}
 	
 	if ( isset( $actions[BP_GROUPS_CREATE_GROUP_ACTION] ) && $actions[BP_GROUPS_CREATE_GROUP_ACTION]['enabled'] == true ) {
-		add_action( 'groups_create_group',  'broo_groups_create_group', 10, 3 );
+		add_action( 'groups_create_group', 'broo_groups_create_group', 10, 3 );
 		add_filter( 'broo_condition_step_check_groups_create_group', 'broo_condition_step_check_bp_action_count', 10, 4 );
 	}
 	
@@ -133,10 +133,10 @@ function broo_condition_step_check_bp_action_count( $step_result, $step, $user_i
 
 	global $wpdb;
 	$query = 'SELECT COUNT(*) FROM ' . $wpdb->prefix . BROO_USER_ACTION_TABLE_NAME
-			. ' ua WHERE ua.action_name = "' . esc_sql( $action_name ) . '"';
+			. ' ua WHERE ua.action_name = "' . esc_sql( $action_name ) . '" AND user_id = ' . intval( $user_id );
 
 	$db_count = $wpdb->get_var( $query );
-
+	
 	if ( intval( $db_count ) < intval( $meta_count ) ) {
 		return false;
 	}
@@ -169,7 +169,6 @@ function broo_bp_activity_comment_posted( $comment_id, $r, $activity ) {
  * @param unknown $user_id
  */
 function broo_bp_activity_add_user_favorite( $activity_id, $user_id ) {
-	
 	Badgearoo::instance()->api->add_user_action( BP_ACTIVITY_ADD_USER_FAVORITE_ACTION, $user_id, array(
 			'activity_id' => $activity_id
 	) );

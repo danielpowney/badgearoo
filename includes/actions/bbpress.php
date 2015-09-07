@@ -192,7 +192,7 @@ function broo_bbp_new_topic( $topic_id = 0, $forum_id = 0, $anonymous_data = fal
  */
 function broo_bbp_closed_topic( $topic_id ) {
 	
-	$user_id = 1; // TODO
+	$user_id = get_current_user_id();
 	
 	if ( $user_id != 0 ) {
 		Badgearoo::instance()->api->add_user_action( BBP_CLOSED_TOPIC_ACTION, $user_id );

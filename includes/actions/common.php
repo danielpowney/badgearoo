@@ -6,7 +6,7 @@
 define( 'BROO_WP_PUBLISH_POST_ACTION', 'wp_publish_post' );
 define( 'BROO_WP_SUBMIT_COMMENT_ACTION', 'wp_submit_comment' );
 define( 'BROO_WP_LOGIN_ACTION', 'wp_login' );
-define( 'BROO_WP_REGISTER_ACTION', 'wp_register' );
+define( 'BROO_WP_USER_REGISTER_ACTION', 'user_register' );
 define( 'BROO_WP_PROFILE_UPDATE_ACTION', 'wp_profile_update' );
 
 // Non WordPress
@@ -29,7 +29,7 @@ function broo_init_common_actions( $broo_actions ) {
 			'source' =>	__( 'WordPress', 'badgearoo' )
 	);
 	
-	$broo_actions[BROO_WP_REGISTER_ACTION] = array(
+	$broo_actions[BROO_WP_USER_REGISTER_ACTION] = array(
 			'description' => __( 'Register user.', 'badgearoo' ),
 			'source' =>	__( 'WordPress', 'badgearoo' )
 	);
@@ -73,9 +73,9 @@ function broo_add_common_actions( $actions = array() ) {
 		add_filter( 'broo_condition_step_check_wp_login', 'broo_condition_step_check_count', 10, 4 );
 	}
 	
-	if ( isset( $actions[BROO_WP_REGISTER_ACTION] ) && $actions[BROO_WP_REGISTER_ACTION]['enabled'] == true ) {
-		add_action( 'wp_register', 'broo_wp_register', 10, 1 );
-		add_filter( 'broo_condition_step_check_wp_register', 'broo_condition_step_check_count', 10, 4 );
+	if ( isset( $actions[BROO_WP_USER_REGISTER_ACTION] ) && $actions[BROO_WP_USER_REGISTER_ACTION]['enabled'] == true ) {
+		add_action( 'user_register', 'broo_user_register', 10, 1 );
+		add_filter( 'broo_condition_step_check_user_register', 'broo_condition_step_check_once', 10, 4 );
 	}
 	
 	if ( isset( $actions[BROO_WP_PROFILE_UPDATE_ACTION] ) && $actions[BROO_WP_PROFILE_UPDATE_ACTION]['enabled'] == true ) {
@@ -233,7 +233,7 @@ function broo_default_common_actions_enabled( $actions_enabled ) {
 			BROO_WP_PUBLISH_POST_ACTION			=> true,
 			BROO_WP_SUBMIT_COMMENT_ACTION			=> true,
 			BROO_WP_LOGIN_ACTION					=> false,
-			BROO_WP_REGISTER_ACTION				=> false,
+			BROO_WP_USER_REGISTER_ACTION				=> false,
 			BROO_MIN_POINTS_ACTION				=> true,
 			BROO_WP_PROFILE_UPDATE_ACTION			=> false
 	), $actions_enabled );
@@ -295,7 +295,7 @@ function broo_submit_comment( $comment_id, $comment_approved = null) {
  * @param unknown $user
  */
 function broo_user_login( $user_login, $user ) {
-	Badgearoo::instance()->api->add_user_action( BROO_WP_REGISTER_ACTION, $user->ID );
+	Badgearoo::instance()->api->add_user_action( BROO_WP_LOGIN_ACTION, $user->ID );
 }
 
 
@@ -303,8 +303,8 @@ function broo_user_login( $user_login, $user ) {
  * Whenever a user registers
  * @param unknown $user_id
  */
-function broo_wp_register( $user_id ) {
-	Badgearoo::instance()->api->add_user_action( BROO_WP_REGISTER_ACTION, $user_id );
+function broo_user_register( $user_id ) {
+	Badgearoo::instance()->api->add_user_action( BROO_WP_USER_REGISTER_ACTION, $user_id );
 }
 
 
@@ -319,6 +319,35 @@ function broo_wp_register( $user_id ) {
  */
 function broo_wp_profile_update( $user_id, $old_user_data ) {
 	Badgearoo::instance()->api->add_user_action( BROO_WP_PROFILE_UPDATE_ACTION, $user_id, array() );
+}
+
+
+/**
+ * Checks user action has been done once
+ *
+ * @param unknown $step_result
+ * @param unknown $step
+ * @param int $user_id
+ * @param string $action_name
+ * @return boolean
+ */
+function broo_condition_step_check_once( $step_result, $step, $user_id, $action_name ) {
+
+	if ( $step_result == false ) { // no need to continue
+		return $step_result;
+	}
+
+	global $wpdb;
+	$query = 'SELECT COUNT(*) FROM ' . $wpdb->prefix . BROO_USER_ACTION_TABLE_NAME . ' WHERE action_name = "'
+			. esc_sql( $step->action_name ) . '" and user_id = ' . $user_id;
+
+	$db_count = $wpdb->get_var( $query );
+
+	if ( intval( $db_count ) == 0 ) {
+		return false;
+	}
+
+	return $step_result;
 }
 
 
@@ -338,6 +367,11 @@ function broo_condition_step_check_count( $step_result, $step, $user_id, $action
 	}
 
 	$meta_count = Badgearoo::instance()->api->get_step_meta_value( $step->step_id, 'count' );
+	
+	// in case empty count is saved...
+	if ( $meta_count == null || ( is_string( $meta_count ) && strlen( trim( $meta_count ) == 0 ) ) ) {
+		$meta_count = 1;
+	}
 
 	global $wpdb;
 	$query = 'SELECT COUNT(*) FROM ' . $wpdb->prefix . BROO_USER_ACTION_TABLE_NAME . ' WHERE action_name = "'

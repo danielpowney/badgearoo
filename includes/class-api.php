@@ -224,7 +224,7 @@ class BROO_API_Impl implements BROO_API {
 			$query = 'SELECT ua.id, ua.value, ua.status, c.recurring, c.expiry_unit, c.expiry_value FROM ' 
 					. $wpdb->prefix . BROO_USER_ASSIGNMENT_TABLE_NAME . ' ua, ' . $wpdb->prefix . BROO_CONDITION_TABLE_NAME . ' c'
 					. ' WHERE ua.condition_id = c.condition_id AND ua.condition_id = ' . esc_sql( $condition_id ) 
-					. ' AND ua.type = "' . esc_sql( $type ) . '"';
+					. ' AND ua.type = "' . esc_sql( $type ) . '" AND user_id = ' . intval( $user_id );
 			
 			if ( $type == 'badge' ) {
 				$query .= ' AND ua.value = ' . $value;
@@ -277,7 +277,7 @@ class BROO_API_Impl implements BROO_API {
 			
 			$assignment_id = $wpdb->insert_id;
 			
-			do_action( 'broo_update_user_assignment', $assignment_id, $condition_id, $user_id, $type, $value, $status );
+			do_action( 'broo_update_user_assignment', $assignment_id, $condition_id, $user_id, $type, $value, $row->status );
 			
 		} else {
 			

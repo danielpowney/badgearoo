@@ -252,9 +252,12 @@ function broo_delete_assignments() {
 		$user = get_user_by( 'login', $username );
 		if ( $user && $user->ID ) {
 			$user_id = $user->ID;
+		} else {
+			echo '<div class="error"><p>' . sprintf( __( 'Cannot find user with username "%s".', 'badgearoo' ), $username ) . '</p></div>';
+			return;
 		}
 	}
-	
+
 	if ( $from_date != null && strlen( $from_date ) > 0 ) {
 		list( $year, $month, $day ) = explode( '-', $from_date ); // default yyyy-mm-dd format
 		if ( ! checkdate( $month , $day , $year ) ) {
@@ -273,7 +276,8 @@ function broo_delete_assignments() {
 			'to_date' => $to_date,
 			'from_date' => $from_date,
 			'badge_id' => $badge_id,
-			'type' => $type
+			'type' => $type,
+			'user_id' => $user_id
 	) );
 	
 	if ( $count > 0 ) {
