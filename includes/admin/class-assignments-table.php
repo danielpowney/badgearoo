@@ -377,6 +377,8 @@ class BROO_Assignments_Table extends WP_List_Table {
 				$condition = Badgearoo::instance()->api->get_condition( $condition_id );
 				if ( $condition ) {
 					echo $condition->name;
+				} else if ( $condition_id != 0 ) {
+					printf( __( 'Condition %d has been deleted.', 'badgearoo' ), $condition_id );
 				}
 				break;
 			case 'type' :

@@ -29,7 +29,7 @@ function broo_get_the_author_badges( $value, $user_id = false ) {
 	
 	$general_settings = (array) get_option( 'broo_general_settings' );
 	
-	broo_get_template_part( 'badgearoo-summary', null, true, array(
+	broo_get_template_part( 'user-badges-summary', null, true, array(
 			'badge_theme' => $general_settings['broo_badge_theme'],
 			'badges' => $badges,
 			'points' => $points,

@@ -10,7 +10,22 @@ define ( 'BP_FRIENDS_FRIENDSHIP_ACCEPTED_ACTION', 'friends_friendship_accepted' 
 define ( 'BP_FRIENDS_FRIENDSHIP_REQUESTED_ACTION', 'friends_friendship_requested' ); // works
 define ( 'BP_GROUPS_CREATE_GROUP_ACTION', 'groups_create_group' ); // works - may rename
 define ( 'BP_GROUPS_JOIN_GROUP_ACTION', 'groups_join_group' ); // workds
-// TODO invite members to join a group
+// TODO Add the following actions
+// * Invite Someone to Join a Group
+// * Get Promoted to Group Moderator/Administrator
+// * Promote another Group Member to Group Moderator/Administrator
+// * Activated Account
+// * Change Profile Avatar
+// * Update Profile information
+// * Send/reply to a Private Message
+
+// TODO custom BuddyPress wp-admin settings
+// * select which assignments can be displayed on user profiles and Activity Streams
+// * enable adding assignments to activity streams
+
+// Add an assignments tab
+
+// TODO member e-mail settings to receieve e-mail notifications
 
 // do_action( 'bp_activity_comment_posted', $comment_id, $r, $activity );
 // do_action( 'bp_activity_add_user_favorite', $activity_id, $user_id );
@@ -289,7 +304,7 @@ function broo_bp_before_member_header_meta() {
 	
 	$general_settings = (array) get_option( 'broo_general_settings' );
 	
-	broo_get_template_part( 'badgearoo-summary', null, true, array(
+	broo_get_template_part( 'user-badges-summary', null, true, array(
 			'badge_theme' => $general_settings['broo_badge_theme'],
 			'badges' => $badges,
 			'points' => $points,

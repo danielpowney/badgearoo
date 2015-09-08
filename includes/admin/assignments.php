@@ -155,6 +155,10 @@ function broo_add_new_assignment() {
 	
 	Badgearoo::instance()->api->add_user_assignment( null, $user_id, $type, $value, $expiry_dt );
 	
+	if ( $type == 'points' ) {
+		broo_check_conditions( BROO_MIN_POINTS_ACTION, $user_id );
+	}
+	
 	$url = 'edit.php?post_type=badge&page=' . Badgearoo::ASSIGNMENTS_PAGE_SLUG;
 	wp_redirect($url);
 	exit();

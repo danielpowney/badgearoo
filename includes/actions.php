@@ -38,7 +38,7 @@ define( 'NEW_USER_ASSIGNMENTS_COOKIE', 'broo_new_assignment' );
  */
 function broo_add_new_user_assignment_cookie( $assignment_id, $condition_id, $user_id, $type, $value, $created_dt, $status ) {
 	
-	if ( $status == 'approved' ) {
+	if ( $status == 'approved' && get_current_user_id() == $user_id ) {
 		
 		$assignment = Badgearoo::instance()->api->get_assignment( $assignment_id );
 		$user = get_userdata( $user_id );

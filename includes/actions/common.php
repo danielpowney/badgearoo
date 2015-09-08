@@ -435,17 +435,15 @@ function broo_condition_step_check_publish_post( $step_result, $step, $user_id, 
  * @return unknown
  */
 function broo_condition_step_check_points( $step_result, $step, $user_id, $action_name ) {
-
+	
 	if ( $step_result == false ) { // no need to continue
 		return $step_result;
 	}
-
+	
 	$value = Badgearoo::instance()->api->get_step_meta_value( $step->step_id, 'points' );
 
-	global $wpdb;
-
-	$points = $wpdb->get_var( 'SELECT COUNT(*) FROM ' . $wpdb->prefix . BROO_USER_ACTION_TABLE_NAME . ' WHERE action_name = "' . esc_sql( $action ) . '" AND user_id = ' . $user_id );
-
+	$points = Badgearoo::instance()->api->get_user_points( $user_id );
+	
 	if ( intval( $points ) < intval( $value ) ) {
 		return false;
 	}

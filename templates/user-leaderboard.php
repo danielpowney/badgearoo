@@ -16,7 +16,11 @@
 	} else {
 		
 		if ( $show_filters == true ) { 
-			broo_get_template_part( 'user-leaderboard', 'filters', true, array() );
+			broo_get_template_part( 'user-leaderboard', 'filters', true, array( 
+					'sort_by' => $sort_by,
+					'from_date' => $from_date,
+					'to_date' => $to_date
+			 ) );
 		}
 		
 		broo_get_template_part( 'user-leaderboard', 'table', true, array(

@@ -107,7 +107,9 @@ function broo_leaderboard( $atts) {
 			'show_badges' => true,
 			'show_points' => true,
 			'sort_by' => 'points',
-			'show_filters' => true
+			'show_filters' => true,
+			'to_date' => null,
+			'from_date' => null
 	), $atts ) );
 	
 	if ( is_string( $show_avatar ) ) {
@@ -123,9 +125,31 @@ function broo_leaderboard( $atts) {
 		$show_filters = $show_filters == 'true' ? true : false;
 	}
 	
+	if ( $sort_by != 'badges' && $sort_by != 'points' ) {
+		$sort_by = null;
+	}
+	
+	if ( $from_date != null && strlen( $from_date ) > 0 ) {
+		list( $year, $month, $day ) = explode( '-', $from_date ); // default yyyy-mm-dd format
+		if ( ! checkdate( $month , $day , $year ) ) {
+			$from_date = null;
+		}
+	}
+	
+	if ( $to_date != null && strlen($to_date) > 0 ) {
+		list( $year, $month, $day ) = explode( '-', $to_date ); // default yyyy-mm-dd format
+		if ( ! checkdate( $month , $day , $year ) ) {
+			$to_date = null;
+		}
+	}
+	
 	global $wpdb;
 	
-	$user_rows = broo_get_user_leaderboard( );
+	$user_rows = broo_get_user_leaderboard( array(
+			'sort_by' => $sort_by,
+			'from_date' => $from_date,
+			'to_date' => $to_date
+	) );
 	
 	$html = '';
 
@@ -138,7 +162,9 @@ function broo_leaderboard( $atts) {
 			'show_badges' => $show_badges,
 			'show_points' => $show_points,
 			'sort_by' => $sort_by,
-			'show_filters' => $show_filters
+			'show_filters' => $show_filters,
+			'from_date' => $from_date,
+			'to_date' => $to_date
 	) );
 	$html .= ob_get_contents();
 	ob_end_clean();
@@ -451,7 +477,7 @@ function broo_get_user_leaderboard( $filters = array() ) {
 			. $wpdb->prefix . BROO_USER_ASSIGNMENT_TABLE_NAME . ' a LEFT JOIN ' . $wpdb->posts . ' p'
 			. ' ON ( a.type = "badge" AND a.value = p.ID AND p.post_status = "publish" ) LEFT JOIN ' 
 			. $wpdb->users . ' u ON a.user_id = u.ID WHERE ( ( a.type = "badge" AND p.post_status = "publish" )'
-			. ' OR ( a.type = "points" ) )';
+			. ' OR ( a.type = "points" ) ) AND a.status = "approved"';
 	
 	$added_to_query = true;
 	

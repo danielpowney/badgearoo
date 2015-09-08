@@ -5,7 +5,7 @@
 
 
 ?>
-<div class="<?php if ( isset( $class ) ) { echo esc_attr( $class ); } ?> badgearoo-summary">
+<div class="<?php if ( isset( $class ) ) { echo esc_attr( $class ); } ?> broo-user-badges-summary">
 
 	<?php 
 	foreach ( $badges as $badge ) {

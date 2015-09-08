@@ -1046,7 +1046,7 @@ class BROO_API_Impl implements BROO_API {
 		
 		$wpdb->query( 'DELETE FROM ' . $wpdb->prefix . BROO_CONDITION_STEP_META_TABLE_NAME . ' WHERE step_id IN ( ' . implode(',', $steps ) . ')' );
 
-		$wpdb->query( 'DELETE FROM ' . $wpdb->prefix . BROO_USER_ASSIGNMENT_TABLE_NAME . ' WHERE condition_id = ' . $condition_id );
+		// $wpdb->query( 'DELETE FROM ' . $wpdb->prefix . BROO_USER_ASSIGNMENT_TABLE_NAME . ' WHERE condition_id = ' . $condition_id );
 	}
 	
 	/**

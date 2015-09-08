@@ -13,7 +13,7 @@ class BROO_User_Details_Widget extends WP_Widget {
 		$id_base = 'broo_user_badges';
 		$name = __( 'Badgearoo User Badges', 'badgearoo' );
 		$widget_opts = array(
-				'classname' => 'broo-badgearoo-widget',
+				'classname' => 'broo-user-badges-widget',
 				'description' => __( 'Shows the post author details including any badges and points they have.', 'badgearoo' )
 		);
 		$control_ops = array( 'width' => 400, 'height' => 350 );
@@ -50,11 +50,11 @@ class BROO_User_Details_Widget extends WP_Widget {
 		
 		echo $before_widget;
 		
-		broo_get_template_part( 'badgearoo-widget', null, true, array(
+		broo_get_template_part( 'user-badges-widget', null, true, array(
 				'badge_theme' => $general_settings['broo_badge_theme'],
 				'before_title' => $before_title,
 				'after_title' => $after_title,
-				'class' => 'badgearoo-widget',
+				'class' => 'broo-user-badges-widget',
 				'enable_badge_permalink' => $general_settings['broo_enable_badge_permalink']
 		) );
 		
