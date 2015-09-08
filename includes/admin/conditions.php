@@ -2,6 +2,10 @@
 /**
  * Conditions page
  */
+
+// TODO add new condition should automatically go to the top in UI instead of bottom
+// TODO sort conditions by last modified date
+
 function broo_conditions_page() {
 	?>
 	<div class="wrap">
