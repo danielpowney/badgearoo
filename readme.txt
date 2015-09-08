@@ -49,6 +49,39 @@ The following widgets are available:
     *   User Badges - Shows the post author details including any badges and points they have
     *   Recent Assignments - Shows recent user assignments of badges and points.
     
+= Step Actions = 
+
+The following step actions are available out-of-the-box:
+
+	* User publishes a post.
+	* User logs in.
+	* User updates their profile.
+	* Register user.
+	* User submits a comment.
+	* Minimum points.
+	
+BuddyPress specific (requires BuddyPress plugin):
+
+	* Add favorite.
+	* Comment on an activity.
+	* Post activity.
+	* Accept a friend request.
+	* Request a friend.
+	* Create Group.
+	* Join Group.
+	
+bbPress specific (requires bbPress plugin):
+
+	* Closes a forum topic.
+	* Creates a new forum (outside wp-admin).
+	* Replies to forum topic (outside wp-admin).
+	* Adds a new forum topic (outside wp-admin).
+
+Other plugins:
+
+	* Checkout order processed (requires WooCommerce plugin)
+	* User completed purchase. (requires Easy Digital Downloads plugin)
+    
 = GitHub =
 
 https://github.com/danielpowney/badgearoo/
