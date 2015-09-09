@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: multi-rating-pro\n"
-"POT-Creation-Date: 2015-09-08 20:03+1000\n"
-"PO-Revision-Date: 2015-09-08 20:03+1000\n"
+"POT-Creation-Date: 2015-09-09 08:59+1000\n"
+"PO-Revision-Date: 2015-09-09 08:59+1000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en_AU\n"
@@ -213,15 +213,15 @@ msgstr ""
 msgid "points"
 msgstr ""
 
-#: ../includes/actions/common.php:186
+#: ../includes/actions/common.php:190
 msgid "time(s)"
 msgstr ""
 
-#: ../includes/actions/common.php:208
+#: ../includes/actions/common.php:212
 msgid "Post Type"
 msgstr ""
 
-#: ../includes/actions/common.php:210
+#: ../includes/actions/common.php:214
 #: ../includes/admin/class-assignments-table.php:47
 msgid "All"
 msgstr ""
@@ -407,7 +407,7 @@ msgstr ""
 #: ../includes/admin/assignments.php:38
 #: ../includes/admin/class-assignments-table.php:25
 #: ../includes/admin/class-assignments-table.php:133
-#: ../templates/user-dashboard-assignments.php:19
+#: ../templates/user-dashboard-assignments.php:24
 msgid "Assignment"
 msgstr ""
 
@@ -523,19 +523,19 @@ msgid "Filter"
 msgstr ""
 
 #: ../includes/admin/class-assignments-table.php:131
-#: ../templates/user-dashboard-assignments.php:20
+#: ../templates/user-dashboard-assignments.php:25
 msgid "Condition"
 msgstr ""
 
 #: ../includes/admin/class-assignments-table.php:134
 #: ../includes/admin/tools.php:171
-#: ../templates/user-dashboard-assignments.php:21
+#: ../templates/user-dashboard-assignments.php:26
 msgid "Created Dt"
 msgstr ""
 
 #: ../includes/admin/class-assignments-table.php:135
 #: ../includes/admin/tools.php:172
-#: ../templates/user-dashboard-assignments.php:22
+#: ../templates/user-dashboard-assignments.php:27
 msgid "Expiry Dt"
 msgstr ""
 
@@ -944,11 +944,11 @@ msgstr ""
 msgid "Points: %d"
 msgstr ""
 
-#: ../includes/shortcodes.php:199 ../includes/shortcodes.php:215
+#: ../includes/shortcodes.php:185 ../includes/shortcodes.php:201
 msgid "Badge not found."
 msgstr ""
 
-#: ../includes/shortcodes.php:333 ../includes/shortcodes.php:349
+#: ../includes/shortcodes.php:319 ../includes/shortcodes.php:335
 msgid "Condition not found."
 msgstr ""
 
@@ -1037,24 +1037,34 @@ msgid "%s points"
 msgstr ""
 
 #: ../templates/points.php:5
-msgid "No points"
+msgid "No points."
 msgstr ""
 
 #: ../templates/recent-assignments-widget.php:9
-#: ../templates/user-dashboard-assignments.php:16
+#: ../templates/user-dashboard-assignments.php:21
 msgid "Recent Assignments"
 msgstr ""
 
-#: ../templates/recent-assignments-widget.php:38
+#: ../templates/recent-assignments-widget.php:14
+#: ../templates/user-dashboard-assignments.php:18
+#: ../templates/user-leaderboard.php:14
+msgid "No assignments."
+msgstr ""
+
+#: ../templates/recent-assignments-widget.php:42
 msgid "by"
 msgstr ""
 
-#: ../templates/recent-assignments-widget.php:39
+#: ../templates/recent-assignments-widget.php:43
 #, php-format
 msgid "%s ago"
 msgstr ""
 
-#: ../templates/user-dashboard-assignments.php:37
+#: ../templates/user-badges.php:25
+msgid "No badges."
+msgstr ""
+
+#: ../templates/user-dashboard-assignments.php:42
 msgid "Load more..."
 msgstr ""
 
@@ -1098,8 +1108,4 @@ msgstr ""
 
 #: ../templates/user-leaderboard.php:9
 msgid "Leaderboard"
-msgstr ""
-
-#: ../templates/user-leaderboard.php:14
-msgid "None."
 msgstr ""

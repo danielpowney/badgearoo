@@ -2,6 +2,6 @@
 	if ( $points > 0 ) {
 		printf( __( '%s points', 'badgearoo' ), number_format( $points ) );
 	} else {
-		_e( 'No points', 'badgearoo' );
+		_e( 'No points.', 'badgearoo' );
 	}
 ?></span>

@@ -13,25 +13,30 @@
 	<input type="hidden" name="type" value="<?php if ( isset( $_REQUEST['type'] ) ) { echo $_REQUEST['type']; } ?>" />
 	<input type="hidden" name="count-assignments" value="<?php echo $count_assignments; ?>" />
 	
-	<label class="broo-recent-assignments"><?php _e( 'Recent Assignments', 'badgearoo')?></label>
-	<table>
-		<tr>
-			<th><?php _e( 'Assignment', 'badgearoo' ); ?></th>
-			<th><?php _e( 'Condition', 'badgearoo' ); ?></th>
-			<th><?php _e( 'Created Dt', 'badgearoo' ); ?></th>
-			<th><?php _e( 'Expiry Dt', 'badgearoo' ); ?></th>
-		</tr>
-		
-		<?php 
-		foreach ( $assignments as $assignment ) {
-			broo_get_template_part( 'assignments-table-row', null, true, array(
-					'assignment' => $assignment,
-					'badge_theme' => $badge_theme,
-					'enable_badge_permalink' => $enable_badge_permalink
-			) );
-		} ?>
-	</table>
-	
+	<?php 
+	if ( $count_assignments == 0 ) {
+		_e( 'No assignments.', 'badgearoo' );
+	} else {
+		?>
+		<label class="broo-recent-assignments"><?php _e( 'Recent Assignments', 'badgearoo')?></label>
+		<table>
+			<tr>
+				<th><?php _e( 'Assignment', 'badgearoo' ); ?></th>
+				<th><?php _e( 'Condition', 'badgearoo' ); ?></th>
+				<th><?php _e( 'Created Dt', 'badgearoo' ); ?></th>
+				<th><?php _e( 'Expiry Dt', 'badgearoo' ); ?></th>
+			</tr>
+			
+			<?php 
+			foreach ( $assignments as $assignment ) {
+				broo_get_template_part( 'assignments-table-row', null, true, array(
+						'assignment' => $assignment,
+						'badge_theme' => $badge_theme,
+						'enable_badge_permalink' => $enable_badge_permalink
+				) );
+			} ?>
+		</table>
+	<?php } ?>
 	<?php 
 	if ( $limit < $count_assignments ) { ?>
 		<a href="#" class="broo-more-btn"><?php _e( 'Load more...', 'badgearoo' ); ?></a>

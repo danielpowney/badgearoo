@@ -11,7 +11,7 @@
 	<?php
 	if ( count( $user_rows ) == 0 ) {
 		?>
-		<p><?php _e( 'None.', 'badgearoo' ); ?></p>
+		<p><?php _e( 'No assignments.', 'badgearoo' ); ?></p>
 		<?php 
 	} else {
 		

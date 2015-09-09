@@ -13,6 +13,8 @@ function broo_settings_page() {
 			$page = Badgearoo::SETTINGS_PAGE_SLUG;
 			$tabs = array (
 					'broo_general_settings'		=> __( 'General', 'badgearoo' ),
+					'broo_email_settings'		=> __( 'Email', 'badgearoo' ),
+					'broo_bbp_settings'			=> __( 'BuddyPress', 'badgearoo' ),
 					'broo_action_settings' 		=> __( 'Actions', 'badgearoo' )
 			);
 			
@@ -62,6 +64,28 @@ function broo_settings_page() {
 				wp_nonce_field( 'update-options' );
 				settings_fields( 'broo_general_settings' );
 				do_settings_sections( 'broo_general_settings' );
+				submit_button(null, 'primary', 'submit', true, null);
+				?>
+			</form>
+			<?php
+		} else if ( $current_tab == 'broo_email_settings' ) {
+			?>
+			<form method="post" name="broo_email_settings" action="options.php">
+				<?php
+				wp_nonce_field( 'update-options' );
+				settings_fields( 'broo_email_settings' );
+				do_settings_sections( 'broo_email_settings' );
+				submit_button(null, 'primary', 'submit', true, null);
+				?>
+			</form>
+			<?php
+		} else if ( $current_tab == 'broo_bbp_settings' ) {
+			?>
+			<form method="post" name="broo_bbp_settings" action="options.php">
+				<?php
+				wp_nonce_field( 'update-options' );
+				settings_fields( 'broo_bbp_settings' );
+				do_settings_sections( 'broo_bbp_settings' );
 				submit_button(null, 'primary', 'submit', true, null);
 				?>
 			</form>

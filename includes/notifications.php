@@ -5,14 +5,15 @@
 function broo_assignment_moderation_notification( $assignment_id, $condition_id, $user_id, $type, $value, $created_dt, $status ) {
 	
 	$general_settings = (array) get_option( 'broo_general_settings' );
+	$email_settings = (array) get_option( 'broo_email_settings' );
 	
-	if ( ! $general_settings['broo_assignment_auto_approve'] && $general_settings['broo_assignment_notify_moderators'] ) {
+	if ( ! $general_settings['broo_assignment_auto_approve'] && $email_settings['broo_assignment_notify_moderators'] ) {
 			
-		$from_email = $general_settings['broo_assignment_moderation_notification_email'];
-		$from_name = $general_settings['broo_assignment_moderation_notification_from'];
-		$subject = $general_settings['broo_assignment_moderation_notification_subject'];
-		$heading = $general_settings['broo_assignment_moderation_notification_heading'];
-		$message = $general_settings['broo_assignment_moderation_notification_template'];
+		$from_email = $email_settings['broo_assignment_moderation_notification_email'];
+		$from_name = $email_settings['broo_assignment_moderation_notification_from'];
+		$subject = $email_settings['broo_assignment_moderation_notification_subject'];
+		$heading = $email_settings['broo_assignment_moderation_notification_heading'];
+		$message = $email_settings['broo_assignment_moderation_notification_template'];
 		
 		$site_name = wp_specialchars_decode( get_option( 'blogname' ), ENT_QUOTES );
 		/**
@@ -59,7 +60,7 @@ function broo_assignment_moderation_notification( $assignment_id, $condition_id,
 		$message = str_replace( "\r\n", "<br />", $message );
 			
 		$emails = array();
-		$moderators = preg_split( '/[\r\n,]+/', $general_settings['broo_assignment_moderators'], -1, PREG_SPLIT_NO_EMPTY );
+		$moderators = preg_split( '/[\r\n,]+/', $email_settings['broo_assignment_moderators'], -1, PREG_SPLIT_NO_EMPTY );
 		foreach ( $moderators as $moderator_email ) {
 			if ( is_email( $moderator_email ) ) {
 				array_push( $emails, $moderator_email );

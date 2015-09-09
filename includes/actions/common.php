@@ -181,6 +181,10 @@ function broo_step_meta_count( $step_id, $action  ) {
 
 	if ( $step_meta_enabled ) {
 		$count = Badgearoo::instance()->api->get_step_meta_value( $step_id, 'count' );
+		
+		if ( $count == null || ! is_numeric( $count ) ) {
+			$count = 1;
+		}
 		?>
 		<span class="step-meta-value">
 			<input name="count" type="number" value="<?php echo $count; ?>" class="small-text" />&nbsp;<?php _e( 'time(s)', 'badgearoo' ); ?>

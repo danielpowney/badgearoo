@@ -73,9 +73,19 @@ class BROO_Condition {
 			}
 		}
 		
-		// TODO work out expiry_dt based on expiry_unit and expiry_value e.g. 1 month
+		// work out expiry_dt based on expiry_unit and expiry_value e.g. 1 month
 		$expiry_dt = null;
 		
+		if ( is_numeric( $this->expiry_value ) && intval( $this->expiry_value ) != 0 && strlen( $this->expiry_unit ) > 0 ) {
+		
+			$time_format = '+' . $this->expiry_value . ' '.  $this->expiry_unit;
+			if ( $this->expiry_value > 1 ) {
+				$time_format .= 's';
+			}
+		
+			$expiry_dt = date( 'Y-m-d H:i:s', strtotime( $time_format ) );
+		}
+				
 		// if you get this far, condition has been met
 		if ( $condition_result == true && count( $this->steps ) > 0 ) {
 			

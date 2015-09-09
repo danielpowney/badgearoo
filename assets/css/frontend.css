@@ -173,7 +173,7 @@ a.broo-badge-theme-light, a.broo-badge-theme-dark {
 }
 
 .broo-badge-container, .broo-points, .broo-assignment {
-	display: block;
+	/* display: block; */
 	margin-bottom: 5px;
 }
 .broo-assignment .broo-points, .user-leaderboard-table .broo-points {

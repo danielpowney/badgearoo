@@ -31,29 +31,15 @@ function broo_user_badges( $atts) {
 	
 	$html = '';
 	
-	if (count( $badges ) > 0 ) {
-	
-		foreach ( $badges as $badge ) {
-				
-			ob_start();
-			broo_get_template_part( 'badge', null, true, array(
-					'badge_id' => $badge->id,
-					'badge_theme' => $general_settings['broo_badge_theme'],
-					'badge_icon' => $badge->badge_icon,
-					'badge_html' => $badge->badge_html,
-					'badge_color' => $badge->badge_color,
-					'title' => $badge->title,
-					'content'=> $badge->content,
-					'excerpt'=> $badge->excerpt,
-					'show_title' => true,
-					'badge_count' => isset( $badge_count_lookup[$badge->id] ) ? $badge_count_lookup[$badge->id] : 1,
-					'enable_badge_permalink' => $general_settings['broo_enable_badge_permalink']
-			) );
-			$html .= ob_get_contents();
-			ob_end_clean();
-			
-		}
-	}
+	ob_start();
+	broo_get_template_part( 'user-badges', null, true, array(
+			'badges' => $badges,
+			'badge_theme' => $general_settings['broo_badge_theme'],
+			'badge_count_lookup' => $badge_count_lookup,
+			'enable_badge_permalink' => $general_settings['broo_enable_badge_permalink']
+	) );
+	$html .= ob_get_contents();
+	ob_end_clean();
 	
 	return $html;
 }
@@ -101,15 +87,15 @@ add_shortcode( 'broo_user_points', 'broo_user_points' );
 function broo_leaderboard( $atts) {
 
 	extract( shortcode_atts( array(
-			'show_avatar' => false,
+			'show_avatar' => true,
 			'before_name' => '',
 			'after_name' => '',
 			'show_badges' => true,
 			'show_points' => true,
 			'sort_by' => 'points',
 			'show_filters' => true,
-			'to_date' => null,
-			'from_date' => null
+			'from_date' => null,
+			'to_date' => null
 	), $atts ) );
 	
 	if ( is_string( $show_avatar ) ) {
@@ -323,10 +309,10 @@ add_shortcode( 'broo_badge_list', 'broo_badge_list' );
 function broo_condition( $atts ) {
 
 	extract( shortcode_atts( array(
-			'condition_id' => null,
-			'show_steps' => true,
-			'show_badges' => true,
-			'show_points' => true
+				'condition_id' => null,
+				'show_steps' => true,
+				'show_badges' => true,
+				'show_points' => true
 	), $atts ) );
 
 	if ( $condition_id == null) {
@@ -526,8 +512,8 @@ function broo_user_dashboard($atts) {
 			'offset' => 0,
 			'type' => null,
 			'show_filters' => true,
-			'to_date' => null,
 			'from_date' => null,
+			'to_date' => null
 	), $atts ) );
 	
 	
