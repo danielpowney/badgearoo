@@ -880,6 +880,12 @@ class BROO_API_Impl implements BROO_API {
 		global $wpdb;
 		
 		$query = 'SELECT * FROM ' . $wpdb->prefix . BROO_CONDITION_TABLE_NAME;
+
+		if ( isset( $filters['enabled'] ) ) {
+			$query .= ' WHERE enabled = ' . intval( $filters['enabled'] ); 
+		}
+		
+		$query .= ' ORDER BY enabled DESC, created_dt DESC';
 		
 		$results = $wpdb->get_results( $query );
 		

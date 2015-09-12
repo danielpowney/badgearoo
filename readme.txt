@@ -243,6 +243,8 @@ e.g. [broo_user_dashboard limit="10" show_filters="false"]
 7. Moderation settings 1
 8. Moderation settings 2
 
+== Upgrade Notice ==
+
 == Changelog ==
 
 = 1.0 =

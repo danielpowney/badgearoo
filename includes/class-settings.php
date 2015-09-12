@@ -10,7 +10,7 @@ class BROO_Settings {
 	public $actions_enabled = null;
 	public $general_settings = array();
 	public $email_settings = array();
-	public $bbp_settings = array();
+	public $bp_settings = array();
 	
 	/**
 	 * Constructor
@@ -33,7 +33,7 @@ class BROO_Settings {
 
 		$this->register_general_settings();
 		$this->register_email_settings();
-		$this->register_bbp_settings();
+		$this->register_bp_settings();
 		
 	}
 	
@@ -42,7 +42,7 @@ class BROO_Settings {
 		$this->actions_enabled = (array) get_option( 'broo_actions_enabled' );
 		$this->general_settings = (array) get_option( 'broo_general_settings' );
 		$this->email_settings = (array) get_option( 'broo_email_settings' );
-		$this->bbp_settings = (array) get_option( 'broo_bbp_settings' );
+		$this->bp_settings = (array) get_option( 'broo_bp_settings' );
 		
 		$this->actions_enabled = apply_filters( 'broo_default_actions_enabled', $this->actions_enabled );
 		
@@ -71,14 +71,14 @@ class BROO_Settings {
 				'broo_badge_theme'									=> 'light'
 		), $this->general_settings );
 		
-		$this->bbp_settings = array_merge( array(
+		$this->bp_settings = array_merge( array(
 				
-		), $this->bbp_settings );
+		), $this->bp_settings );
 		
 		update_option( 'broo_actions_enabled', $this->actions_enabled );
 		update_option( 'broo_general_settings', $this->general_settings);
 		update_option( 'broo_email_settings', $this->email_settings);
-		update_option( 'broo_bbp_settings', $this->bbp_settings);
+		update_option( 'broo_bp_settings', $this->bp_settings);
 	}
 	
 	/**
@@ -159,14 +159,14 @@ class BROO_Settings {
 	
 		register_setting( 'broo_email_settings', 'broo_email_settings', array( &$this, 'sanitize_email_settings' ) );
 	
-		add_settings_section( 'section_email', null, array( &$this, 'section_email_desc' ), 'broo_email_settings' );
+		add_settings_section( 'section_moderation', __( 'Assignment Moderation', 'badgearoo' ), array( &$this, 'section_moderation_desc' ), 'broo_email_settings' );
 			
 		$setting_fields = array(
 				'broo_assignment_notify_moderators' => array(
 						'title' 	=> __( 'Enable Assignment Moderator Notifications', 'badgearoo' ),
 						'callback' 	=> 'field_checkbox',
 						'page' 		=> 'broo_email_settings',
-						'section' 	=> 'section_email',
+						'section' 	=> 'section_moderation',
 						'args' => array(
 								'option_name' 	=> 'broo_email_settings',
 								'setting_id' 	=> 'broo_assignment_notify_moderators',
@@ -177,7 +177,7 @@ class BROO_Settings {
 						'title' 	=> __( 'Moderators', 'badgearoo' ),
 						'callback' 	=> 'field_textarea',
 						'page' 		=> 'broo_email_settings',
-						'section' 	=> 'section_email',
+						'section' 	=> 'section_moderation',
 						'args' => array(
 								'option_name' 	=> 'broo_email_settings',
 								'setting_id' 	=> 'broo_assignment_moderators',
@@ -189,7 +189,7 @@ class BROO_Settings {
 						'title' 	=> __( 'From Name', 'badgearoo' ),
 						'callback' 	=> 'field_input',
 						'page' 		=> 'broo_email_settings',
-						'section' 	=> 'section_email',
+						'section' 	=> 'section_moderation',
 						'args' => array(
 								'option_name' 	=> 'broo_email_settings',
 								'setting_id' 	=> 'broo_assignment_moderation_notification_from',
@@ -200,7 +200,7 @@ class BROO_Settings {
 						'title' 	=> __( 'From Email', 'badgearoo' ),
 						'callback' 	=> 'field_input',
 						'page' 		=> 'broo_email_settings',
-						'section' 	=> 'section_email',
+						'section' 	=> 'section_moderation',
 						'args' => array(
 								'option_name' 	=> 'broo_email_settings',
 								'setting_id' 	=> 'broo_assignment_moderation_notification_email',
@@ -211,7 +211,7 @@ class BROO_Settings {
 						'title' 	=> __( 'Email Subject', 'badgearoo' ),
 						'callback' 	=> 'field_input',
 						'page' 		=> 'broo_email_settings',
-						'section' 	=> 'section_email',
+						'section' 	=> 'section_moderation',
 						'args' => array(
 								'option_name' 	=> 'broo_email_settings',
 								'setting_id' 	=> 'broo_assignment_moderation_notification_subject',
@@ -222,7 +222,7 @@ class BROO_Settings {
 						'title' 	=> __( 'Email Heading', 'badgearoo' ),
 						'callback' 	=> 'field_input',
 						'page' 		=> 'broo_email_settings',
-						'section' 	=> 'section_email',
+						'section' 	=> 'section_moderation',
 						'args' => array(
 								'option_name' 	=> 'broo_email_settings',
 								'setting_id' 	=> 'broo_assignment_moderation_notification_heading',
@@ -233,7 +233,7 @@ class BROO_Settings {
 						'title' 	=> __( 'Email Template', 'badgearoo' ),
 						'callback' 	=> 'field_editor',
 						'page' 		=> 'broo_email_settings',
-						'section' 	=> 'section_email',
+						'section' 	=> 'section_moderation',
 						'args' => array(
 								'option_name' 	=> 'broo_email_settings',
 								'setting_id' 	=> 'broo_assignment_moderation_notification_template',
@@ -259,14 +259,52 @@ class BROO_Settings {
 	/**
 	 * Register general settings
 	 */
-	function register_bbp_settings() {
+	function register_bp_settings() {
 	
-		register_setting( 'broo_bbp_settings', 'broo_bbp_settings', array( &$this, 'sanitize_bbp_settings' ) );
+		register_setting( 'broo_bp_settings', 'broo_bp_settings', array( &$this, 'sanitize_bp_settings' ) );
 	
-		add_settings_section( 'section_bbp', null, array( &$this, 'section_bbp_desc' ), 'broo_bbp_settings' );
-	
+		add_settings_section( 'section_bp', null, array( &$this, 'section_bp_desc' ), 'broo_bp_settings' );
+		
 		$setting_fields = array(
-					
+				'broo_bp_assignment_summary_placement' => array(
+						'title' 	=> __( 'Assignment Summary Placement', 'badgearoo' ),
+						'callback' 	=> 'field_select',
+						'page' 		=> 'broo_bp_settings',
+						'section' 	=> 'section_bp',
+						'args' => array(
+								'option_name' 	=> 'broo_bp_settings',
+								'setting_id' 	=> 'broo_bp_assignment_summary_placement',
+								'label' 		=> __( 'Where do you want to display a summary of badges & points assigned to members?', 'badgearoo' ),
+								'select_options' => array(
+										'header'	=> __( 'Member Header', 'badgearoo' ),
+										'tab' 				=> __( 'New Member Tab', 'badgearoo' ),
+										'none' 				=> __( 'Do not show', 'badgearoo' )
+								)
+						)
+				),
+				'broo_bp_assignments_activity_stream' => array(
+						'title' 	=> __( 'Assignments Activity Stream', 'badgearoo' ),
+						'callback' 	=> 'field_checkbox',
+						'page' 		=> 'broo_bp_settings',
+						'section' 	=> 'section_bp',
+						'args' => array(
+								'option_name' 	=> 'broo_bp_settings',
+								'setting_id' 	=> 'broo_bp_assignments_activity_stream',
+								'label' 		=> __( 'Do you want to display new assignments in member activity streams?', 'badgearoo' )
+						)
+				),
+				'broo_bp_member_permalinks' => array(
+						'title' 	=> __( 'Use Member Permalinks', 'badgearoo' ),
+						'callback' 	=> 'field_checkbox',
+						'page' 		=> 'broo_bp_settings',
+						'section' 	=> 'section_bp',
+						'args' => array(
+								'option_name' 	=> 'broo_bp_settings',
+								'setting_id' 	=> 'broo_bp_member_permalinks',
+								'label' 		=> __( 'Do you want to use BuddyPress member permalinks instead of WordPress author permalinks?', 'badgearoo' )
+						)
+				)
+				
 		);
 	
 		foreach ( $setting_fields as $setting_id => $setting_data ) {
@@ -278,8 +316,7 @@ class BROO_Settings {
 	/**
 	 * Email section desciption
 	 */
-	function section_email_desc() {
-		
+	function section_moderation_desc() {	
 	}
 	
 	/**
@@ -291,7 +328,7 @@ class BROO_Settings {
 	/**
 	 * BuddyPress section desciption
 	 */
-	function section_bbp_desc() {
+	function section_bp_desc() {
 	}
 	
 	/**
@@ -461,7 +498,19 @@ class BROO_Settings {
 	 * @param $input
 	 * @return boolean
 	 */
-	function sanitize_bbp_settings( $input ) {
+	function sanitize_bp_settings( $input ) {
+		
+		if ( isset( $input['broo_bp_assignments_activity_stream'] ) && $input['broo_bp_assignments_activity_stream'] == 'true' ) {
+			$input['broo_bp_assignments_activity_stream'] = true;
+		} else {
+			$input['broo_bp_assignments_activity_stream'] = false;
+		}
+		
+		if ( isset( $input['broo_bp_member_permalinks'] ) && $input['broo_bp_member_permalinks'] == 'true' ) {
+			$input['broo_bp_member_permalinks'] = true;
+		} else {
+			$input['broo_bp_member_permalinks'] = false;
+		}
 	
 		return $input;
 	}

@@ -131,7 +131,7 @@ jQuery(document).ready(function($) {
 		jQuery.post(broo_admin_data.ajax_url, data, function(response) {
 			var jsonResponse = jQuery.parseJSON(response);
 			
-			jQuery("#postbox-container #normal-sortables").append(jsonResponse.html);
+			jQuery("#postbox-container #normal-sortables").prepend(jsonResponse.html);
 			
 			jQuery(".postbox .hndle, .postbox .handlediv , .postbox a.dismiss, .hide-postbox-tog").unbind("click.postboxes");
 			postboxes.add_postbox_toggles('badgearoo');

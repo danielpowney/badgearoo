@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: multi-rating-pro\n"
-"POT-Creation-Date: 2015-09-09 08:59+1000\n"
-"PO-Revision-Date: 2015-09-09 08:59+1000\n"
+"POT-Creation-Date: 2015-09-10 09:59+1000\n"
+"PO-Revision-Date: 2015-09-10 09:59+1000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en_AU\n"
@@ -45,7 +45,7 @@ msgid "About"
 msgstr ""
 
 #: ../badgearoo.php:441 ../badgearoo.php:443 ../includes/admin/about.php:81
-#: ../includes/admin/conditions.php:110 ../includes/admin/users.php:6
+#: ../includes/admin/conditions.php:143 ../includes/admin/users.php:6
 #: ../includes/admin/users.php:95 ../templates/user-dashboard-filters.php:11
 #: ../templates/user-dashboard.php:49
 #: ../templates/user-leaderboard-table.php:12
@@ -132,6 +132,7 @@ msgstr ""
 #: ../includes/actions/buddypress.php:51 ../includes/actions/buddypress.php:56
 #: ../includes/actions/buddypress.php:61 ../includes/actions/buddypress.php:66
 #: ../includes/actions/buddypress.php:71 ../includes/admin/about.php:98
+#: ../includes/admin/settings.php:17
 msgid "BuddyPress"
 msgstr ""
 
@@ -223,6 +224,7 @@ msgstr ""
 
 #: ../includes/actions/common.php:214
 #: ../includes/admin/class-assignments-table.php:47
+#: ../includes/admin/conditions.php:38
 msgid "All"
 msgstr ""
 
@@ -234,6 +236,18 @@ msgstr ""
 #: ../includes/actions/easy-digital-downloads.php:12
 #: ../includes/admin/about.php:126
 msgid "Easy Digital Downloads"
+msgstr ""
+
+#: ../includes/actions/plugin-sample.php:15
+msgid "User performs my custom action."
+msgstr ""
+
+#: ../includes/actions/plugin-sample.php:16
+msgid "My plugin"
+msgstr ""
+
+#: ../includes/actions/plugin-sample.php:124
+msgid "Some other data"
 msgstr ""
 
 #: ../includes/actions/woocommerce.php:12 ../includes/admin/about.php:122
@@ -324,7 +338,7 @@ msgid ""
 "light, badge icon and custom HTML."
 msgstr ""
 
-#: ../includes/admin/about.php:86 ../includes/class-settings.php:77
+#: ../includes/admin/about.php:86
 msgid "Moderation"
 msgstr ""
 
@@ -387,7 +401,7 @@ msgstr ""
 #: ../includes/admin/assignments.php:26
 #: ../includes/admin/class-assignments-table.php:103
 #: ../includes/admin/class-assignments-table.php:388
-#: ../includes/admin/conditions.php:133 ../includes/admin/tools.php:29
+#: ../includes/admin/conditions.php:166 ../includes/admin/tools.php:29
 #: ../includes/admin/tools.php:65 ../includes/admin/tools.php:170
 #: ../includes/admin/users.php:7 ../includes/admin/users.php:87
 #: ../includes/widgets.php:241 ../templates/user-dashboard-filters.php:12
@@ -453,7 +467,7 @@ msgid ""
 "pixels."
 msgstr ""
 
-#: ../includes/admin/badges.php:81 ../includes/class-settings.php:116
+#: ../includes/admin/badges.php:81 ../includes/class-settings.php:107
 msgid "Custom HTML"
 msgstr ""
 
@@ -466,7 +480,7 @@ msgid ""
 "badge permalink."
 msgstr ""
 
-#: ../includes/admin/badges.php:109 ../includes/class-settings.php:104
+#: ../includes/admin/badges.php:109 ../includes/class-settings.php:95
 msgid "Badge Theme"
 msgstr ""
 
@@ -562,7 +576,7 @@ msgid "Approve"
 msgstr ""
 
 #: ../includes/admin/class-assignments-table.php:448
-#: ../includes/admin/conditions.php:187 ../includes/admin/conditions.php:287
+#: ../includes/admin/conditions.php:220 ../includes/admin/conditions.php:320
 #: ../includes/admin/tools.php:50 ../includes/admin/tools.php:73
 msgid "Delete"
 msgstr ""
@@ -573,120 +587,129 @@ msgstr ""
 msgid "Assignment(s) deleted successfully."
 msgstr ""
 
-#: ../includes/admin/conditions.php:27 ../includes/admin/conditions.php:305
+#: ../includes/admin/conditions.php:39 ../includes/admin/conditions.php:105
+#: ../includes/admin/conditions.php:139
+msgid "Enabled"
+msgstr ""
+
+#: ../includes/admin/conditions.php:40 ../includes/admin/conditions.php:103
+msgid "Disabled"
+msgstr ""
+
+#: ../includes/admin/conditions.php:56 ../includes/admin/conditions.php:338
 msgid "New Condition"
 msgstr ""
 
-#: ../includes/admin/conditions.php:65 ../includes/admin/conditions.php:483
+#: ../includes/admin/conditions.php:94 ../includes/admin/conditions.php:516
 #, php-format
 msgid "Condition %d - %s"
 msgstr ""
 
-#: ../includes/admin/conditions.php:72 ../includes/admin/conditions.php:467
+#: ../includes/admin/conditions.php:101 ../includes/admin/conditions.php:500
 msgid "Incomplete"
 msgstr ""
 
-#: ../includes/admin/conditions.php:102
+#: ../includes/admin/conditions.php:135
 msgid "Name"
 msgstr ""
 
-#: ../includes/admin/conditions.php:106
-msgid "Enabled"
-msgstr ""
-
-#: ../includes/admin/conditions.php:116
+#: ../includes/admin/conditions.php:149
 msgid "Allocate badges to users"
 msgstr ""
 
-#: ../includes/admin/conditions.php:136
+#: ../includes/admin/conditions.php:169
 msgid "Allocate points to users."
 msgstr ""
 
-#: ../includes/admin/conditions.php:140
+#: ../includes/admin/conditions.php:173
 msgid "Recurring"
 msgstr ""
 
-#: ../includes/admin/conditions.php:143
+#: ../includes/admin/conditions.php:176
 msgid "Assignments can occur more than once."
 msgstr ""
 
-#: ../includes/admin/conditions.php:144
+#: ../includes/admin/conditions.php:177
 msgid "If turned on, assignments cannot be renewed."
 msgstr ""
 
-#: ../includes/admin/conditions.php:148
+#: ../includes/admin/conditions.php:181
 msgid "Expiry"
 msgstr ""
 
-#: ../includes/admin/conditions.php:152
+#: ../includes/admin/conditions.php:185
 msgid "Day(s)"
 msgstr ""
 
-#: ../includes/admin/conditions.php:153
+#: ../includes/admin/conditions.php:186
 msgid "Week(s)"
 msgstr ""
 
-#: ../includes/admin/conditions.php:154
+#: ../includes/admin/conditions.php:187
 msgid "Month(s)"
 msgstr ""
 
-#: ../includes/admin/conditions.php:155
+#: ../includes/admin/conditions.php:188
 msgid "Year(s)"
 msgstr ""
 
-#: ../includes/admin/conditions.php:157
+#: ../includes/admin/conditions.php:190
 msgid "Leave empty if assignmemt has no expiration."
 msgstr ""
 
-#: ../includes/admin/conditions.php:168 ../includes/admin/conditions.php:332
+#: ../includes/admin/conditions.php:201 ../includes/admin/conditions.php:365
 msgid "New Step"
 msgstr ""
 
-#: ../includes/admin/conditions.php:186
+#: ../includes/admin/conditions.php:219
 msgid "Save Changes"
 msgstr ""
 
-#: ../includes/admin/conditions.php:213
+#: ../includes/admin/conditions.php:246
 msgid "Name required."
 msgstr ""
 
-#: ../includes/admin/conditions.php:218
+#: ../includes/admin/conditions.php:251
 msgid "Badges or points assignment required."
 msgstr ""
 
-#: ../includes/admin/conditions.php:223
+#: ../includes/admin/conditions.php:256
 msgid "Condition must have steps."
 msgstr ""
 
-#: ../includes/admin/conditions.php:236
+#: ../includes/admin/conditions.php:269
 msgid "Each step must have an action."
 msgstr ""
 
-#: ../includes/admin/conditions.php:256
+#: ../includes/admin/conditions.php:289
 msgid "Label"
 msgstr ""
 
-#: ../includes/admin/conditions.php:260
+#: ../includes/admin/conditions.php:293
 msgid "Please select an action."
 msgstr ""
 
-#: ../includes/admin/conditions.php:470
+#: ../includes/admin/conditions.php:503
 msgid "Condition saved."
 msgstr ""
 
-#: ../includes/admin/conditions.php:491
+#: ../includes/admin/conditions.php:524
 msgid "Unknown condition."
 msgstr ""
 
-#: ../includes/admin/settings.php:15 ../includes/class-settings.php:76
+#: ../includes/admin/settings.php:15
 msgid "General"
 msgstr ""
 
 #: ../includes/admin/settings.php:16
+msgid "Emails"
+msgstr ""
+
+#: ../includes/admin/settings.php:18
 msgid "Actions"
 msgstr ""
 
-#: ../includes/admin/settings.php:53
+#: ../includes/admin/settings.php:55
 msgid "Settings saved."
 msgstr ""
 
@@ -768,148 +791,154 @@ msgstr ""
 msgid "User Badges"
 msgstr ""
 
-#: ../includes/class-api.php:853 ../includes/class-api.php:1106
+#: ../includes/class-api.php:853 ../includes/class-api.php:1114
 #: ../includes/class-condition.php:33
 #, php-format
 msgid "Condition %d Step %d Label"
 msgstr ""
 
-#: ../includes/class-api.php:870 ../includes/class-api.php:911
-#: ../includes/class-api.php:1080
+#: ../includes/class-api.php:870 ../includes/class-api.php:919
+#: ../includes/class-api.php:1088
 #, php-format
 msgid "Condition %d Name"
 msgstr ""
 
-#: ../includes/class-settings.php:44
+#: ../includes/class-settings.php:50
 msgid "Hello,"
 msgstr ""
 
-#: ../includes/class-settings.php:45
+#: ../includes/class-settings.php:51
 msgid ""
 "A new assignment #{assignment_id} for \"{display_name}\" requires moderation."
 msgstr ""
 
-#: ../includes/class-settings.php:46
+#: ../includes/class-settings.php:52
 msgid "{assignment_details}"
 msgstr ""
 
-#: ../includes/class-settings.php:47
+#: ../includes/class-settings.php:53
 msgid "Date: {date}"
 msgstr ""
 
-#: ../includes/class-settings.php:48
+#: ../includes/class-settings.php:54
 msgid "{assignment_moderation_link}"
 msgstr ""
 
-#: ../includes/class-settings.php:49
+#: ../includes/class-settings.php:55
 msgid "Thank you."
 msgstr ""
 
-#: ../includes/class-settings.php:57 ../includes/class-settings.php:58
+#: ../includes/class-settings.php:62 ../includes/class-settings.php:63
 msgid "New Assignment"
 msgstr ""
 
-#: ../includes/class-settings.php:81
-msgid "Show Assignment Modal"
+#: ../includes/class-settings.php:102
+msgid "Choose a theme to apply to badges."
 msgstr ""
 
-#: ../includes/class-settings.php:88
-msgid ""
-"Do you want the user to see a popup message on page load upon assignment of "
-"badges and points?"
-msgstr ""
-
-#: ../includes/class-settings.php:93
-msgid "Enable Badge Permalink"
-msgstr ""
-
-#: ../includes/class-settings.php:100
-msgid "Do you want to enable the badge permalink?"
-msgstr ""
-
-#: ../includes/class-settings.php:111
-msgid "CSS theme to apply to badges."
-msgstr ""
-
-#: ../includes/class-settings.php:113
+#: ../includes/class-settings.php:104
 msgid "Icon"
 msgstr ""
 
-#: ../includes/class-settings.php:114
+#: ../includes/class-settings.php:105
 msgid "Light"
 msgstr ""
 
-#: ../includes/class-settings.php:115
+#: ../includes/class-settings.php:106
 msgid "Dark"
 msgstr ""
 
-#: ../includes/class-settings.php:121
+#: ../includes/class-settings.php:112
 msgid "Auto Approve Assignments"
 msgstr ""
 
-#: ../includes/class-settings.php:128
-msgid "Automatically approve user assignment of new badges and points."
+#: ../includes/class-settings.php:119
+msgid ""
+"Do you want new user assignments of badges and points to be approved "
+"automatically?"
 msgstr ""
 
-#: ../includes/class-settings.php:133
+#: ../includes/class-settings.php:124
+msgid "New Assignments Popup"
+msgstr ""
+
+#: ../includes/class-settings.php:131
+msgid ""
+"Do you want to show a popup message when users are assigned new badges and "
+"points?"
+msgstr ""
+
+#: ../includes/class-settings.php:136
+msgid "Enable Badge Permalinks"
+msgstr ""
+
+#: ../includes/class-settings.php:143
+msgid "Do you want to enabled badge permalinks?"
+msgstr ""
+
+#: ../includes/class-settings.php:162
+msgid "Assignment Moderation"
+msgstr ""
+
+#: ../includes/class-settings.php:166
 msgid "Enable Assignment Moderator Notifications"
 msgstr ""
 
-#: ../includes/class-settings.php:140
+#: ../includes/class-settings.php:173
 msgid ""
 "Send email notifications for new assignments of badges or points which "
 "require moderation."
 msgstr ""
 
-#: ../includes/class-settings.php:144
+#: ../includes/class-settings.php:177
 msgid "Moderators"
 msgstr ""
 
-#: ../includes/class-settings.php:151
+#: ../includes/class-settings.php:184
 msgid "Who should receive the assignment moderation notification?"
 msgstr ""
 
-#: ../includes/class-settings.php:152
+#: ../includes/class-settings.php:185
 msgid "Enter the email address(es), one per line."
 msgstr ""
 
-#: ../includes/class-settings.php:156
+#: ../includes/class-settings.php:189
 msgid "From Name"
 msgstr ""
 
-#: ../includes/class-settings.php:163
+#: ../includes/class-settings.php:196
 msgid "The name assignment moderation notifications are said to come from."
 msgstr ""
 
-#: ../includes/class-settings.php:167
+#: ../includes/class-settings.php:200
 msgid "From Email"
 msgstr ""
 
-#: ../includes/class-settings.php:174
+#: ../includes/class-settings.php:207
 msgid "Email to send assignment moderation notifications from."
 msgstr ""
 
-#: ../includes/class-settings.php:178
+#: ../includes/class-settings.php:211
 msgid "Email Subject"
 msgstr ""
 
-#: ../includes/class-settings.php:185
+#: ../includes/class-settings.php:218
 msgid "Enter the subject line for the assignment moderation notification email"
 msgstr ""
 
-#: ../includes/class-settings.php:189
+#: ../includes/class-settings.php:222
 msgid "Email Heading"
 msgstr ""
 
-#: ../includes/class-settings.php:196
+#: ../includes/class-settings.php:229
 msgid "Enter the heading for the assignment moderation notification email"
 msgstr ""
 
-#: ../includes/class-settings.php:200
+#: ../includes/class-settings.php:233
 msgid "Email Template"
 msgstr ""
 
-#: ../includes/class-settings.php:207
+#: ../includes/class-settings.php:240
 msgid ""
 "Enter the email that is sent to a moderator to notify them new assignment "
 "required approval. HTML is accepted. Available template tags:<br /"
@@ -921,25 +950,17 @@ msgid ""
 ">{assignment_moderation_link} - Link to assignments page"
 msgstr ""
 
-#: ../includes/class-settings.php:231
-msgid "Moderation settings for user assignment of badges and points."
-msgstr ""
-
-#: ../includes/class-settings.php:240
-msgid "Misc settings."
-msgstr ""
-
-#: ../includes/class-settings.php:371
+#: ../includes/class-settings.php:425 ../includes/class-settings.php:450
 #, php-format
 msgid "Moderator email  \"%s\" is invalid."
 msgstr ""
 
-#: ../includes/notifications.php:39
+#: ../includes/notifications.php:40
 #, php-format
 msgid "Badge: %s"
 msgstr ""
 
-#: ../includes/notifications.php:41
+#: ../includes/notifications.php:42
 #, php-format
 msgid "Points: %d"
 msgstr ""

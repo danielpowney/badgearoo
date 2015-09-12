@@ -12,6 +12,34 @@ function broo_conditions_page() {
 		<h2><?php _e( 'Conditions', 'badgearoo' ); ?>
 			<a class="add-new-h2" href="#" id="add-condition"><?php _e('Add New', 'badgearoo' ); ?></a>
 		</h2>
+		
+		<?php 
+		
+		global $wpdb;
+		
+		$query = 'SELECT enabled, COUNT(*) AS count FROM ' . $wpdb->prefix . BROO_CONDITION_TABLE_NAME . ' GROUP BY enabled';
+		$results = $wpdb->get_results( $query );
+		
+		$enabled_count = 0;
+		$disabled_count = 0;
+		
+		foreach ( $results as $row ) {
+			if ( $row->enabled ) {
+				$enabled_count = intval( $row->count );
+			} else {
+				$disabled_count = intval( $row->count );
+			}
+		}
+		$total_count = $enabled_count + $disabled_count;
+		
+		$enabled = isset( $_REQUEST['broo-enabled'] ) ? boolval( $_REQUEST['broo-enabled'] ) : null;
+		?>
+			
+		<ul class="subsubsub">
+			<li class="all"><a href="edit.php?post_type=badge&page=<?php echo Badgearoo::CONDITIONS_PAGE_SLUG; ?>" <?php if ( $enabled === null ) { echo 'class="current"'; } ?>><?php _e( 'All', 'badgearoo' ); ?>&nbsp;<span class="count">(<?php echo $total_count; ?>)</span></a> |</li>
+			<li class="all"><a href="edit.php?post_type=badge&page=<?php echo Badgearoo::CONDITIONS_PAGE_SLUG; ?>&broo-enabled=1" <?php if ( $enabled === true ) { echo 'class="current"'; } ?>><?php _e( 'Enabled', 'badgearoo' ); ?>&nbsp;<span class="count">(<?php echo $enabled_count; ?>)</span></a> |</li>
+			<li class="all"><a href="edit.php?post_type=badge&page=<?php echo Badgearoo::CONDITIONS_PAGE_SLUG; ?>&broo-enabled=0" <?php if ( $enabled === false ) { echo 'class="current"'; } ?>><?php _e( 'Disabled', 'badgearoo' ); ?>&nbsp;<span class="count">(<?php echo $disabled_count; ?>)</span></a></li>
+		</ul>
 	
 		<div id="poststuff">
 			<div id="post-body" class="metabox-holder columns-1">
@@ -21,7 +49,7 @@ function broo_conditions_page() {
 							<div id="postbox-container" class="postbox-container active">
 								<div id="normal-sortables" class="meta-box-sortables ui-sortable">
 									<?php 
-									$conditions = Badgearoo::instance()->api->get_conditions();
+									$conditions = Badgearoo::instance()->api->get_conditions( array( 'enabled' => $enabled ) );
 									
 									if ( count( $conditions ) == 0 ) {
 										$name = __( 'New Condition' );
@@ -69,7 +97,11 @@ function broo_display_condition_meta_box( $condition, $is_closed = false ) {
 			
 			$status_html = null;
 			if ( $condition_status['incomplete'] == true ) {
-				echo '<span style="font-weight: 600; color: #555;"> - ' . __( 'Incomplete', 'badgearoo' ) . '</span>';
+				echo '- <span style="font-weight: 600; color: red;">' . __( 'Incomplete', 'badgearoo' ) . '</span>';
+			} else if ( $condition->enabled == false ) {
+				echo '- <span style="font-weight: 600; color: #f4a460;">' . __( 'Disabled', 'badgearoo' ) . '</span>';
+			} else {
+				echo '- <span style="font-weight: 600; color: green;">' . __( 'Enabled', 'badgearoo' ) . '</span>';
 			}
 			?>
 		</h3>

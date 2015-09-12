@@ -313,7 +313,6 @@ function broo_bp_before_member_header_meta() {
 	) );
 	
 }
-add_action( 'bp_before_member_header_meta', 'broo_bp_before_member_header_meta' );
 
 
 /**
@@ -370,4 +369,142 @@ function broo_step_meta_count_enabled_bp( $enabled, $action ) {
 	return $enabled;
 }
 
-?>
+/**
+ * Adds assignments BuddyPress tab
+ */
+function broo_bp_add_assignments_tab() {
+	global $bp;
+	bp_core_new_nav_item(
+			array(
+					'name'                => __( 'Assignments', 'buddypress' ),
+					'slug'                => 'broo-bp-assignments',
+					'position'            => 75,
+					'screen_function'     => 'broo_bp_assignments_tab',
+					'default_subnav_slug' => 'broo-bp-assignments',
+					'parent_url'          => $bp->loggedin_user->domain . $bp->slug . '/',
+					'parent_slug'         => $bp->slug
+			) );
+}
+function broo_bp_assignments_tab() {
+	//add title and content here - last is to call the members plugin.php template
+	add_action( 'bp_template_title', 'broo_bp_assignments_tab_title' );
+	add_action( 'bp_template_content', 'broo_bp_assignments_tab_content' );
+	bp_core_load_template( apply_filters( 'bp_core_template_plugin', 'members/single/plugins' ) );
+}
+function broo_bp_assignments_tab_title() {
+	//_e( 'Assignments', 'badgearoo' );
+}
+function broo_bp_assignments_tab_content() {
+	
+	global $bp;
+	$user_id = $bp->displayed_user->id;
+	
+	if ( $user_id != 0 ) {
+	
+		$points = Badgearoo::instance()->api->get_user_points( $user_id );
+		$badges = Badgearoo::instance()->api->get_user_badges( $user_id );
+		
+		// count badges by id
+		foreach ( $badges as $index => $badge ) {
+			if ( ! isset( $badge_count_lookup[$badge->id] ) ) {
+				$badge_count_lookup[$badge->id] = 1;
+			} else {
+				$badge_count_lookup[$badge->id]++;
+				unset( $badges[$index] );
+			}
+		}
+		
+		$general_settings = (array) get_option( 'broo_general_settings' );
+		
+		broo_get_template_part( 'user-badges-summary', null, true, array(
+				'badge_theme' => $general_settings['broo_badge_theme'],
+				'badges' => $badges,
+				'points' => $points,
+				'badge_count_lookup' => $badge_count_lookup,
+				'enable_badge_permalink' => $general_settings['broo_enable_badge_permalink']
+		) );
+	} else {
+		_e( 'Invalid member profile.', 'badgearoo' );
+	}
+
+}
+
+
+/**
+ * Adds user assignments to Buddypress member activity stream
+ * 
+ * @param unknown $assignment_id
+ * @param unknown $condition_id
+ * @param unknown $user_id
+ * @param unknown $type
+ * @param unknown $value
+ * @param unknown $created_dt
+ * @param unknown $status
+ */
+function broo_bp_add_activity( $assignment_id, $condition_id, $user_id, $type, $value, $created_dt, $status ) {
+	
+	if ( $status == 'approved' ) {
+		
+		$user = get_user_by( 'id', $user_id );
+		
+		$activity_action = '';
+		$activity_content = '';
+		
+		if ( $type == 'badge' ) {
+			
+			$badge = Badgearoo::instance()->api->get_badge( $value );
+			
+			$activity_action = sprintf( __( '<a href="%s">%s</a> has been assigned badge %s.', 'badgearoo' ), get_author_posts_url( $user_id ), $user->display_name, $badge->title );
+			
+			$general_settings = (array) get_option( 'broo_general_settings' );
+			
+			ob_start();
+			broo_get_template_part( 'badge', null, true, array(
+					'badge_id' => $badge->id,
+					'show_title' => true,
+					'badge_theme' => $general_settings['broo_badge_theme'],
+					'badge_icon' => $badge->badge_icon,
+					'badge_html' => $badge->badge_html,
+					'badge_color' => $badge->badge_color,
+					'excerpt' => $badge->excerpt,
+					'title' => $badge->title,
+					'content' => $badge->content,
+					'enable_badge_permalink' => $general_settings['broo_enable_badge_permalink']
+			) );
+			$activity_content .= ob_get_contents();
+			ob_end_clean();
+			
+			// FIXME, adds BR and color does not work...
+			$activity_content = str_replace( array( "\r", "\n" ), '', $activity_content );
+			
+		} else {
+			$activity_action = sprintf( __( '<a href="%s">%s</a> has been assigned %d points.', 'badgearoo' ), get_author_posts_url( $user_id ), $user->display_name, $value );
+		}
+		
+		$activity_id = bp_activity_add( array(
+				'id' => null, // not updating
+				'action' => $activity_action,
+				'content' => $activity_content,
+				'component' => 'broo',
+				'type' => $type,
+				'primary_link' => null,
+				'user_id' => $user_id,
+				'item_id' => $assignment_id,
+				'secondary_item_id' => null, // if badge, points null,
+				
+		) );
+	}
+}
+
+// TODO check setting
+add_action( 'broo_add_user_assignment', 'broo_bp_add_activity', 10, 7 );
+
+$broo_bp_settings = (array) get_option( 'broo_bp_settings' );
+
+if ( $broo_bp_settings['broo_bp_assignment_summary_placement'] == 'tab' ) {
+	add_action( 'bp_setup_nav', 'broo_bp_add_assignments_tab', 50 );
+}
+
+if ( $broo_bp_settings['broo_bp_assignment_summary_placement'] == 'header' ) {
+	add_action( 'bp_before_member_header_meta', 'broo_bp_before_member_header_meta' );
+}
