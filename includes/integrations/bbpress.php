@@ -3,6 +3,9 @@
  * bbPress actions
 */
 
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 /* do_action( 'bbp_new_forum', array(
 			'forum_id'           => $forum_id,
 			'post_parent'        => $forum_parent_id,
@@ -57,8 +60,6 @@ add_filter( 'broo_init_actions', 'broo_init_bbp_actions', 10, 1 );
  * @param actions
 */
 function broo_add_bbp_actions( $actions = array() ) {
-
-	$actions_enabled = (array) get_option( 'broo_actions_enabled' );
 
 	if ( isset( $actions[BBP_NEW_FORUM_ACTION] ) && $actions[BBP_NEW_FORUM_ACTION]['enabled'] == true ) {
 		add_action( 'bbp_new_forum',  'broo_bbp_new_forum', 10, 1 );
@@ -198,4 +199,105 @@ function broo_bbp_closed_topic( $topic_id ) {
 		Badgearoo::instance()->api->add_user_action( BBP_CLOSED_TOPIC_ACTION, $user_id );
 	}
 	
+}
+
+/**
+ * Adds badges count and points to bbPress uer profile page
+ */
+function broo_bbp_template_after_user_profile() {
+	
+	$user_id = bbp_get_displayed_user_id();
+	
+	$points = Badgearoo::instance()->api->get_user_points( $user_id, array( ) );
+	$badges = Badgearoo::instance()->api->get_user_badges( $user_id, array( ) );
+
+	?>
+	<p class="broo-bbp-profile-badges"><?php printf( __( 'Badges: %d', 'broo' ), count( $badges ) ); ?></p>
+	<p class="broo-bbp-profile-points"><?php printf( __( 'Points: %d', 'broo' ), $points ); ?></p>
+	<?php
+}
+add_action( 'bbp_template_after_user_profile', 'broo_bbp_template_after_user_profile', 10, 1 );
+
+/**
+ * Adds badges and points to bbPress reply author details
+ */
+function broo_bbp_theme_after_reply_author_details() {
+
+	$user_id = bbp_get_reply_author_id();
+
+	$points = Badgearoo::instance()->api->get_user_points( $user_id );
+	$badges = Badgearoo::instance()->api->get_user_badges( $user_id );
+	
+	// count badges by id
+	$badge_count_lookup = array();
+	foreach ( $badges as $index => $badge ) {
+		if ( ! isset( $badge_count_lookup[$badge->id] ) ) {
+			$badge_count_lookup[$badge->id] = 1;
+		} else {
+			$badge_count_lookup[$badge->id]++;
+			unset( $badges[$index] );
+		}
+	}
+	
+	$general_settings = (array) get_option( 'broo_general_settings' );
+	
+	broo_get_template_part( 'user-badges-summary', null, true, array(
+			'badge_theme' => $general_settings['broo_badge_theme'],
+			'badges' => $badges,
+			'points' => $points,
+			'badge_count_lookup' => $badge_count_lookup,
+			'enable_badge_permalink' => $general_settings['broo_enable_badge_permalink']
+	) );
+}
+add_action( 'bbp_theme_after_reply_author_details', 'broo_bbp_theme_after_reply_author_details', 10, 1 );
+
+
+/**
+ * Checks whether user badges widget can be shown
+ *
+ * @param unknown $can_show_user_badges_widget
+ * @param unknown $post_id
+ * @return unknown
+ */
+function broo_bbp_can_show_user_badges_widget( $can_show_user_badges_widget, $post_id ) {
+
+	if ( is_bbpress() ) {
+		return ( bbp_is_single_user() && bbp_get_displayed_user_id() != 0 );
+	}
+
+	return $can_show_user_badges_widget;
+}
+add_filter( 'broo_can_show_user_badges_widget', 'broo_bbp_can_show_user_badges_widget', 10, 2 );
+
+/**
+ * Sets bbPress user id for user badges widget
+ *
+ * @param unknown $user_id
+ * @param unknown $post_id
+ * @return unknown
+*/
+function broo_bbp_user_badges_user_id( $user_id, $post_id ) {
+
+	if ( is_bbpress() && bbp_is_single_user() != 0 ) {
+		return bbp_get_displayed_user_id();
+	}
+
+	return $user_id;
+
+}
+add_filter( 'broo_user_badges_user_id', 'broo_bbp_user_badges_user_id', 10, 2);
+
+
+function broo_bbp_user_permalinks_options( $user_permalinks_options = array() ) {
+	
+	if ( ! is_array( $user_permalinks_options ) ) {
+		$user_permalinks_options = array();
+	}
+	
+	$user_permalinks_options['bbp_user_profile_url'] = __( 'bbPress User Profile', 'badgearoo' );
+	
+	return $user_permalinks_options;
+}
+if ( is_admin() ) {
+	add_filter( 'broo_user_permalinks_options', 'broo_bbp_user_permalinks_options', 10, 1 );
 }

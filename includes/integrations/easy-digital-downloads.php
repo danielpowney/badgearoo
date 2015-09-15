@@ -3,6 +3,9 @@
  * Easy Digital Downloads actions
  */
 
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 define( 'EDD_COMPLETE_DOWNLOAD_PURCHASE_ACTION', 'edd_complete_download_purchase' );
 
 function broo_init_edd_actions( $broo_actions ) {
@@ -23,8 +26,6 @@ add_filter( 'broo_init_actions', 'broo_init_edd_actions', 10, 1 );
  * @param actions
 */
 function broo_add_edd_actions( $actions = array() ) {
-
-	$actions_enabled = (array) get_option( 'broo_actions_enabled' );
 
 	if ( isset( $actions[EDD_COMPLETE_DOWNLOAD_PURCHASE_ACTION] ) && $actions[EDD_COMPLETE_DOWNLOAD_PURCHASE_ACTION]['enabled'] == true ) {
 		add_action( 'edd_complete_download_purchase',  'broo_edd_complete_download_purchase', 10, 3 );

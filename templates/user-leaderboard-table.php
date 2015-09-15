@@ -1,4 +1,8 @@
 <?php 
+
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 /**
  * User leaderboard table template
  */
@@ -27,8 +31,11 @@
 					}
 					?>
 					<span class="broo-name">
-						<?php echo "$before_name"; ?>
-						<a href="<?php echo get_author_posts_url( $user_row['user_id'] ); ?>"><?php echo esc_html( $user_row['display_name'] ); ?></a>
+						<?php 
+						echo "$before_name"; 
+						$user_permalink = apply_filters( 'broo_user_permalink', get_author_posts_url( $user_row['user_id'] ), $user_row['user_id'] );
+						?>
+						<a href="<?php echo $user_permalink; ?>"><?php echo esc_html( $user_row['display_name'] ); ?></a>
 						<?php echo "$after_name"; ?>
 					</span>
 				</td>

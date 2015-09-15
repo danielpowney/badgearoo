@@ -3,6 +3,9 @@
  * BuddyPress actions
  */
 
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 define ( 'BP_ACTIVITY_COMMENT_POSTED_ACTION', 'bp_activity_comment_posted' ); // works
 define ( 'BP_ACTIVITY_ADD_USER_FAVORITE_ACTION', 'bp_activity_add_user_favorite' ); // works
 define ( 'BP_ACTIVITY_POST_TYPE_PUBLISHED_ACTION', 'bp_activity_post_type_published' );
@@ -82,8 +85,6 @@ add_filter( 'broo_init_actions', 'broo_init_bp_actions', 10, 1 );
  * @param actions
  */
 function broo_add_bp_actions( $actions = array() ) {
-	
-	$actions_enabled = (array) get_option( 'broo_actions_enabled' );
 
 	if ( isset( $actions[BP_ACTIVITY_COMMENT_POSTED_ACTION] ) && $actions[BP_ACTIVITY_COMMENT_POSTED_ACTION]['enabled'] == true ) {
 		add_action( 'bp_activity_comment_posted', 'broo_bp_activity_comment_posted', 10, 3 );
@@ -446,6 +447,7 @@ function broo_bp_add_activity( $assignment_id, $condition_id, $user_id, $type, $
 	if ( $status == 'approved' ) {
 		
 		$user = get_user_by( 'id', $user_id );
+		$user_permalink = apply_filters( 'broo_user_permalink', get_author_posts_url( $user_id ), $user_id );
 		
 		$activity_action = '';
 		$activity_content = '';
@@ -454,7 +456,7 @@ function broo_bp_add_activity( $assignment_id, $condition_id, $user_id, $type, $
 			
 			$badge = Badgearoo::instance()->api->get_badge( $value );
 			
-			$activity_action = sprintf( __( '<a href="%s">%s</a> has been assigned badge %s.', 'badgearoo' ), get_author_posts_url( $user_id ), $user->display_name, $badge->title );
+			$activity_action = sprintf( __( '<a href="%s">%s</a> has been assigned badge %s.', 'badgearoo' ), $user_permalink, $user->display_name, $badge->title );
 			
 			$general_settings = (array) get_option( 'broo_general_settings' );
 			
@@ -474,11 +476,10 @@ function broo_bp_add_activity( $assignment_id, $condition_id, $user_id, $type, $
 			$activity_content .= ob_get_contents();
 			ob_end_clean();
 			
-			// FIXME, adds BR and color does not work...
 			$activity_content = str_replace( array( "\r", "\n" ), '', $activity_content );
 			
 		} else {
-			$activity_action = sprintf( __( '<a href="%s">%s</a> has been assigned %d points.', 'badgearoo' ), get_author_posts_url( $user_id ), $user->display_name, $value );
+			$activity_action = sprintf( __( '<a href="%s">%s</a> has been assigned %d points.', 'badgearoo' ), $user_permalink, $user->display_name, $value );
 		}
 		
 		$activity_id = bp_activity_add( array(
@@ -496,10 +497,32 @@ function broo_bp_add_activity( $assignment_id, $condition_id, $user_id, $type, $
 	}
 }
 
-// TODO check setting
-add_action( 'broo_add_user_assignment', 'broo_bp_add_activity', 10, 7 );
+/**
+ * Allows activity content tags
+ * 
+ * @param unknown $activity_allowedtags
+ * @return multitype:
+ */
+function broo_bp_activity_allowed_tags( $activity_allowedtags ) {
+	
+	$activity_allowedtags['span']          = array();
+    $activity_allowedtags['span']['class'] = array();
+    $activity_allowedtags['span']['style'] = array();
+    $activity_allowedtags['div']           = array();
+    $activity_allowedtags['div']['class']  = array();
+    $activity_allowedtags['div']['id']     = array();
+    $activity_allowedtags['div']['style'] = array();
+	
+	return $activity_allowedtags;
+}
+add_filter( 'bp_activity_allowed_tags', 'broo_bp_activity_allowed_tags' );
+
 
 $broo_bp_settings = (array) get_option( 'broo_bp_settings' );
+
+if ( $broo_bp_settings['broo_bp_assignments_activity_stream'] ) {
+	add_action( 'broo_add_user_assignment', 'broo_bp_add_activity', 10, 7 );
+}
 
 if ( $broo_bp_settings['broo_bp_assignment_summary_placement'] == 'tab' ) {
 	add_action( 'bp_setup_nav', 'broo_bp_add_assignments_tab', 50 );
@@ -507,4 +530,66 @@ if ( $broo_bp_settings['broo_bp_assignment_summary_placement'] == 'tab' ) {
 
 if ( $broo_bp_settings['broo_bp_assignment_summary_placement'] == 'header' ) {
 	add_action( 'bp_before_member_header_meta', 'broo_bp_before_member_header_meta' );
+}
+
+
+/**
+ * Regiters BuddyPress badge and points assigment actions
+ */
+function broo_bp_register_activity_actions() {
+    bp_activity_set_action( 'broo', 'badge', __( 'Badge assignment', 'broo' ), false, __( 'Badges', 'broo' ), array( 'member' ), 0 );
+    bp_activity_set_action( 'broo', 'points', __( 'Points assignment', 'broo' ), false, __( 'Points', 'broo' ), array( 'member' ), 0 );
+    
+}
+add_action( 'bp_register_activity_actions', 'broo_bp_register_activity_actions' );
+
+
+
+/**
+ * Checks whether user badges widget can be shown
+ * 
+ * @param unknown $can_show_user_badges_widget
+ * @param unknown $post_id
+ * @return unknown
+ */
+function broo_bp_can_show_user_badges_widget( $can_show_user_badges_widget, $post_id ) {
+	
+	if ( is_buddypress() ) {
+		return ( ( bp_is_user() || bp_is_members_component() ) && bp_displayed_user_id() != 0 );
+	}
+	
+	return $can_show_user_badges_widget;
+}
+add_filter( 'broo_can_show_user_badges_widget', 'broo_bp_can_show_user_badges_widget', 10, 2 );
+
+/**
+ * Sets BuddyPress user id for user badges widget
+ * 
+ * @param unknown $user_id
+ * @param unknown $post_id
+ * @return unknown
+ */
+function broo_bp_user_badges_user_id( $user_id, $post_id ) {
+	
+	if ( is_buddypress() && bp_displayed_user_id() != 0 ) {	
+		return bp_displayed_user_id();
+	}
+	
+	return $user_id;
+	
+}
+add_filter( 'broo_user_badges_user_id', 'broo_bp_user_badges_user_id', 10, 2);
+
+function broo_bbp_user_permalinks_options( $user_permalinks_options = array() ) {
+
+	if ( ! is_array( $user_permalinks_options ) ) {
+		$user_permalinks_options = array();
+	}
+
+	$user_permalinks_options['bbp_user_profile_url'] = __( 'bbPress User Profile', 'badgearoo' );
+
+	return $user_permalinks_options;
+}
+if ( is_admin() ) {
+	add_filter( 'broo_user_permalinks_options', 'broo_bbp_user_permalinks_options', 10, 1 );
 }

@@ -1,5 +1,9 @@
 <?php
 
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
+
 function broo_manage_badge_posts_columns( $posts_columns ) {
 	$post_columns_new_order['cb'] = $posts_columns['cb'];
 	$post_columns_new_order['id'] = __( 'ID', 'badgearoo' );

@@ -1,4 +1,8 @@
 <?php
+
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 add_action('manage_users_columns','broo_add_user_badges_columns');
 add_action('manage_users_custom_column','broo_manage_user_badges_columns',10,3);
 

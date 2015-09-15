@@ -1,8 +1,11 @@
 <?php 
+
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 /**
  * Badge theme: light
  */
-
 
 if ( isset( $enable_badge_permalink ) && $enable_badge_permalink ) {
 	?><a href="<?php echo get_the_permalink( $badge_id ); ?>"<?php

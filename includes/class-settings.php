@@ -1,5 +1,8 @@
 <?php
 
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 /**
  * Settings class
 *
@@ -68,11 +71,13 @@ class BROO_Settings {
 				'broo_assignment_auto_approve'						=> true,
 				'broo_show_user_assignment_modal'					=> true,
 				'broo_enable_badge_permalink'						=> true,
-				'broo_badge_theme'									=> 'light'
+				'broo_badge_theme'									=> 'light',
+				'broo_user_permalinks'								=> 'author_posts_url'
 		), $this->general_settings );
 		
 		$this->bp_settings = array_merge( array(
-				
+				'broo_bp_assignment_summary_placement'				=> 'tab',
+				'broo_bp_assignments_activity_stream'				=> true
 		), $this->bp_settings );
 		
 		update_option( 'broo_actions_enabled', $this->actions_enabled );
@@ -89,6 +94,10 @@ class BROO_Settings {
 		register_setting( 'broo_general_settings', 'broo_general_settings', array( &$this, 'sanitize_general_settings' ) );
 	
 		add_settings_section( 'section_general', null, array( &$this, 'section_general_desc' ), 'broo_general_settings' );
+		
+		$user_permalinks_options = apply_filters( 'broo_user_permalinks_options', array(
+				'author_posts_url'		=> __( 'Author Posts', 'badgearoo' )
+		) );
 		
 		$setting_fields = array(
 				'broo_badge_theme' => array(
@@ -133,7 +142,7 @@ class BROO_Settings {
 				
 				),
 				'broo_enable_badge_permalink' => array(
-						'title' 	=> __( 'Enable Badge Permalinks', 'badgearoo' ),
+						'title' 	=> __( 'Badge Permalinks', 'badgearoo' ),
 						'callback' 	=> 'field_checkbox',
 						'page' 		=> 'broo_general_settings',
 						'section' 	=> 'section_general',
@@ -142,6 +151,18 @@ class BROO_Settings {
 								'setting_id' 	=> 'broo_enable_badge_permalink',
 								'label' 		=> __( 'Do you want to enabled badge permalinks?', 'badgearoo' )
 						)			
+				),
+				'broo_user_permalinks' => array(
+						'title' 	=> __( 'User Permalinks', 'badgearoo' ),
+						'callback' 	=> 'field_select',
+						'page' 		=> 'broo_general_settings',
+						'section' 	=> 'section_general',
+						'args' => array(
+								'option_name' 	=> 'broo_general_settings',
+								'setting_id' 	=> 'broo_user_permalinks',
+								'label' 		=> __( 'Choose a user permalink.', 'badgearoo' ),
+								'select_options' => $user_permalinks_options
+						)
 				)
 			
 		);
@@ -276,8 +297,8 @@ class BROO_Settings {
 								'setting_id' 	=> 'broo_bp_assignment_summary_placement',
 								'label' 		=> __( 'Where do you want to display a summary of badges & points assigned to members?', 'badgearoo' ),
 								'select_options' => array(
-										'header'	=> __( 'Member Header', 'badgearoo' ),
 										'tab' 				=> __( 'New Member Tab', 'badgearoo' ),
+										'header'	=> __( 'Member Header', 'badgearoo' ),
 										'none' 				=> __( 'Do not show', 'badgearoo' )
 								)
 						)
@@ -293,17 +314,6 @@ class BROO_Settings {
 								'label' 		=> __( 'Do you want to display new assignments in member activity streams?', 'badgearoo' )
 						)
 				),
-				'broo_bp_member_permalinks' => array(
-						'title' 	=> __( 'Use Member Permalinks', 'badgearoo' ),
-						'callback' 	=> 'field_checkbox',
-						'page' 		=> 'broo_bp_settings',
-						'section' 	=> 'section_bp',
-						'args' => array(
-								'option_name' 	=> 'broo_bp_settings',
-								'setting_id' 	=> 'broo_bp_member_permalinks',
-								'label' 		=> __( 'Do you want to use BuddyPress member permalinks instead of WordPress author permalinks?', 'badgearoo' )
-						)
-				)
 				
 		);
 	
@@ -450,20 +460,6 @@ class BROO_Settings {
 			$input['broo_assignment_auto_approve'] = false;
 		}
 		
-		if ( isset( $input['broo_assignment_notify_moderators'] ) && $input['broo_assignment_notify_moderators'] == 'true' ) {
-			$input['broo_assignment_notify_moderators'] = true;
-		} else {
-			$input['broo_assignment_notify_moderators'] = false;
-		}
-		
-		$assignment_moderators = preg_split( '/[\r\n,]+/', $input['broo_assignment_moderators'], -1, PREG_SPLIT_NO_EMPTY );
-		foreach ( $assignment_moderators as $email ) {
-			if (! is_email( $email ) ) {
-				add_settings_error( 'broo_general_settings', 'invalid_assignment_moderators', sprintf( __( 'Moderator email  "%s" is invalid.', 'badgearoo' ), $email ) );
-				break;
-			}
-		}
-		
 		return $input;
 	}
 	
@@ -504,12 +500,6 @@ class BROO_Settings {
 			$input['broo_bp_assignments_activity_stream'] = true;
 		} else {
 			$input['broo_bp_assignments_activity_stream'] = false;
-		}
-		
-		if ( isset( $input['broo_bp_member_permalinks'] ) && $input['broo_bp_member_permalinks'] == 'true' ) {
-			$input['broo_bp_member_permalinks'] = true;
-		} else {
-			$input['broo_bp_member_permalinks'] = false;
 		}
 	
 		return $input;

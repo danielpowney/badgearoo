@@ -1,9 +1,11 @@
 <?php
+
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 /**
  * Conditions page
  */
-
-// TODO add new condition should automatically go to the top in UI instead of bottom
 // TODO sort conditions by last modified date
 
 function broo_conditions_page() {
@@ -236,6 +238,8 @@ function broo_display_condition_meta_box( $condition, $is_closed = false ) {
  * @param echo
  */
 function broo_condition_status( $condition ) {
+	
+	$actions_enabled = (array) get_option( 'broo_actions_enabled' );
 
 	$incomplete = false;
 	$messages = array();
@@ -256,11 +260,17 @@ function broo_condition_status( $condition ) {
 	}
 
 	$action_not_found = false;
+	$action_not_enabled = false;
 	foreach ( $condition->steps as $step ) {
 		if ( $step->action_name == null ) {
 			$incomplete = true;
 			$action_not_found = true;
 			break;
+		} else if ( ! isset( $actions_enabled[$step->action_name] ) 
+				|| ( isset( $actions_enabled[$step->action_name] ) 
+				&& $actions_enabled[$step->action_name] == false ) ) {
+			$incomplete = true;
+			$action_not_enabled = true;
 		}
 	}
 	
@@ -268,7 +278,9 @@ function broo_condition_status( $condition ) {
 		array_push( $messages, __( 'Each step must have an action.', 'badgearoo' ) );
 	}
 	
-	// TODO check each condition is enabled...
+	if ( $action_not_enabled ) {
+		array_push( $messages, __( 'Each step action must be enabled.', 'badgearoo' ) );
+	}
 	
 	return array( 
 			'incomplete' => $incomplete,

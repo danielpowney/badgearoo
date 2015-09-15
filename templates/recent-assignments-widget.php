@@ -1,4 +1,8 @@
 <?php 
+
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 /**
  * Recent assignments widget
  */
@@ -39,7 +43,11 @@
 					}
 	
 					$user = get_user_by( 'id', $assignment['user_id'] );
-					?>&nbsp;<?php _e('by'); ?>&nbsp;<a href="<?php echo get_author_posts_url( $assignment['user_id'] ); ?>"><?php echo esc_html( $user->display_name ); ?></a>
+					
+					$temp = get_author_posts_url( $assignment['user_id'] );
+					$user_permalink = apply_filters( 'broo_user_permalink', get_author_posts_url( $assignment['user_id'] ), $assignment['user_id'] );
+					
+					?>&nbsp;<?php _e('by'); ?>&nbsp;<a href="<?php echo $user_permalink; ?>"><?php echo esc_html( $user->display_name ); ?></a>
 					<span class="broo-time-diff"><?php printf( __( '%s ago', 'badgearoo' ), human_time_diff( strtotime( $assignment['created_dt'] ), strtotime( get_date_from_gmt( date( 'Y-m-d H:i:s' ) ) ) ) ); ?></span>
 				</div>
 				<?php

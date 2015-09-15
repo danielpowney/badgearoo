@@ -1,4 +1,13 @@
 <?php
+
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
+/**
+ * 
+ * @param unknown $atts
+ * @return string
+ */
 function broo_user_badges( $atts) {
 	
 	extract( shortcode_atts( array(

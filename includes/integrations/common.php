@@ -3,6 +3,9 @@
  * WordPress predefined actions
  */
 
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 define( 'BROO_WP_PUBLISH_POST_ACTION', 'wp_publish_post' );
 define( 'BROO_WP_SUBMIT_COMMENT_ACTION', 'wp_submit_comment' );
 define( 'BROO_WP_LOGIN_ACTION', 'wp_login' );
@@ -55,9 +58,7 @@ add_filter( 'broo_init_actions', 'broo_init_common_actions', 10, 1 );
  * @param actions
  */
 function broo_add_common_actions( $actions = array() ) {
-	
-	$actions_enabled = (array) get_option( 'broo_actions_enabled' );
-	
+		
 	if ( isset( $actions[BROO_WP_PUBLISH_POST_ACTION] ) && $actions[BROO_WP_PUBLISH_POST_ACTION]['enabled'] == true ) {
 		add_action( 'transition_post_status',  'broo_transition_post_status', 10, 3 );
 		add_filter( 'broo_condition_step_check_wp_publish_post', 'broo_condition_step_check_publish_post', 10, 4 );

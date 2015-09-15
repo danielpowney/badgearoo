@@ -3,6 +3,9 @@
  * 
  */
 
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 function broo_about_page() {
 	?>
 	<div class="wrap about-wrap broo-about-wrap">

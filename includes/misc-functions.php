@@ -1,4 +1,8 @@
 <?php
+
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 /**
  * Allows you to use get_the_author_meta( 'badges' ) or the_author_meta( 'badges' ) in your theme
  *
@@ -39,3 +43,24 @@ function broo_get_the_author_badges( $value, $user_id = false ) {
 	
 }
 add_filter( 'get_the_author_badges', 'broo_get_the_author_badges', 10, 2);
+
+/**
+ * Adds a consistent user permalink
+ * 
+ * @param unknown $user_permalink
+ * @param unknown $user_id
+ */
+function broo_user_permalink( $user_permalink, $user_id ) {
+	$broo_general_settings = (array) get_option( 'broo_general_settings' );
+
+	if ( $broo_general_settings['broo_user_permalinks'] == 'bp_core_get_userlink' && function_exists( 'bp_core_get_userlink' ) ) {
+		return bp_core_get_userlink( $user_id, false, true );
+	} else if ( $broo_general_settings['broo_user_permalinks'] == 'bbp_user_profile_url' && function_exists( 'bbp_user_profile_url' )) {
+		return bbp_get_user_profile_url( $user_id );
+	} else if ( $broo_general_settings['broo_user_permalinks'] == 'author_posts_url'  ) {
+		return get_author_posts_url( $user_id );
+	}
+	
+	return $user_permalink;
+}
+add_filter( 'broo_user_permalink', 'broo_user_permalink', 10, 2 );

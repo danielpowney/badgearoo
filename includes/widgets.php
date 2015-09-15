@@ -1,4 +1,8 @@
 <?php
+
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 /**
  * UB User Details Widget
  */
@@ -33,15 +37,43 @@ class BROO_User_Details_Widget extends WP_Widget {
 		
 		setup_postdata( get_post( $post_id ) );
 		
-		if ( ! ( is_author() || is_singular() ) // wrong page
-				|| ! is_object( $authordata )       // wrong type
-				|| ! isset ( $authordata->ID ) ) {   // wrong object {
-			return; // Nothing to do.
-		}
+		$post_type = get_post_type( $post_id );
 		
+		$can_show_user_badges_widget = 
+				( is_author() || is_singular() ) // wrong page
+				&& is_object( $authordata )       // wrong type
+				&& isset ( $authordata->ID ) 
+				&& $post_type != 'badge';
+		
+		if ( ! apply_filters( 'broo_can_show_user_badges_widget', $can_show_user_badges_widget, $post_id ) ) {
+			return;
+		}
+			
 		$general_settings = (array) get_option( 'broo_general_settings' );
 		
 		extract( $args );
+		
+		if ( ! $user_id ) {
+			global $authordata;
+			$user_id = isset( $authordata->ID ) ? $authordata->ID : 0;
+			$user_id = apply_filters( 'broo_user_badges_user_id', $user_id, $post_id );
+		}
+		
+		$points = Badgearoo::instance()->api->get_user_points( $user_id );
+		$badges = Badgearoo::instance()->api->get_user_badges( $user_id );
+		
+		// count badges by id
+		$badge_count_lookup = array();
+		foreach ( $badges as $index => $badge ) {
+			if ( ! isset( $badge_count_lookup[$badge->id] ) ) {
+				$badge_count_lookup[$badge->id] = 1;
+			} else {
+				$badge_count_lookup[$badge->id]++;
+				unset( $badges[$index] );
+			}
+		}
+		
+		$general_settings = (array) get_option( 'broo_general_settings' );	
 
 		$header = empty( $instance['header'] ) ? 'h3' : $instance['header'];
 		
@@ -55,7 +87,11 @@ class BROO_User_Details_Widget extends WP_Widget {
 				'before_title' => $before_title,
 				'after_title' => $after_title,
 				'class' => 'broo-user-badges-widget',
-				'enable_badge_permalink' => $general_settings['broo_enable_badge_permalink']
+				'enable_badge_permalink' => $general_settings['broo_enable_badge_permalink'],
+				'user_id' => $user_id,
+				'badges' => $badges,
+				'points' => $points,
+				'badge_count_lookup' => $badge_count_lookup,
 		) );
 		
 		wp_reset_postdata();
@@ -86,6 +122,11 @@ class BROO_User_Details_Widget extends WP_Widget {
 				'title' => '',
 				'header' => 'h3'
 		) );
+		
+		// TODO options to:
+		// - show name
+		// - show biography
+		// - type: badges, points or both
 
 		$header = $instance['header'];
 		

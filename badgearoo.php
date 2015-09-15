@@ -11,6 +11,9 @@
  Domain Path: languages
  */
 
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 define( 'BROO_ACTION_TABLE_NAME', 'broo_action' ); // stores predefined actions e.g. publishes a post
 define( 'BROO_USER_ACTION_TABLE_NAME', 'broo_user_action' ); // stores what actions a user has done
 define( 'BROO_USER_ASSIGNMENT_TABLE_NAME', 'broo_user_assignment' ); // stores badges/points assigned to users
@@ -70,6 +73,8 @@ class Badgearoo {
 			self::$instance = new Badgearoo;
 			
 			self::$instance->includes();
+			
+			add_action( 'init', array( self::$instance, 'add_integrations' ) );
 			
 			self::$instance->settings = new BROO_Settings();
 			self::$instance->api = new BROO_API_Impl();
@@ -166,6 +171,25 @@ class Badgearoo {
 	}
 	
 	/**
+	 * Adds plugin integration files
+	 */
+	function add_integrations() {
+		
+		if ( class_exists( 'BuddyPress' ) ) {
+			require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'integrations' . DIRECTORY_SEPARATOR . 'buddypress.php';
+		}
+		if ( class_exists( 'bbPress' ) ) {
+			require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'integrations' . DIRECTORY_SEPARATOR . 'bbpress.php';
+		}
+		if ( class_exists( 'WooCommerce' ) ) {
+			require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'integrations' . DIRECTORY_SEPARATOR . 'woocommerce.php';
+		}
+		if ( class_exists( 'Easy_Digital_Downloads' ) ) {
+			require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'integrations' . DIRECTORY_SEPARATOR . 'easy-digital-downloads.php';
+		}
+	}
+	
+	/**
 	 * Includes files
 	 */
 	function includes() {
@@ -185,11 +209,7 @@ class Badgearoo {
 		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'class-action.php';
 		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'class-condition.php';
 		
-		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'actions' . DIRECTORY_SEPARATOR . 'common.php';
-		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'actions' . DIRECTORY_SEPARATOR . 'buddypress.php';
-		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'actions' . DIRECTORY_SEPARATOR . 'bbpress.php';
-		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'actions' . DIRECTORY_SEPARATOR . 'woocommerce.php';
-		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'actions' . DIRECTORY_SEPARATOR . 'easy-digital-downloads.php';
+		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'integrations' . DIRECTORY_SEPARATOR . 'common.php';
 		
 		if ( is_admin() ) {
 			require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'conditions.php';

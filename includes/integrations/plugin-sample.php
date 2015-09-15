@@ -1,4 +1,8 @@
-<?php 
+<?php
+
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 /**
  * Define a name for your custom action hook. It should be the same as the action hook name 
  * to make it simple.
@@ -28,8 +32,6 @@ add_filter( 'broo_init_actions', 'init_my_actions', 10, 1 );
  * @param actions
 */
 function add_my_actions( $actions = array() ) {
-
-	$actions_enabled = (array) get_option( 'broo_actions_enabled' );
 
 	if ( isset( $actions[MY_CUSTOM_ACTION] ) && $actions[MY_CUSTOM_ACTION]['enabled'] == true ) {
 		/* 

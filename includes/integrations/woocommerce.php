@@ -3,6 +3,9 @@
  * WooCommerce actions
  */
 
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 define( 'WOOCOMMERCE_CHECKOUT_ORDER_PROCESSED_ACTION', 'woocommerce_checkout_order_processed' );
 
 
@@ -24,8 +27,6 @@ add_filter( 'broo_init_actions', 'broo_init_woocommerce_actions', 10, 1 );
  * @param actions
  */
 function broo_add_woocommerce_actions( $actions = array() ) {
-
-	$actions_enabled = (array) get_option( 'broo_actions_enabled' );
 
 	if ( isset( $actions[WOOCOMMERCE_CHECKOUT_ORDER_PROCESSED_ACTION] ) && $actions[WOOCOMMERCE_CHECKOUT_ORDER_PROCESSED_ACTION]['enabled'] == true ) {
 		add_action( 'woocommerce_checkout_order_processed',  'broo_woocommerce_checkout_order_processed', 10, 2 );

@@ -1,3 +1,9 @@
+<?php 
+
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
+?>
 <div class="<?php if ( isset( $class ) ) { echo esc_attr( $class ); } ?> broo-condition">
 
 	<h2><?php echo $name; ?></h2>

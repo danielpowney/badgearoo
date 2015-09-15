@@ -1,3 +1,8 @@
+<?php 
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+?>
+
 <div class="<?php if ( isset( $class ) ) { echo esc_attr( $class ); } ?> broo-badge-summary">
 
 	<div class="broo-badge-main">
@@ -25,9 +30,10 @@
 			<div class="broo-user">
 				<?php
 				echo get_avatar( $user->ID );
+				$user_permalink = apply_filters( 'broo_user_permalink', get_author_posts_url( $user->ID ), $user->ID );
 				?>
 				<br />
-				<a href="<?php echo get_author_posts_url( $user->ID ); ?>"><?php echo esc_html( $user->display_name ); ?></a>
+				<a href="<?php echo $user_permalink; ?>"><?php echo esc_html( $user->display_name ); ?></a>
 			</div>
 			<?php
 		}

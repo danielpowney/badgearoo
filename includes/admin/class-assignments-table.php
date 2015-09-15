@@ -367,8 +367,9 @@ class BROO_Assignments_Table extends WP_List_Table {
 				$user = get_userdata( $user_id );
 				
 				if ( $user ) {
+					$user_permalink = apply_filters( 'broo_user_permalink', get_author_posts_url( $user_id ), $user_id );
 					?>
-					<a href="<?php echo get_author_posts_url( $user_id ); ?>"><?php echo esc_html( $user->display_name ); ?></a>
+					<a href="<?php echo $user_permalink; ?>"><?php echo esc_html( $user->display_name ); ?></a>
 					<?php
 				}
 				break;
