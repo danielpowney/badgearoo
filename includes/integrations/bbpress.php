@@ -114,10 +114,10 @@ function broo_bbp_step_meta_count_enabled( $enabled, $action ) {
 function broo_default_bbp_actions_enabled( $actions_enabled ) {
 
 	return array_merge( array(
-			BBP_CLOSED_TOPIC_ACTION		=> false,
-			BBP_NEW_FORUM_ACTION		=> false,
-			BBP_NEW_REPLY_ACTION		=> false,
-			BBP_NEW_TOPIC_ACTION		=> false
+			BBP_CLOSED_TOPIC_ACTION		=> true,
+			BBP_NEW_FORUM_ACTION		=> true,
+			BBP_NEW_REPLY_ACTION		=> true,
+			BBP_NEW_TOPIC_ACTION		=> true
 	), $actions_enabled );
 
 }
@@ -252,6 +252,14 @@ function broo_bbp_theme_after_reply_author_details() {
 add_action( 'bbp_theme_after_reply_author_details', 'broo_bbp_theme_after_reply_author_details', 10, 1 );
 
 
+function broo_bbp_filters() {
+	if ( class_exists( 'bbPress' ) ) {
+		add_filter( 'broo_can_show_user_badges_widget', 'broo_bbp_can_show_user_badges_widget', 10, 2 );
+		add_filter( 'broo_user_badges_user_id', 'broo_bbp_user_badges_user_id', 10, 2);
+	}
+}
+add_action( 'init', 'broo_bbp_filters' );
+
 /**
  * Checks whether user badges widget can be shown
  *
@@ -267,7 +275,6 @@ function broo_bbp_can_show_user_badges_widget( $can_show_user_badges_widget, $po
 
 	return $can_show_user_badges_widget;
 }
-add_filter( 'broo_can_show_user_badges_widget', 'broo_bbp_can_show_user_badges_widget', 10, 2 );
 
 /**
  * Sets bbPress user id for user badges widget
@@ -285,10 +292,9 @@ function broo_bbp_user_badges_user_id( $user_id, $post_id ) {
 	return $user_id;
 
 }
-add_filter( 'broo_user_badges_user_id', 'broo_bbp_user_badges_user_id', 10, 2);
 
 
-function broo_bbp_user_permalinks_options( $user_permalinks_options = array() ) {
+function broo_bp_user_permalinks_options( $user_permalinks_options = array() ) {
 	
 	if ( ! is_array( $user_permalinks_options ) ) {
 		$user_permalinks_options = array();
@@ -299,5 +305,5 @@ function broo_bbp_user_permalinks_options( $user_permalinks_options = array() ) 
 	return $user_permalinks_options;
 }
 if ( is_admin() ) {
-	add_filter( 'broo_user_permalinks_options', 'broo_bbp_user_permalinks_options', 10, 1 );
+	add_filter( 'broo_user_permalinks_options', 'broo_bp_user_permalinks_options', 10, 1 );
 }

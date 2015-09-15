@@ -62,7 +62,7 @@ function broo_edd_step_meta_count_enabled( $enabled, $action ) {
 function broo_default_edd_actions_enabled( $actions_enabled ) {
 
 	return array_merge( array(
-			EDD_COMPLETE_DOWNLOAD_PURCHASE_ACTION		=> false,
+			EDD_COMPLETE_DOWNLOAD_PURCHASE_ACTION		=> true,
 	), $actions_enabled );
 
 }

@@ -74,8 +74,6 @@ class Badgearoo {
 			
 			self::$instance->includes();
 			
-			add_action( 'init', array( self::$instance, 'add_integrations' ) );
-			
 			self::$instance->settings = new BROO_Settings();
 			self::$instance->api = new BROO_API_Impl();
 
@@ -171,25 +169,6 @@ class Badgearoo {
 	}
 	
 	/**
-	 * Adds plugin integration files
-	 */
-	function add_integrations() {
-		
-		if ( class_exists( 'BuddyPress' ) ) {
-			require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'integrations' . DIRECTORY_SEPARATOR . 'buddypress.php';
-		}
-		if ( class_exists( 'bbPress' ) ) {
-			require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'integrations' . DIRECTORY_SEPARATOR . 'bbpress.php';
-		}
-		if ( class_exists( 'WooCommerce' ) ) {
-			require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'integrations' . DIRECTORY_SEPARATOR . 'woocommerce.php';
-		}
-		if ( class_exists( 'Easy_Digital_Downloads' ) ) {
-			require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'integrations' . DIRECTORY_SEPARATOR . 'easy-digital-downloads.php';
-		}
-	}
-	
-	/**
 	 * Includes files
 	 */
 	function includes() {
@@ -210,6 +189,11 @@ class Badgearoo {
 		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'class-condition.php';
 		
 		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'integrations' . DIRECTORY_SEPARATOR . 'common.php';
+		
+		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'integrations' . DIRECTORY_SEPARATOR . 'buddypress.php';
+		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'integrations' . DIRECTORY_SEPARATOR . 'bbpress.php';
+		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'integrations' . DIRECTORY_SEPARATOR . 'woocommerce.php';
+		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'integrations' . DIRECTORY_SEPARATOR . 'easy-digital-downloads.php';
 		
 		if ( is_admin() ) {
 			require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'conditions.php';

@@ -279,7 +279,8 @@ function broo_condition_status( $condition ) {
 	}
 	
 	if ( $action_not_enabled ) {
-		array_push( $messages, __( 'Each step action must be enabled.', 'badgearoo' ) );
+		// TODO add link to action settings tab
+		array_push( $messages, __( 'Each step action must be enabled. Check plugin settings.', 'badgearoo' ) );
 	}
 	
 	return array( 

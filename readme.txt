@@ -48,8 +48,6 @@ The following widgets are available:
 
 *	User Badges - Shows the post author details including any badges and points they have
 *	Recent Assignments - Shows recent user assignments of badges and points.
-    
-= Step Actions = 
 
 The following step actions are available out-of-the-box:
 
@@ -60,7 +58,9 @@ The following step actions are available out-of-the-box:
 *	User submits a comment.
 *	Minimum points.
 	
-BuddyPress specific (requires BuddyPress plugin):
+= BuddyPress (requires BuddyPress plugin) =
+
+Step actions:
 
 *	Add favorite.
 *	Comment on an activity.
@@ -76,18 +76,38 @@ BuddyPress specific (requires BuddyPress plugin):
 *	Change your profile avatar. (coming soon)
 *	Update your profile information. (coming soon)
 *	Send/reply to a private message. (coming soon)
+
+Other features:
+
+* Add assignment of badges and points to member activity streams.
+* Add a summary of badges and points assigned to members in member header or new member tab
 	
-bbPress specific (requires bbPress plugin):
+= bbPress (requires bbPress plugin) =
+
+Step actions:
 
 *	Closes a forum topic.
 *	Creates a new forum (outside wp-admin).
 *	Replies to forum topic (outside wp-admin).
 *	Adds a new forum topic (outside wp-admin).
 
-Other plugins:
+Other features:
 
-*	Checkout order processed (requires WooCommerce plugin)
-*	User completed purchase. (requires Easy Digital Downloads plugin)
+* Add a summary of badges and points assigned to users in the reply author details
+
+= Other plugins =
+
+= WooCommerce (requires WooCommerce plugin) =
+
+Step actions:
+
+*	Checkout order processed.
+
+= Easy Digital Downloads (requires Easy Digital Downloads plugin) =
+
+Step actions:
+
+*	User completed purchase.
     
 = GitHub =
 
@@ -235,13 +255,14 @@ e.g. [broo_user_dashboard limit="10" show_filters="false"]
 == Screenshots ==
 
 1. Manage and moderate user assignments of badges and points
-2. Recent assignments widget using the badge icon theme. Badge icons can be uploaded on the edit badge page.
+2. Recent assignments widget using the light theme.
 3. Setup conditions that need to be satisfied for automatic assignments of badges and points to users.
 4. [broo_user_dashboard] shortcode using the dark badge theme
 5. [broo_leaderboard] shortcode
-6. [broo_badge_list] shortcode using the light badge theme
+6. [broo_badge_list] shortcode using the badge icon theme. Badge icons can be uploaded on the edit badge page.
 7. Moderation settings 1
 8. Moderation settings 2
+9. BuddyPress member tab showing badges and points assigned to member. You can change the settings to show assignments in the member header instead.
 
 == Upgrade Notice ==
 

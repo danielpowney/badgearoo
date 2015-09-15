@@ -270,10 +270,10 @@ function broo_default_bp_actions_enabled( $actions_enabled ) {
 	
 	return array_merge( array(
 			BP_ACTIVITY_COMMENT_POSTED_ACTION			=> true,
-			BP_ACTIVITY_ADD_USER_FAVORITE_ACTION		=> false,
+			BP_ACTIVITY_ADD_USER_FAVORITE_ACTION		=> true,
 			BP_ACTIVITY_POST_TYPE_PUBLISHED_ACTION		=> true,
-			BP_FRIENDS_FRIENDSHIP_ACCEPTED_ACTION		=> false,
-			BP_FRIENDS_FRIENDSHIP_REQUESTED_ACTION		=> false,
+			BP_FRIENDS_FRIENDSHIP_ACCEPTED_ACTION		=> true,
+			BP_FRIENDS_FRIENDSHIP_REQUESTED_ACTION		=> true,
 			BP_GROUPS_CREATE_GROUP_ACTION				=> true,
 			BP_GROUPS_JOIN_GROUP_ACTION					=> true
 	), $actions_enabled );
@@ -545,6 +545,14 @@ add_action( 'bp_register_activity_actions', 'broo_bp_register_activity_actions' 
 
 
 
+function broo_bp_filters() {
+	if ( class_exists( 'bbPress' ) ) {
+		add_filter( 'broo_can_show_user_badges_widget', 'broo_bp_can_show_user_badges_widget', 10, 2 );
+		add_filter( 'broo_user_badges_user_id', 'broo_bp_user_badges_user_id', 10, 2);
+	}
+}
+add_action( 'init', 'broo_bp_filters' );
+
 /**
  * Checks whether user badges widget can be shown
  * 
@@ -560,7 +568,6 @@ function broo_bp_can_show_user_badges_widget( $can_show_user_badges_widget, $pos
 	
 	return $can_show_user_badges_widget;
 }
-add_filter( 'broo_can_show_user_badges_widget', 'broo_bp_can_show_user_badges_widget', 10, 2 );
 
 /**
  * Sets BuddyPress user id for user badges widget
@@ -578,7 +585,6 @@ function broo_bp_user_badges_user_id( $user_id, $post_id ) {
 	return $user_id;
 	
 }
-add_filter( 'broo_user_badges_user_id', 'broo_bp_user_badges_user_id', 10, 2);
 
 function broo_bbp_user_permalinks_options( $user_permalinks_options = array() ) {
 

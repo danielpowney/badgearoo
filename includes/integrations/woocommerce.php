@@ -63,7 +63,7 @@ function broo_woocommerce_step_meta_count_enabled( $enabled, $action ) {
 function broo_default_woocommerce_actions_enabled( $actions_enabled ) {
 
 	return array_merge( array(
-			WOOCOMMERCE_CHECKOUT_ORDER_PROCESSED_ACTION		=> false,
+			WOOCOMMERCE_CHECKOUT_ORDER_PROCESSED_ACTION		=> true,
 	), $actions_enabled );
 
 }
