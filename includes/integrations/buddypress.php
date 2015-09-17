@@ -546,7 +546,7 @@ add_action( 'bp_register_activity_actions', 'broo_bp_register_activity_actions' 
 
 
 function broo_bp_filters() {
-	if ( class_exists( 'bbPress' ) ) {
+	if ( class_exists( 'BuddyPress' ) ) {
 		add_filter( 'broo_can_show_user_badges_widget', 'broo_bp_can_show_user_badges_widget', 10, 2 );
 		add_filter( 'broo_user_badges_user_id', 'broo_bp_user_badges_user_id', 10, 2);
 	}

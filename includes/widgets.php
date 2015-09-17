@@ -53,11 +53,8 @@ class BROO_User_Details_Widget extends WP_Widget {
 		
 		extract( $args );
 		
-		if ( ! $user_id ) {
-			global $authordata;
-			$user_id = isset( $authordata->ID ) ? $authordata->ID : 0;
-			$user_id = apply_filters( 'broo_user_badges_user_id', $user_id, $post_id );
-		}
+		$user_id = isset( $authordata->ID ) ? $authordata->ID : 0;
+		$user_id = apply_filters( 'broo_user_badges_user_id', $user_id, $post_id );
 		
 		$points = Badgearoo::instance()->api->get_user_points( $user_id );
 		$badges = Badgearoo::instance()->api->get_user_badges( $user_id );

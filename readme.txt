@@ -15,100 +15,88 @@ Create your own badges and points system for WordPress users.
 Create your own badges and points system for WordPress users. You can configure automatic assignment or manually assign 
 badges and points to users. 
 
-The key features of the plugin are:
-
-*	Setup conditions and steps that need to be satisfied for automatic assignment of badges and points to users
-*	BuddyPress, bbPress, WooCommerce and Easy Digital Downloads plugins supported with predefined actions that can be used in condition steps
-*	4 badge themes including badge icon, light, dark and custom HTML (light and dark themes are based on Stack Overflow badges)
-*	Administrators can manually assign badges and points to users from within the WP-admin
-*	Administrators can moderate assignments of new badges and points to users including e-mail notifications
-*	A badges and points leaderboard shortcode [broo_leaderboard]
-*	A user dashboard of badges, points and their assignments [broo_user_dashboard]
-*	Assignments can expire (can be renewed) or re-occur (earn multiple times)
-*	Badges can be earned multiple times
-*	Recent assignments widget
-*	Post author or user page badges & points widget
-*	Export user assignments to a CSV file
-*	Option to show a popup message on page load after a user is assigned badges and or points
-*	Fully WPML compatible (v3.2)
-*	Developer API functions, hooks, filters and template tags to use in your theme
-*	In-built template system for customization
+* Setup conditions and steps that need to be satisfied for automatic assignment of badges and points to users
+* BuddyPress, bbPress, WooCommerce and Easy Digital Downloads plugins supported with predefined actions that can be used in condition steps
+* 4 badge themes including badge icon (upload your own image), light, dark and custom HTML (light and dark themes are based on Stack Overflow badges)
+* Administrators can manually assign badges and points to users from within the WP-admin
+* Administrators can moderate assignments of new badges and points to users including e-mail notifications
+* A badges and points leaderboard shortcode [broo_leaderboard]
+* A user dashboard of badges, points and their assignments [broo_user_dashboard]
+* Assignments can expire (can be renewed) or re-occur (earn multiple times)
+* Badges can be earned multiple times
+* Recent assignments widget
+* User badges & points summary widget for Post Author, displayed bbPress user or BuddyPress member pages
+* Export user assignments to a CSV file
+* Option to show a popup message on page load after a user is assigned badges and or points
+* Fully WPML compatible (v3.2+)
+* Developer API functions, hooks, filters and template tags to use in your theme
+* In-built template system for customization
 
 The following shortcodes are available:
-
-*	[broo_user_badges] - Shows a list of badges assigned to a user e.g. [broo_user_badges username="johnsmith"]
-*	[broo_user_points] - Shows total points assigned to a user e.g. [broo_user_badges user_id=77]
-*	[broo_leaderboard] - Shows a leaderboard of user badges and points e.g. [broo_leaderboard show_avatar="true" sort_by="badges" show_filters="false"]
-*	[broo_badge] - Shows badge details e.g. [broo_badge badge_id="89" show_description="true" show_users="false" show_user_count="true"]
-*	[broo_condition] - Shows condition details e.g. [broo_condition condition_id="1" show_steps="true" show_badges="true" show_points="true"]
-*	[broo_user_dashboard] - Shows a dashboard of badges, points and assignents for a user e.g. [broo_user_dashboard show_assignments="true" limit="5" to_date="205-01-01" from_date="2015-12-12"]
-*	[broo_badge_list] - Shows a list of badge details e.g. [broo_badge_list badge_ids="34,55,56" layout="table"]
+* [broo_user_badges] - Shows a list of badges assigned to a user e.g. [broo_user_badges username="johnsmith"]
+* [broo_user_points] - Shows total points assigned to a user e.g. [broo_user_badges user_id=77]
+* [broo_leaderboard] - Shows a leaderboard of user badges and points e.g. [broo_leaderboard show_avatar="true" sort_by="badges" show_filters="false"]
+* [broo_badge] - Shows badge details e.g. [broo_badge badge_id="89" show_description="true" show_users="false" show_user_count="true"]
+* [broo_condition] - Shows condition details e.g. [broo_condition condition_id="1" show_steps="true" show_badges="true" show_points="true"]
+* [broo_user_dashboard] - Shows a dashboard of badges, points and assignents for a user e.g. [broo_user_dashboard show_assignments="true" limit="5" to_date="205-01-01" from_date="2015-12-12"]
+* [broo_badge_list] - Shows a list of badge details e.g. [broo_badge_list badge_ids="34,55,56" layout="table"]
     
 The following widgets are available:
-
-*	User Badges - Shows the post author details including any badges and points they have
-*	Recent Assignments - Shows recent user assignments of badges and points.
+* User Badges - Shows the post author details including any badges and points they have
+* Recent Assignments - Shows recent user assignments of badges and points.
 
 The following step actions are available out-of-the-box:
-
-*	User publishes a post.
-*	User logs in.
-*	User updates their profile.
-*	Register user.
-*	User submits a comment.
-*	Minimum points.
+* User publishes a post.
+* User logs in.
+* User updates their profile.
+* Register user.
+* User submits a comment.
+* Minimum points.
 	
 = BuddyPress (requires BuddyPress plugin) =
 
 Step actions:
-
-*	Add favorite.
-*	Comment on an activity.
-*	Post activity.
-*	Accept a friend request.
-*	Request a friend.
-*	Create Group.
-*	Join Group.
-*	Invite someone to join a group. (coming soon)
-*	Get promoted to group moderator/administrator. (coming soon)
-*	Promote another group member to group moderator/administrator. (coming soon)
-*	Activate your account. (coming soon)
-*	Change your profile avatar. (coming soon)
-*	Update your profile information. (coming soon)
-*	Send/reply to a private message. (coming soon)
+* Add favorite.
+* Comment on an activity.
+* Post activity.
+* Accept a friend request.
+* Request a friend.
+* Create Group.
+* Join Group.
+* Invite someone to join a group. (coming soon)
+* Get promoted to group moderator/administrator. (coming soon)
+* Promote another group member to group moderator/administrator. (coming soon)
+* Activate your account. (coming soon)
+* Change your profile avatar. (coming soon)
+* Update your profile information. (coming soon)
+* Send/reply to a private message. (coming soon)
 
 Other features:
-
-* Add assignment of badges and points to member activity streams.
-* Add a summary of badges and points assigned to members in member header or new member tab
+* Option to add assignment of badges and points to member activity streams.
+* Option to add a summary of badges and points assigned to members in member header or new member tab
 	
 = bbPress (requires bbPress plugin) =
 
 Step actions:
-
-*	Closes a forum topic.
-*	Creates a new forum (outside wp-admin).
-*	Replies to forum topic (outside wp-admin).
-*	Adds a new forum topic (outside wp-admin).
+* Closes a forum topic.
+* Creates a new forum (outside wp-admin).
+* Replies to forum topic (outside wp-admin).
+* Adds a new forum topic (outside wp-admin).
 
 Other features:
-
-* Add a summary of badges and points assigned to users in the reply author details
-
-= Other plugins =
+* Adds a summary of badges and points assigned to users in the reply author details
+* Adds a summary of badges and points assigned to users in user profile page
 
 = WooCommerce (requires WooCommerce plugin) =
 
 Step actions:
-
-*	Checkout order processed.
+* Checkout order processed.
 
 = Easy Digital Downloads (requires Easy Digital Downloads plugin) =
 
 Step actions:
-
-*	User completed purchase.
-    
+* User completed purchase.
+   
 = GitHub =
 
 https://github.com/danielpowney/badgearoo/
@@ -156,8 +144,8 @@ Shows a list of badges assigned to a user.
 
 Attributes:
 
-*	user_id – User id of user. If not set, the default is the current logged in user id.
-*	username – Username of user. This will override user_id if set. Default empty.
+* user_id – User id of user. If not set, the default is the current logged in user id.
+* username – Username of user. This will override user_id if set. Default empty.
 
 e.g. [broo_user_badges username="johnsmith"]
 
@@ -167,8 +155,8 @@ Shows total points assigned to a user.
 
 Attributes:
 
-*	user_id – User id of user. If not set, the default is the current logged in user id.
-*	username – Username of user. This will override user_id if set. Default empty.
+* user_id – User id of user. If not set, the default is the current logged in user id.
+* username – Username of user. This will override user_id if set. Default empty.
 
 e.g. [broo_user_points username="johnsmith"]
 
@@ -178,15 +166,15 @@ Shows a leaderboard of user badges and points.
 
 Attributes:
 
-*	show_avatar – Show user’s avatar. true or false. Default is true.
-*	before_name –
-*	after_name –
-*	show_badges – Include badges in the leaderboard. true or false. Default is true.
-*	show_points – Include points in the leaderboard. true or false. Default is true.
-*	sort_by – Sort leaderboard. points or badges. Default is points.
-*	show_filters – Show leaderboard filters i.e. sort by, type, date range etc… true or false. Default is true.
-*	from_date – yyyy-mm-dd format. Default empty.
-*	to_date – yyyy-mm-dd format. Default empty.
+* show_avatar – Show user’s avatar. true or false. Default is true.
+* before_name –
+* after_name –
+* show_badges – Include badges in the leaderboard. true or false. Default is true.
+* show_points – Include points in the leaderboard. true or false. Default is true.
+* sort_by – Sort leaderboard. points or badges. Default is points.
+* show_filters – Show leaderboard filters i.e. sort by, type, date range etc… true or false. Default is true.
+* from_date – yyyy-mm-dd format. Default empty.
+* to_date – yyyy-mm-dd format. Default empty.
 
 e.g. [broo_leaderboard show_filters="false" show_avatar="false"]
 
@@ -196,12 +184,12 @@ Shows badge details.
 
 Attributes:
 
-*	badge_id – The badge post id. This is required otherwise no badge can be shown.
-*	show_description – Show badge post content. true or false. Default is true.
-*	before_name –
-*	after_name –
-*	show_users – show users who have been assigned this bade. true or false. Default is true.
-*	show_users_count – show count of users who have been assigned this badge. Default is true.
+* badge_id – The badge post id. This is required otherwise no badge can be shown.
+* show_description – Show badge post content. true or false. Default is true.
+* before_name –
+* after_name –
+* show_users – show users who have been assigned this bade. true or false. Default is true.
+* show_users_count – show count of users who have been assigned this badge. Default is true.
 
 e.g. [broo_badge badge_id="10"]
 
@@ -211,13 +199,13 @@ Shows a list of badge details.
 
 Attributes:
 
-*	badge_ids – A list of badge post id’s to show. Default is empty which means all badges are shown.
-*	show_description – Show badge excerpt. Default is true.
-*	before_name –
-*	after_name –
-*	show_users – show users who have been assigned this bade. true or false. Default is true.
-*	show_users_count – show count of users who have been assigned this badge. Default is true.
-*	layout – Layout for displaying badges. summary or table. Default is table.
+* badge_ids – A list of badge post id’s to show. Default is empty which means all badges are shown.
+* show_description – Show badge excerpt. Default is true.
+* before_name –
+* after_name –
+* show_users – show users who have been assigned this bade. true or false. Default is true.
+* show_users_count – show count of users who have been assigned this badge. Default is true.
+* layout – Layout for displaying badges. summary or table. Default is table.
 
 e.g. [broo_badge_list layout="table" show_users="false" badge_ids="10,11,12"]
 
@@ -227,10 +215,10 @@ Shows condition details.
 
 Attributes:
 
-*	condition_id – The condition id to show. This is required otherwise no condition is shown.
-*	show_steps – Show the step details that need to be completed. Default is true.
-*	show_badges – Show the badges that are assigned when condition is satisfied. Default is true.
-*	show_points – Show the points that are assigned when condition is satisfied. Default is true.
+* condition_id – The condition id to show. This is required otherwise no condition is shown.
+* show_steps – Show the step details that need to be completed. Default is true.
+* show_badges – Show the badges that are assigned when condition is satisfied. Default is true.
+* show_points – Show the points that are assigned when condition is satisfied. Default is true.
 
 e.g. [broo_condition condition_id="1"]
 
@@ -240,15 +228,15 @@ Shows a dashboard of badges, points and assignments for a user.
 
 Attributes:
 
-*	show_badges – Include badges in the dashboard summary. true or false. Default is true.
-*	show_points – Include points in the dashboard summary. true or false. Default is true.
-*	show_assignments – Include assignments table in the dashboard. Default is true.
-*	limit – How many assignments to limit in the table. More can be retrieved using the Load more button. Default is 5.
-*	offset – Start offset for assignments. This can be used for paging. Default is 0.
-*	type – Type of assignments to show. empty “” for all, badges or points. Default is empty.
-*	show_filters – Show assignments filters i.e. sort by, type, date range etc… true or false. Default is true.
-*	from_date – yyyy-mm-dd format. Default empty.
-*	to_date – yyyy-mm-dd format. Default empty.
+* show_badges – Include badges in the dashboard summary. true or false. Default is true.
+* show_points – Include points in the dashboard summary. true or false. Default is true.
+* show_assignments – Include assignments table in the dashboard. Default is true.
+* limit – How many assignments to limit in the table. More can be retrieved using the Load more button. Default is 5.
+* offset – Start offset for assignments. This can be used for paging. Default is 0.
+* type – Type of assignments to show. empty “” for all, badges or points. Default is empty.
+* show_filters – Show assignments filters i.e. sort by, type, date range etc… true or false. Default is true.
+* from_date – yyyy-mm-dd format. Default empty.
+* to_date – yyyy-mm-dd format. Default empty.
 
 e.g. [broo_user_dashboard limit="10" show_filters="false"]
 
@@ -269,4 +257,4 @@ e.g. [broo_user_dashboard limit="10" show_filters="false"]
 == Changelog ==
 
 = 1.0 =
-*	Initial version
+* Initial version

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: multi-rating-pro\n"
-"POT-Creation-Date: 2015-09-10 09:59+1000\n"
-"PO-Revision-Date: 2015-09-10 09:59+1000\n"
+"POT-Creation-Date: 2015-09-15 22:01+1000\n"
+"PO-Revision-Date: 2015-09-15 22:01+1000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en_AU\n"
@@ -16,462 +16,401 @@ msgstr ""
 "X-Poedit-KeywordsList: __;_e\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: ../badgearoo.php:329
+#: ../badgearoo.php:333
 msgid "About Badgearoo"
 msgstr ""
 
-#: ../badgearoo.php:330 ../includes/admin/about.php:55
-#: ../includes/admin/conditions.php:12
+#: ../badgearoo.php:334 ../includes/admin/about.php:58
+#: ../includes/admin/conditions.php:14
 msgid "Conditions"
 msgstr ""
 
-#: ../badgearoo.php:342 ../includes/admin/about.php:47
-#: ../includes/admin/assignments.php:52
+#: ../badgearoo.php:346 ../includes/admin/about.php:50
+#: ../includes/admin/assignments.php:56
 #: ../includes/admin/class-assignments-table.php:26
-#: ../templates/user-dashboard.php:30
+#: ../includes/integrations/buddypress.php:380
+#: ../templates/user-dashboard.php:34
 msgid "Assignments"
 msgstr ""
 
-#: ../badgearoo.php:343
+#: ../badgearoo.php:347
 msgid "Settings"
 msgstr ""
 
-#: ../badgearoo.php:344 ../includes/admin/tools.php:8
+#: ../badgearoo.php:348 ../includes/admin/tools.php:12
 msgid "Tools"
 msgstr ""
 
-#: ../badgearoo.php:345
+#: ../badgearoo.php:349
 msgid "About"
 msgstr ""
 
-#: ../badgearoo.php:441 ../badgearoo.php:443 ../includes/admin/about.php:81
-#: ../includes/admin/conditions.php:143 ../includes/admin/users.php:6
-#: ../includes/admin/users.php:95 ../templates/user-dashboard-filters.php:11
-#: ../templates/user-dashboard.php:49
-#: ../templates/user-leaderboard-table.php:12
+#: ../badgearoo.php:445 ../badgearoo.php:447 ../includes/admin/about.php:84
+#: ../includes/admin/conditions.php:144 ../includes/admin/users.php:10
+#: ../includes/admin/users.php:99 ../includes/integrations/buddypress.php:540
+#: ../templates/user-dashboard-filters.php:15
+#: ../templates/user-dashboard.php:53
+#: ../templates/user-leaderboard-table.php:16
 msgid "Badges"
 msgstr ""
 
-#: ../badgearoo.php:444 ../includes/admin/assignments.php:25
+#: ../badgearoo.php:448 ../includes/admin/assignments.php:29
 #: ../includes/admin/class-assignments-table.php:102
-#: ../includes/admin/class-assignments-table.php:386
-#: ../includes/admin/tools.php:28 ../includes/admin/tools.php:64
-#: ../includes/widgets.php:240 ../templates/badge-list.php:54
+#: ../includes/admin/class-assignments-table.php:387
+#: ../includes/admin/tools.php:32 ../includes/admin/tools.php:68
+#: ../includes/widgets.php:281 ../templates/badge-list.php:58
 msgid "Badge"
 msgstr ""
 
-#: ../badgearoo.php:445
+#: ../badgearoo.php:449
 msgid "Add New Badge"
 msgstr ""
 
-#: ../badgearoo.php:446
+#: ../badgearoo.php:450
 msgid "Edit Badge"
 msgstr ""
 
-#: ../badgearoo.php:447
+#: ../badgearoo.php:451
 msgid "New Badge"
 msgstr ""
 
-#: ../badgearoo.php:448
+#: ../badgearoo.php:452
 msgid "View Badge"
 msgstr ""
 
-#: ../badgearoo.php:449
+#: ../badgearoo.php:453
 msgid "Search Badges"
 msgstr ""
 
-#: ../badgearoo.php:450
+#: ../badgearoo.php:454
 msgid "No badge found."
 msgstr ""
 
-#: ../badgearoo.php:451
+#: ../badgearoo.php:455
 msgid "No badges found in trash."
 msgstr ""
 
-#: ../badgearoo.php:452
+#: ../badgearoo.php:456
 msgid "Parent Badge"
 msgstr ""
 
-#: ../includes/actions.php:58
+#: ../includes/actions.php:62
 #, php-format
 msgid "Congratulations %s, you have earned badge %s!"
 msgstr ""
 
-#: ../includes/actions.php:60
+#: ../includes/actions.php:64
 #, php-format
 msgid "Congratulations %s, you have earned %d points!"
 msgstr ""
 
-#: ../includes/actions/bbpress.php:30
-msgid "Creates a new forum (outside wp-admin)."
-msgstr ""
-
-#: ../includes/actions/bbpress.php:31 ../includes/actions/bbpress.php:36
-#: ../includes/actions/bbpress.php:41 ../includes/actions/bbpress.php:46
-#: ../includes/admin/about.php:112
-msgid "bbPress"
-msgstr ""
-
-#: ../includes/actions/bbpress.php:35
-msgid "Replies to forum topic (outside wp-admin)."
-msgstr ""
-
-#: ../includes/actions/bbpress.php:40 ../includes/admin/about.php:117
-msgid "Adds a new forum topic (outside wp-admin)."
-msgstr ""
-
-#: ../includes/actions/bbpress.php:45 ../includes/admin/about.php:114
-msgid "Closes a forum topic."
-msgstr ""
-
-#: ../includes/actions/buddypress.php:40
-msgid "Comment on an activity."
-msgstr ""
-
-#: ../includes/actions/buddypress.php:41 ../includes/actions/buddypress.php:46
-#: ../includes/actions/buddypress.php:51 ../includes/actions/buddypress.php:56
-#: ../includes/actions/buddypress.php:61 ../includes/actions/buddypress.php:66
-#: ../includes/actions/buddypress.php:71 ../includes/admin/about.php:98
-#: ../includes/admin/settings.php:17
-msgid "BuddyPress"
-msgstr ""
-
-#: ../includes/actions/buddypress.php:45 ../includes/admin/about.php:100
-msgid "Add favorite."
-msgstr ""
-
-#: ../includes/actions/buddypress.php:50
-msgid "Post activity."
-msgstr ""
-
-#: ../includes/actions/buddypress.php:55 ../includes/admin/about.php:103
-msgid "Accept a friend request."
-msgstr ""
-
-#: ../includes/actions/buddypress.php:60 ../includes/admin/about.php:104
-msgid "Request a friend."
-msgstr ""
-
-#: ../includes/actions/buddypress.php:65 ../includes/admin/about.php:105
-msgid "Create Group."
-msgstr ""
-
-#: ../includes/actions/buddypress.php:70 ../includes/admin/about.php:106
-msgid "Join Group."
-msgstr ""
-
-#: ../includes/actions/buddypress.php:333
-msgid "Activity Type"
-msgstr ""
-
-#: ../includes/actions/buddypress.php:335
-msgid "All activity types"
-msgstr ""
-
-#: ../includes/actions/buddypress.php:336
-msgid "Replied to a status update"
-msgstr ""
-
-#: ../includes/actions/buddypress.php:337
-msgid "Posted a status update"
-msgstr ""
-
-#: ../includes/actions/common.php:18 ../includes/admin/about.php:135
-msgid "User publishes a post."
-msgstr ""
-
-#: ../includes/actions/common.php:19 ../includes/actions/common.php:24
-#: ../includes/actions/common.php:29 ../includes/actions/common.php:34
-#: ../includes/actions/common.php:39 ../includes/admin/about.php:133
-msgid "WordPress"
-msgstr ""
-
-#: ../includes/actions/common.php:23 ../includes/admin/about.php:139
-msgid "User submits a comment."
-msgstr ""
-
-#: ../includes/actions/common.php:28 ../includes/admin/about.php:136
-msgid "User logs in."
-msgstr ""
-
-#: ../includes/actions/common.php:33 ../includes/admin/about.php:138
-msgid "Register user."
-msgstr ""
-
-#: ../includes/actions/common.php:38
-msgid "User updates their profile."
-msgstr ""
-
-#: ../includes/actions/common.php:43 ../includes/admin/about.php:144
-msgid "Minimum points."
-msgstr ""
-
-#: ../includes/actions/common.php:44
-msgid "Badgearoo"
-msgstr ""
-
-#: ../includes/actions/common.php:164
-msgid "points"
-msgstr ""
-
-#: ../includes/actions/common.php:190
-msgid "time(s)"
-msgstr ""
-
-#: ../includes/actions/common.php:212
-msgid "Post Type"
-msgstr ""
-
-#: ../includes/actions/common.php:214
-#: ../includes/admin/class-assignments-table.php:47
-#: ../includes/admin/conditions.php:38
-msgid "All"
-msgstr ""
-
-#: ../includes/actions/easy-digital-downloads.php:11
-#: ../includes/admin/about.php:128
-msgid "User completed purchase."
-msgstr ""
-
-#: ../includes/actions/easy-digital-downloads.php:12
-#: ../includes/admin/about.php:126
-msgid "Easy Digital Downloads"
-msgstr ""
-
-#: ../includes/actions/plugin-sample.php:15
-msgid "User performs my custom action."
-msgstr ""
-
-#: ../includes/actions/plugin-sample.php:16
-msgid "My plugin"
-msgstr ""
-
-#: ../includes/actions/plugin-sample.php:124
-msgid "Some other data"
-msgstr ""
-
-#: ../includes/actions/woocommerce.php:12 ../includes/admin/about.php:122
-msgid "Checkout order processed."
-msgstr ""
-
-#: ../includes/actions/woocommerce.php:13 ../includes/admin/about.php:120
-msgid "WooCommerce"
-msgstr ""
-
-#: ../includes/admin/about.php:9
+#: ../includes/admin/about.php:12
 #, php-format
 msgid "Badgearoo v%s"
 msgstr ""
 
-#: ../includes/admin/about.php:11
+#: ../includes/admin/about.php:14
 msgid ""
 "Create your own badges and points system for WordPress users. You can "
 "configure automatic assignment or manually assign badges and points to users."
 msgstr ""
 
-#: ../includes/admin/about.php:19
+#: ../includes/admin/about.php:22
 msgid "Getting Started"
 msgstr ""
 
-#: ../includes/admin/about.php:48
+#: ../includes/admin/about.php:51
 msgid ""
 "Manage user assignments of badges and points including moderation and e-mail "
 "notifications."
 msgstr ""
 
-#: ../includes/admin/about.php:56
+#: ../includes/admin/about.php:59
 msgid ""
 "Setup conditions with steps that need to be accomplished for badges and or "
 "points to be automatically assigned to users."
 msgstr ""
 
-#: ../includes/admin/about.php:60
+#: ../includes/admin/about.php:63
 msgid "Shortcodes"
 msgstr ""
 
-#: ../includes/admin/about.php:62
+#: ../includes/admin/about.php:65
 msgid "Shows a list of badges assigned to a user."
 msgstr ""
 
-#: ../includes/admin/about.php:63
+#: ../includes/admin/about.php:66
 msgid "Shows total points assigned to a user."
 msgstr ""
 
-#: ../includes/admin/about.php:64
+#: ../includes/admin/about.php:67
 msgid "Shows a leaderboard of user badges and points"
 msgstr ""
 
-#: ../includes/admin/about.php:65
+#: ../includes/admin/about.php:68
 msgid "Shows badge details."
 msgstr ""
 
-#: ../includes/admin/about.php:66
+#: ../includes/admin/about.php:69
 msgid "Shows condition details."
 msgstr ""
 
-#: ../includes/admin/about.php:67
+#: ../includes/admin/about.php:70
 msgid "Shows a dashboard of badges, points and assignents for a user."
 msgstr ""
 
-#: ../includes/admin/about.php:68
+#: ../includes/admin/about.php:71
 msgid "Shows a list of badge details."
 msgstr ""
 
-#: ../includes/admin/about.php:73
+#: ../includes/admin/about.php:76
 msgid "Widgets"
 msgstr ""
 
-#: ../includes/admin/about.php:75
+#: ../includes/admin/about.php:78
 msgid ""
 "User Badges - Shows the post author details including any badges and points "
 "they have."
 msgstr ""
 
-#: ../includes/admin/about.php:76
+#: ../includes/admin/about.php:79
 msgid ""
 "Recent Assignments -  Shows recent user assignments of badges and points."
 msgstr ""
 
-#: ../includes/admin/about.php:82
+#: ../includes/admin/about.php:85
 msgid ""
 "There are four themes currently available for displaying badges: dark, "
 "light, badge icon and custom HTML."
 msgstr ""
 
-#: ../includes/admin/about.php:86
+#: ../includes/admin/about.php:89
 msgid "Moderation"
 msgstr ""
 
-#: ../includes/admin/about.php:87
+#: ../includes/admin/about.php:90
 msgid ""
 "You can turn on moderation of new user assignments. E-mail notifications can "
 "be setup to notify moderations to approve or unapprove new user assignments"
 msgstr ""
 
-#: ../includes/admin/about.php:94
+#: ../includes/admin/about.php:97
 msgid "Steps Actions"
 msgstr ""
 
-#: ../includes/admin/about.php:95
+#: ../includes/admin/about.php:98
 msgid ""
 "The following actions are available out-of-the-box and can be used in "
 "condition steps. It's easy to add more actions through add-ons."
 msgstr ""
 
-#: ../includes/admin/about.php:101
+#: ../includes/admin/about.php:101 ../includes/admin/settings.php:20
+#: ../includes/integrations/buddypress.php:44
+#: ../includes/integrations/buddypress.php:49
+#: ../includes/integrations/buddypress.php:54
+#: ../includes/integrations/buddypress.php:59
+#: ../includes/integrations/buddypress.php:64
+#: ../includes/integrations/buddypress.php:69
+#: ../includes/integrations/buddypress.php:74
+msgid "BuddyPress"
+msgstr ""
+
+#: ../includes/admin/about.php:103 ../includes/integrations/buddypress.php:48
+msgid "Add favorite."
+msgstr ""
+
+#: ../includes/admin/about.php:104
 msgid "Comment on an activity. "
 msgstr ""
 
-#: ../includes/admin/about.php:102
+#: ../includes/admin/about.php:105
 msgid "Post activity. "
 msgstr ""
 
-#: ../includes/admin/about.php:115
+#: ../includes/admin/about.php:106 ../includes/integrations/buddypress.php:58
+msgid "Accept a friend request."
+msgstr ""
+
+#: ../includes/admin/about.php:107 ../includes/integrations/buddypress.php:63
+msgid "Request a friend."
+msgstr ""
+
+#: ../includes/admin/about.php:108 ../includes/integrations/buddypress.php:68
+msgid "Create Group."
+msgstr ""
+
+#: ../includes/admin/about.php:109 ../includes/integrations/buddypress.php:73
+msgid "Join Group."
+msgstr ""
+
+#: ../includes/admin/about.php:115 ../includes/integrations/bbpress.php:34
+#: ../includes/integrations/bbpress.php:39
+#: ../includes/integrations/bbpress.php:44
+#: ../includes/integrations/bbpress.php:49
+msgid "bbPress"
+msgstr ""
+
+#: ../includes/admin/about.php:117 ../includes/integrations/bbpress.php:48
+msgid "Closes a forum topic."
+msgstr ""
+
+#: ../includes/admin/about.php:118
 msgid "Creates a new forum (outside wp-admin). "
 msgstr ""
 
-#: ../includes/admin/about.php:116
+#: ../includes/admin/about.php:119
 msgid "Replies to forum topic (outside wp-admin). "
 msgstr ""
 
-#: ../includes/admin/about.php:137
+#: ../includes/admin/about.php:120 ../includes/integrations/bbpress.php:43
+msgid "Adds a new forum topic (outside wp-admin)."
+msgstr ""
+
+#: ../includes/admin/about.php:123 ../includes/integrations/woocommerce.php:16
+msgid "WooCommerce"
+msgstr ""
+
+#: ../includes/admin/about.php:125 ../includes/integrations/woocommerce.php:15
+msgid "Checkout order processed."
+msgstr ""
+
+#: ../includes/admin/about.php:129
+#: ../includes/integrations/easy-digital-downloads.php:15
+msgid "Easy Digital Downloads"
+msgstr ""
+
+#: ../includes/admin/about.php:131
+#: ../includes/integrations/easy-digital-downloads.php:14
+msgid "User completed purchase."
+msgstr ""
+
+#: ../includes/admin/about.php:136 ../includes/integrations/common.php:22
+#: ../includes/integrations/common.php:27
+#: ../includes/integrations/common.php:32
+#: ../includes/integrations/common.php:37
+#: ../includes/integrations/common.php:42
+msgid "WordPress"
+msgstr ""
+
+#: ../includes/admin/about.php:138 ../includes/integrations/common.php:21
+msgid "User publishes a post."
+msgstr ""
+
+#: ../includes/admin/about.php:139 ../includes/integrations/common.php:31
+msgid "User logs in."
+msgstr ""
+
+#: ../includes/admin/about.php:140
 msgid "User updates their profile. "
 msgstr ""
 
-#: ../includes/admin/about.php:142
+#: ../includes/admin/about.php:141 ../includes/integrations/common.php:36
+msgid "Register user."
+msgstr ""
+
+#: ../includes/admin/about.php:142 ../includes/integrations/common.php:26
+msgid "User submits a comment."
+msgstr ""
+
+#: ../includes/admin/about.php:145
 msgid "Custom"
 msgstr ""
 
-#: ../includes/admin/assignments.php:11
-msgid "Add New Assignment"
+#: ../includes/admin/about.php:147 ../includes/integrations/common.php:46
+msgid "Minimum points."
 msgstr ""
 
 #: ../includes/admin/assignments.php:15
+msgid "Add New Assignment"
+msgstr ""
+
+#: ../includes/admin/assignments.php:19
 #: ../includes/admin/class-assignments-table.php:130
-#: ../templates/user-leaderboard-table.php:10
+#: ../templates/user-leaderboard-table.php:14
 msgid "User"
 msgstr ""
 
-#: ../includes/admin/assignments.php:22
+#: ../includes/admin/assignments.php:26
 #: ../includes/admin/class-assignments-table.php:132
-#: ../includes/widgets.php:237
+#: ../includes/widgets.php:278
 msgid "Type"
 msgstr ""
 
-#: ../includes/admin/assignments.php:26
+#: ../includes/admin/assignments.php:30
 #: ../includes/admin/class-assignments-table.php:103
-#: ../includes/admin/class-assignments-table.php:388
-#: ../includes/admin/conditions.php:166 ../includes/admin/tools.php:29
-#: ../includes/admin/tools.php:65 ../includes/admin/tools.php:170
-#: ../includes/admin/users.php:7 ../includes/admin/users.php:87
-#: ../includes/widgets.php:241 ../templates/user-dashboard-filters.php:12
-#: ../templates/user-dashboard.php:37
-#: ../templates/user-leaderboard-table.php:11
+#: ../includes/admin/class-assignments-table.php:389
+#: ../includes/admin/conditions.php:167 ../includes/admin/tools.php:33
+#: ../includes/admin/tools.php:69 ../includes/admin/tools.php:174
+#: ../includes/admin/users.php:11 ../includes/admin/users.php:91
+#: ../includes/integrations/buddypress.php:541 ../includes/widgets.php:282
+#: ../templates/user-dashboard-filters.php:16
+#: ../templates/user-dashboard.php:41
+#: ../templates/user-leaderboard-table.php:15
 msgid "Points"
 msgstr ""
 
-#: ../includes/admin/assignments.php:31
+#: ../includes/admin/assignments.php:35
 msgid "Expiry Date"
 msgstr ""
 
-#: ../includes/admin/assignments.php:34
+#: ../includes/admin/assignments.php:38
 msgid "Leave empty for no expiration."
 msgstr ""
 
-#: ../includes/admin/assignments.php:38
+#: ../includes/admin/assignments.php:42
 #: ../includes/admin/class-assignments-table.php:25
 #: ../includes/admin/class-assignments-table.php:133
-#: ../templates/user-dashboard-assignments.php:24
+#: ../templates/user-dashboard-assignments.php:28
 msgid "Assignment"
 msgstr ""
 
-#: ../includes/admin/assignments.php:47 ../includes/admin/assignments.php:52
-#: ../includes/admin/conditions.php:13
+#: ../includes/admin/assignments.php:51 ../includes/admin/assignments.php:56
+#: ../includes/admin/conditions.php:15
 msgid "Add New"
 msgstr ""
 
-#: ../includes/admin/assignments.php:87
+#: ../includes/admin/assignments.php:91
 msgid "All badges"
 msgstr ""
 
-#: ../includes/admin/badges.php:5
+#: ../includes/admin/badges.php:9
 msgid "ID"
 msgstr ""
 
-#: ../includes/admin/badges.php:55
+#: ../includes/admin/badges.php:59
 msgid "Badge Color"
 msgstr ""
 
-#: ../includes/admin/badges.php:60
+#: ../includes/admin/badges.php:64
 msgid "Ignore badge color."
 msgstr ""
 
-#: ../includes/admin/badges.php:61
+#: ../includes/admin/badges.php:65
 msgid ""
 "Used by light and dark badge themes to show a badge color. E.g. #c96 for "
 "Bronze, #c5c5c5 for Silver and #fc0 for Gold."
 msgstr ""
 
-#: ../includes/admin/badges.php:65
+#: ../includes/admin/badges.php:69
 msgid "Badge Icon"
 msgstr ""
 
-#: ../includes/admin/badges.php:67
+#: ../includes/admin/badges.php:71
 msgid "Upload"
 msgstr ""
 
-#: ../includes/admin/badges.php:76
+#: ../includes/admin/badges.php:80
 msgid ""
 "This is used by the icon and title theme. Upload a icon image for this "
 "badge. A badge icon is optional. Recommended icon size 32 pixels by 32 "
 "pixels."
 msgstr ""
 
-#: ../includes/admin/badges.php:81 ../includes/class-settings.php:107
+#: ../includes/admin/badges.php:85 ../includes/class-settings.php:116
 msgid "Custom HTML"
 msgstr ""
 
-#: ../includes/admin/badges.php:86
+#: ../includes/admin/badges.php:90
 msgid ""
 "This is used for the custom HTML theme. Available template tags: <br>{title} "
 "- The badge title.<br>{badge_id} - The unique ID of this badge.<br>{excerpt} "
@@ -480,22 +419,27 @@ msgid ""
 "badge permalink."
 msgstr ""
 
-#: ../includes/admin/badges.php:109 ../includes/class-settings.php:95
+#: ../includes/admin/badges.php:113 ../includes/class-settings.php:104
 msgid "Badge Theme"
 msgstr ""
 
+#: ../includes/admin/class-assignments-table.php:47
+#: ../includes/admin/conditions.php:41 ../includes/integrations/common.php:215
+msgid "All"
+msgstr ""
+
 #: ../includes/admin/class-assignments-table.php:48
-#: ../includes/admin/class-assignments-table.php:401
+#: ../includes/admin/class-assignments-table.php:402
 msgid "Approved"
 msgstr ""
 
 #: ../includes/admin/class-assignments-table.php:49
-#: ../includes/admin/class-assignments-table.php:402
+#: ../includes/admin/class-assignments-table.php:403
 msgid "Pending"
 msgstr ""
 
 #: ../includes/admin/class-assignments-table.php:50
-#: ../includes/admin/class-assignments-table.php:403
+#: ../includes/admin/class-assignments-table.php:404
 msgid "Unapproved"
 msgstr ""
 
@@ -508,8 +452,8 @@ msgid "Type:"
 msgstr ""
 
 #: ../includes/admin/class-assignments-table.php:101
-#: ../includes/admin/tools.php:27 ../includes/admin/tools.php:63
-#: ../includes/widgets.php:239
+#: ../includes/admin/tools.php:31 ../includes/admin/tools.php:67
+#: ../includes/widgets.php:280
 msgid "All types"
 msgstr ""
 
@@ -526,419 +470,435 @@ msgid "Expires"
 msgstr ""
 
 #: ../includes/admin/class-assignments-table.php:110
-#: ../includes/admin/tools.php:36
+#: ../includes/admin/tools.php:40
 msgid "Include expired"
 msgstr ""
 
 #: ../includes/admin/class-assignments-table.php:111
-#: ../templates/user-dashboard-filters.php:14
-#: ../templates/user-leaderboard-filters.php:14
+#: ../templates/user-dashboard-filters.php:18
+#: ../templates/user-leaderboard-filters.php:18
 msgid "Filter"
 msgstr ""
 
 #: ../includes/admin/class-assignments-table.php:131
-#: ../templates/user-dashboard-assignments.php:25
+#: ../templates/user-dashboard-assignments.php:29
 msgid "Condition"
 msgstr ""
 
 #: ../includes/admin/class-assignments-table.php:134
-#: ../includes/admin/tools.php:171
-#: ../templates/user-dashboard-assignments.php:26
+#: ../includes/admin/tools.php:175
+#: ../templates/user-dashboard-assignments.php:30
 msgid "Created Dt"
 msgstr ""
 
 #: ../includes/admin/class-assignments-table.php:135
-#: ../includes/admin/tools.php:172
-#: ../templates/user-dashboard-assignments.php:27
+#: ../includes/admin/tools.php:176
+#: ../templates/user-dashboard-assignments.php:31
 msgid "Expiry Dt"
 msgstr ""
 
 #: ../includes/admin/class-assignments-table.php:136
-#: ../includes/admin/tools.php:173
+#: ../includes/admin/tools.php:177
 msgid "Status"
 msgstr ""
 
-#: ../includes/admin/class-assignments-table.php:381
+#: ../includes/admin/class-assignments-table.php:382
 #, php-format
 msgid "Condition %d has been deleted."
 msgstr ""
 
-#: ../includes/admin/class-assignments-table.php:409
-#: ../includes/admin/class-assignments-table.php:450
-#: ../includes/admin/class-assignments-table.php:525
+#: ../includes/admin/class-assignments-table.php:410
+#: ../includes/admin/class-assignments-table.php:451
+#: ../includes/admin/class-assignments-table.php:526
 msgid "Unapprove"
 msgstr ""
 
-#: ../includes/admin/class-assignments-table.php:413
-#: ../includes/admin/class-assignments-table.php:449
-#: ../includes/admin/class-assignments-table.php:524
+#: ../includes/admin/class-assignments-table.php:414
+#: ../includes/admin/class-assignments-table.php:450
+#: ../includes/admin/class-assignments-table.php:525
 msgid "Approve"
 msgstr ""
 
-#: ../includes/admin/class-assignments-table.php:448
-#: ../includes/admin/conditions.php:220 ../includes/admin/conditions.php:320
-#: ../includes/admin/tools.php:50 ../includes/admin/tools.php:73
+#: ../includes/admin/class-assignments-table.php:449
+#: ../includes/admin/conditions.php:221 ../includes/admin/conditions.php:332
+#: ../includes/admin/tools.php:54 ../includes/admin/tools.php:77
 msgid "Delete"
 msgstr ""
 
-#: ../includes/admin/class-assignments-table.php:471
-#: ../includes/admin/class-assignments-table.php:484
-#: ../includes/admin/class-assignments-table.php:497
+#: ../includes/admin/class-assignments-table.php:472
+#: ../includes/admin/class-assignments-table.php:485
+#: ../includes/admin/class-assignments-table.php:498
 msgid "Assignment(s) deleted successfully."
 msgstr ""
 
-#: ../includes/admin/conditions.php:39 ../includes/admin/conditions.php:105
-#: ../includes/admin/conditions.php:139
+#: ../includes/admin/conditions.php:42 ../includes/admin/conditions.php:106
+#: ../includes/admin/conditions.php:140
 msgid "Enabled"
 msgstr ""
 
-#: ../includes/admin/conditions.php:40 ../includes/admin/conditions.php:103
+#: ../includes/admin/conditions.php:43 ../includes/admin/conditions.php:104
 msgid "Disabled"
 msgstr ""
 
-#: ../includes/admin/conditions.php:56 ../includes/admin/conditions.php:338
+#: ../includes/admin/conditions.php:57 ../includes/admin/conditions.php:350
 msgid "New Condition"
 msgstr ""
 
-#: ../includes/admin/conditions.php:94 ../includes/admin/conditions.php:516
+#: ../includes/admin/conditions.php:95 ../includes/admin/conditions.php:528
 #, php-format
 msgid "Condition %d - %s"
 msgstr ""
 
-#: ../includes/admin/conditions.php:101 ../includes/admin/conditions.php:500
+#: ../includes/admin/conditions.php:102 ../includes/admin/conditions.php:512
 msgid "Incomplete"
 msgstr ""
 
-#: ../includes/admin/conditions.php:135
+#: ../includes/admin/conditions.php:136
 msgid "Name"
 msgstr ""
 
-#: ../includes/admin/conditions.php:149
+#: ../includes/admin/conditions.php:150
 msgid "Allocate badges to users"
 msgstr ""
 
-#: ../includes/admin/conditions.php:169
+#: ../includes/admin/conditions.php:170
 msgid "Allocate points to users."
 msgstr ""
 
-#: ../includes/admin/conditions.php:173
+#: ../includes/admin/conditions.php:174
 msgid "Recurring"
 msgstr ""
 
-#: ../includes/admin/conditions.php:176
+#: ../includes/admin/conditions.php:177
 msgid "Assignments can occur more than once."
 msgstr ""
 
-#: ../includes/admin/conditions.php:177
+#: ../includes/admin/conditions.php:178
 msgid "If turned on, assignments cannot be renewed."
 msgstr ""
 
-#: ../includes/admin/conditions.php:181
+#: ../includes/admin/conditions.php:182
 msgid "Expiry"
 msgstr ""
 
-#: ../includes/admin/conditions.php:185
+#: ../includes/admin/conditions.php:186
 msgid "Day(s)"
 msgstr ""
 
-#: ../includes/admin/conditions.php:186
+#: ../includes/admin/conditions.php:187
 msgid "Week(s)"
 msgstr ""
 
-#: ../includes/admin/conditions.php:187
+#: ../includes/admin/conditions.php:188
 msgid "Month(s)"
 msgstr ""
 
-#: ../includes/admin/conditions.php:188
+#: ../includes/admin/conditions.php:189
 msgid "Year(s)"
 msgstr ""
 
-#: ../includes/admin/conditions.php:190
+#: ../includes/admin/conditions.php:191
 msgid "Leave empty if assignmemt has no expiration."
 msgstr ""
 
-#: ../includes/admin/conditions.php:201 ../includes/admin/conditions.php:365
+#: ../includes/admin/conditions.php:202 ../includes/admin/conditions.php:377
 msgid "New Step"
 msgstr ""
 
-#: ../includes/admin/conditions.php:219
+#: ../includes/admin/conditions.php:220
 msgid "Save Changes"
 msgstr ""
 
-#: ../includes/admin/conditions.php:246
+#: ../includes/admin/conditions.php:249
 msgid "Name required."
 msgstr ""
 
-#: ../includes/admin/conditions.php:251
+#: ../includes/admin/conditions.php:254
 msgid "Badges or points assignment required."
 msgstr ""
 
-#: ../includes/admin/conditions.php:256
+#: ../includes/admin/conditions.php:259
 msgid "Condition must have steps."
 msgstr ""
 
-#: ../includes/admin/conditions.php:269
+#: ../includes/admin/conditions.php:278
 msgid "Each step must have an action."
 msgstr ""
 
-#: ../includes/admin/conditions.php:289
+#: ../includes/admin/conditions.php:283
+msgid "Each step action must be enabled. Check plugin settings."
+msgstr ""
+
+#: ../includes/admin/conditions.php:301
 msgid "Label"
 msgstr ""
 
-#: ../includes/admin/conditions.php:293
+#: ../includes/admin/conditions.php:305
 msgid "Please select an action."
 msgstr ""
 
-#: ../includes/admin/conditions.php:503
+#: ../includes/admin/conditions.php:515
 msgid "Condition saved."
 msgstr ""
 
-#: ../includes/admin/conditions.php:524
+#: ../includes/admin/conditions.php:536
 msgid "Unknown condition."
 msgstr ""
 
-#: ../includes/admin/settings.php:15
+#: ../includes/admin/settings.php:18
 msgid "General"
 msgstr ""
 
-#: ../includes/admin/settings.php:16
+#: ../includes/admin/settings.php:19
 msgid "Emails"
 msgstr ""
 
-#: ../includes/admin/settings.php:18
+#: ../includes/admin/settings.php:21
 msgid "Actions"
 msgstr ""
 
-#: ../includes/admin/settings.php:55
+#: ../includes/admin/settings.php:58
 msgid "Settings saved."
 msgstr ""
 
-#: ../includes/admin/tools.php:16 ../includes/admin/tools.php:40
+#: ../includes/admin/tools.php:20 ../includes/admin/tools.php:44
 msgid "Export"
 msgstr ""
 
-#: ../includes/admin/tools.php:18
+#: ../includes/admin/tools.php:22
 msgid "Export assignments to a CSV file."
 msgstr ""
 
-#: ../includes/admin/tools.php:37
+#: ../includes/admin/tools.php:41
 msgid "Approved only"
 msgstr ""
 
-#: ../includes/admin/tools.php:54
+#: ../includes/admin/tools.php:58
 msgid "Delete badges and points assigned to users."
 msgstr ""
 
-#: ../includes/admin/tools.php:162
+#: ../includes/admin/tools.php:166
 msgid "Assignment Id"
 msgstr ""
 
-#: ../includes/admin/tools.php:163
+#: ../includes/admin/tools.php:167
 msgid "Assignment Type"
 msgstr ""
 
-#: ../includes/admin/tools.php:164
+#: ../includes/admin/tools.php:168
 msgid "User Id"
 msgstr ""
 
-#: ../includes/admin/tools.php:165
+#: ../includes/admin/tools.php:169
 msgid "Username"
 msgstr ""
 
-#: ../includes/admin/tools.php:166
+#: ../includes/admin/tools.php:170
 msgid "Condition Id"
 msgstr ""
 
-#: ../includes/admin/tools.php:167
+#: ../includes/admin/tools.php:171
 msgid "Condition Name"
 msgstr ""
 
-#: ../includes/admin/tools.php:168
+#: ../includes/admin/tools.php:172
 msgid "Badge Id"
 msgstr ""
 
-#: ../includes/admin/tools.php:169
+#: ../includes/admin/tools.php:173
 msgid "Badge Title"
 msgstr ""
 
-#: ../includes/admin/tools.php:256
+#: ../includes/admin/tools.php:260
 #, php-format
 msgid "Cannot find user with username \"%s\"."
 msgstr ""
 
-#: ../includes/admin/tools.php:284
+#: ../includes/admin/tools.php:288
 #, php-format
 msgid "%d assignments deleted."
 msgstr ""
 
-#: ../includes/admin/tools.php:286
+#: ../includes/admin/tools.php:290
 msgid "No assignments found"
 msgstr ""
 
-#: ../includes/admin/users.php:8
+#: ../includes/admin/users.php:12
 msgid "Action"
 msgstr ""
 
-#: ../includes/admin/users.php:33
+#: ../includes/admin/users.php:37
 msgid "None"
 msgstr ""
 
-#: ../includes/admin/users.php:63
+#: ../includes/admin/users.php:67
 msgid "View Assignments"
 msgstr ""
 
-#: ../includes/admin/users.php:83
+#: ../includes/admin/users.php:87
 msgid "User Badges"
 msgstr ""
 
-#: ../includes/class-api.php:853 ../includes/class-api.php:1114
-#: ../includes/class-condition.php:33
+#: ../includes/class-api.php:856 ../includes/class-api.php:1115
+#: ../includes/class-condition.php:36
 #, php-format
 msgid "Condition %d Step %d Label"
 msgstr ""
 
-#: ../includes/class-api.php:870 ../includes/class-api.php:919
-#: ../includes/class-api.php:1088
+#: ../includes/class-api.php:873 ../includes/class-api.php:920
+#: ../includes/class-api.php:1089
 #, php-format
 msgid "Condition %d Name"
 msgstr ""
 
-#: ../includes/class-settings.php:50
+#: ../includes/class-settings.php:53
 msgid "Hello,"
 msgstr ""
 
-#: ../includes/class-settings.php:51
+#: ../includes/class-settings.php:54
 msgid ""
 "A new assignment #{assignment_id} for \"{display_name}\" requires moderation."
 msgstr ""
 
-#: ../includes/class-settings.php:52
+#: ../includes/class-settings.php:55
 msgid "{assignment_details}"
 msgstr ""
 
-#: ../includes/class-settings.php:53
+#: ../includes/class-settings.php:56
 msgid "Date: {date}"
 msgstr ""
 
-#: ../includes/class-settings.php:54
+#: ../includes/class-settings.php:57
 msgid "{assignment_moderation_link}"
 msgstr ""
 
-#: ../includes/class-settings.php:55
+#: ../includes/class-settings.php:58
 msgid "Thank you."
 msgstr ""
 
-#: ../includes/class-settings.php:62 ../includes/class-settings.php:63
+#: ../includes/class-settings.php:65 ../includes/class-settings.php:66
 msgid "New Assignment"
 msgstr ""
 
-#: ../includes/class-settings.php:102
+#: ../includes/class-settings.php:99
+msgid "Author Posts"
+msgstr ""
+
+#: ../includes/class-settings.php:111
 msgid "Choose a theme to apply to badges."
 msgstr ""
 
-#: ../includes/class-settings.php:104
+#: ../includes/class-settings.php:113
 msgid "Icon"
 msgstr ""
 
-#: ../includes/class-settings.php:105
+#: ../includes/class-settings.php:114
 msgid "Light"
 msgstr ""
 
-#: ../includes/class-settings.php:106
+#: ../includes/class-settings.php:115
 msgid "Dark"
 msgstr ""
 
-#: ../includes/class-settings.php:112
+#: ../includes/class-settings.php:121
 msgid "Auto Approve Assignments"
 msgstr ""
 
-#: ../includes/class-settings.php:119
+#: ../includes/class-settings.php:128
 msgid ""
 "Do you want new user assignments of badges and points to be approved "
 "automatically?"
 msgstr ""
 
-#: ../includes/class-settings.php:124
+#: ../includes/class-settings.php:133
 msgid "New Assignments Popup"
 msgstr ""
 
-#: ../includes/class-settings.php:131
+#: ../includes/class-settings.php:140
 msgid ""
 "Do you want to show a popup message when users are assigned new badges and "
 "points?"
 msgstr ""
 
-#: ../includes/class-settings.php:136
-msgid "Enable Badge Permalinks"
+#: ../includes/class-settings.php:145
+msgid "Badge Permalinks"
 msgstr ""
 
-#: ../includes/class-settings.php:143
+#: ../includes/class-settings.php:152
 msgid "Do you want to enabled badge permalinks?"
 msgstr ""
 
-#: ../includes/class-settings.php:162
+#: ../includes/class-settings.php:156
+msgid "User Permalinks"
+msgstr ""
+
+#: ../includes/class-settings.php:163
+msgid "Choose a user permalink."
+msgstr ""
+
+#: ../includes/class-settings.php:183
 msgid "Assignment Moderation"
 msgstr ""
 
-#: ../includes/class-settings.php:166
+#: ../includes/class-settings.php:187
 msgid "Enable Assignment Moderator Notifications"
 msgstr ""
 
-#: ../includes/class-settings.php:173
+#: ../includes/class-settings.php:194
 msgid ""
 "Send email notifications for new assignments of badges or points which "
 "require moderation."
 msgstr ""
 
-#: ../includes/class-settings.php:177
+#: ../includes/class-settings.php:198
 msgid "Moderators"
 msgstr ""
 
-#: ../includes/class-settings.php:184
+#: ../includes/class-settings.php:205
 msgid "Who should receive the assignment moderation notification?"
 msgstr ""
 
-#: ../includes/class-settings.php:185
+#: ../includes/class-settings.php:206
 msgid "Enter the email address(es), one per line."
 msgstr ""
 
-#: ../includes/class-settings.php:189
+#: ../includes/class-settings.php:210
 msgid "From Name"
 msgstr ""
 
-#: ../includes/class-settings.php:196
+#: ../includes/class-settings.php:217
 msgid "The name assignment moderation notifications are said to come from."
 msgstr ""
 
-#: ../includes/class-settings.php:200
+#: ../includes/class-settings.php:221
 msgid "From Email"
 msgstr ""
 
-#: ../includes/class-settings.php:207
+#: ../includes/class-settings.php:228
 msgid "Email to send assignment moderation notifications from."
 msgstr ""
 
-#: ../includes/class-settings.php:211
+#: ../includes/class-settings.php:232
 msgid "Email Subject"
 msgstr ""
 
-#: ../includes/class-settings.php:218
+#: ../includes/class-settings.php:239
 msgid "Enter the subject line for the assignment moderation notification email"
 msgstr ""
 
-#: ../includes/class-settings.php:222
+#: ../includes/class-settings.php:243
 msgid "Email Heading"
 msgstr ""
 
-#: ../includes/class-settings.php:229
+#: ../includes/class-settings.php:250
 msgid "Enter the heading for the assignment moderation notification email"
 msgstr ""
 
-#: ../includes/class-settings.php:233
+#: ../includes/class-settings.php:254
 msgid "Email Template"
 msgstr ""
 
-#: ../includes/class-settings.php:240
+#: ../includes/class-settings.php:261
 msgid ""
 "Enter the email that is sent to a moderator to notify them new assignment "
 "required approval. HTML is accepted. Available template tags:<br /"
@@ -950,183 +910,309 @@ msgid ""
 ">{assignment_moderation_link} - Link to assignments page"
 msgstr ""
 
-#: ../includes/class-settings.php:425 ../includes/class-settings.php:450
+#: ../includes/class-settings.php:291
+msgid "Assignment Summary Placement"
+msgstr ""
+
+#: ../includes/class-settings.php:298
+msgid ""
+"Where do you want to display a summary of badges & points assigned to "
+"members?"
+msgstr ""
+
+#: ../includes/class-settings.php:300
+msgid "New Member Tab"
+msgstr ""
+
+#: ../includes/class-settings.php:301
+msgid "Member Header"
+msgstr ""
+
+#: ../includes/class-settings.php:302
+msgid "Do not show"
+msgstr ""
+
+#: ../includes/class-settings.php:307
+msgid "Assignments Activity Stream"
+msgstr ""
+
+#: ../includes/class-settings.php:314
+msgid "Do you want to display new assignments in member activity streams?"
+msgstr ""
+
+#: ../includes/class-settings.php:483
 #, php-format
 msgid "Moderator email  \"%s\" is invalid."
 msgstr ""
 
-#: ../includes/notifications.php:40
-#, php-format
-msgid "Badge: %s"
+#: ../includes/integrations/bbpress.php:33
+msgid "Creates a new forum (outside wp-admin)."
 msgstr ""
 
-#: ../includes/notifications.php:42
+#: ../includes/integrations/bbpress.php:38
+msgid "Replies to forum topic (outside wp-admin)."
+msgstr ""
+
+#: ../includes/integrations/bbpress.php:215
+#, php-format
+msgid "Badges: %d"
+msgstr ""
+
+#: ../includes/integrations/bbpress.php:216 ../includes/notifications.php:46
 #, php-format
 msgid "Points: %d"
 msgstr ""
 
-#: ../includes/shortcodes.php:185 ../includes/shortcodes.php:201
+#: ../includes/integrations/bbpress.php:303
+#: ../includes/integrations/buddypress.php:595
+msgid "bbPress User Profile"
+msgstr ""
+
+#: ../includes/integrations/buddypress.php:43
+msgid "Comment on an activity."
+msgstr ""
+
+#: ../includes/integrations/buddypress.php:53
+msgid "Post activity."
+msgstr ""
+
+#: ../includes/integrations/buddypress.php:333
+msgid "Activity Type"
+msgstr ""
+
+#: ../includes/integrations/buddypress.php:335
+msgid "All activity types"
+msgstr ""
+
+#: ../includes/integrations/buddypress.php:336
+msgid "Replied to a status update"
+msgstr ""
+
+#: ../includes/integrations/buddypress.php:337
+msgid "Posted a status update"
+msgstr ""
+
+#: ../includes/integrations/buddypress.php:428
+msgid "Invalid member profile."
+msgstr ""
+
+#: ../includes/integrations/buddypress.php:459
+#, php-format
+msgid "<a href=\"%s\">%s</a> has been assigned badge %s."
+msgstr ""
+
+#: ../includes/integrations/buddypress.php:482
+#, php-format
+msgid "<a href=\"%s\">%s</a> has been assigned %d points."
+msgstr ""
+
+#: ../includes/integrations/buddypress.php:540
+msgid "Badge assignment"
+msgstr ""
+
+#: ../includes/integrations/buddypress.php:541
+msgid "Points assignment"
+msgstr ""
+
+#: ../includes/integrations/common.php:41
+msgid "User updates their profile."
+msgstr ""
+
+#: ../includes/integrations/common.php:47
+msgid "Badgearoo"
+msgstr ""
+
+#: ../includes/integrations/common.php:165
+msgid "points"
+msgstr ""
+
+#: ../includes/integrations/common.php:191
+msgid "time(s)"
+msgstr ""
+
+#: ../includes/integrations/common.php:213
+msgid "Post Type"
+msgstr ""
+
+#: ../includes/integrations/plugin-sample.php:19
+msgid "User performs my custom action."
+msgstr ""
+
+#: ../includes/integrations/plugin-sample.php:20
+msgid "My plugin"
+msgstr ""
+
+#: ../includes/integrations/plugin-sample.php:126
+msgid "Some other data"
+msgstr ""
+
+#: ../includes/notifications.php:44
+#, php-format
+msgid "Badge: %s"
+msgstr ""
+
+#: ../includes/shortcodes.php:194 ../includes/shortcodes.php:210
 msgid "Badge not found."
 msgstr ""
 
-#: ../includes/shortcodes.php:319 ../includes/shortcodes.php:335
+#: ../includes/shortcodes.php:328 ../includes/shortcodes.php:344
 msgid "Condition not found."
 msgstr ""
 
-#: ../includes/widgets.php:14
+#: ../includes/widgets.php:18
 msgid "Badgearoo User Badges"
 msgstr ""
 
-#: ../includes/widgets.php:17
+#: ../includes/widgets.php:21
 msgid ""
 "Shows the post author details including any badges and points they have."
 msgstr ""
 
-#: ../includes/widgets.php:94 ../includes/widgets.php:245
+#: ../includes/widgets.php:135 ../includes/widgets.php:286
 msgid "Header"
 msgstr ""
 
-#: ../includes/widgets.php:127
+#: ../includes/widgets.php:168
 msgid "Badgearoo Recent Assignments"
 msgstr ""
 
-#: ../includes/widgets.php:130
+#: ../includes/widgets.php:171
 msgid "Shows recent user assignments of badges and points."
 msgstr ""
 
-#: ../includes/widgets.php:229
+#: ../includes/widgets.php:270
 msgid "Limit"
 msgstr ""
 
-#: ../includes/widgets.php:234
+#: ../includes/widgets.php:275
 msgid "Current Logged In User?"
 msgstr ""
 
-#: ../templates/badge-list.php:12 ../templates/user-dashboard.php:71
+#: ../templates/badge-list.php:16 ../templates/user-dashboard.php:75
 msgid "No badges"
 msgstr ""
 
-#: ../templates/badge-list.php:55
+#: ../templates/badge-list.php:59
 msgid "Description"
 msgstr ""
 
-#: ../templates/badge-list.php:56
+#: ../templates/badge-list.php:60
 msgid "Awarded"
 msgstr ""
 
-#: ../templates/badge-list.php:87
+#: ../templates/badge-list.php:91
 msgid "No users"
 msgstr ""
 
-#: ../templates/badge-list.php:89
+#: ../templates/badge-list.php:93
 msgid "1 user"
 msgstr ""
 
-#: ../templates/badge-list.php:91
+#: ../templates/badge-list.php:95
 #, php-format
 msgid "%d users"
 msgstr ""
 
-#: ../templates/badge-summary.php:12
+#: ../templates/badge-summary.php:17
 msgid "No users have earned this badge."
 msgstr ""
 
-#: ../templates/badge-summary.php:14
+#: ../templates/badge-summary.php:19
 msgid "1 user has earned this badge."
 msgstr ""
 
-#: ../templates/badge-summary.php:16
+#: ../templates/badge-summary.php:21
 #, php-format
 msgid "%d users have earned this badge."
 msgstr ""
 
-#: ../templates/condition.php:8
+#: ../templates/condition.php:14
 msgid "This condition is not enabled."
 msgstr ""
 
-#: ../templates/condition.php:13
+#: ../templates/condition.php:19
 msgid "Steps:"
 msgstr ""
 
-#: ../templates/condition.php:27
+#: ../templates/condition.php:33
 msgid "Assignments:"
 msgstr ""
 
-#: ../templates/points.php:3
+#: ../templates/points.php:8
 #, php-format
 msgid "%s points"
 msgstr ""
 
-#: ../templates/points.php:5
+#: ../templates/points.php:10
 msgid "No points."
 msgstr ""
 
-#: ../templates/recent-assignments-widget.php:9
-#: ../templates/user-dashboard-assignments.php:21
+#: ../templates/recent-assignments-widget.php:13
+#: ../templates/user-dashboard-assignments.php:25
 msgid "Recent Assignments"
 msgstr ""
 
-#: ../templates/recent-assignments-widget.php:14
-#: ../templates/user-dashboard-assignments.php:18
-#: ../templates/user-leaderboard.php:14
+#: ../templates/recent-assignments-widget.php:18
+#: ../templates/user-dashboard-assignments.php:22
+#: ../templates/user-leaderboard.php:18
 msgid "No assignments."
 msgstr ""
 
-#: ../templates/recent-assignments-widget.php:42
+#: ../templates/recent-assignments-widget.php:50
 msgid "by"
 msgstr ""
 
-#: ../templates/recent-assignments-widget.php:43
+#: ../templates/recent-assignments-widget.php:51
 #, php-format
 msgid "%s ago"
 msgstr ""
 
-#: ../templates/user-badges.php:25
+#: ../templates/user-badges-summary.php:16 ../templates/user-badges.php:29
 msgid "No badges."
 msgstr ""
 
-#: ../templates/user-dashboard-assignments.php:42
+#: ../templates/user-dashboard-assignments.php:46
 msgid "Load more..."
 msgstr ""
 
-#: ../templates/user-dashboard-filters.php:7
-#: ../templates/user-leaderboard-filters.php:7
+#: ../templates/user-dashboard-filters.php:11
+#: ../templates/user-leaderboard-filters.php:11
 msgid "From: "
 msgstr ""
 
-#: ../templates/user-dashboard-filters.php:8
-#: ../templates/user-leaderboard-filters.php:8
+#: ../templates/user-dashboard-filters.php:12
+#: ../templates/user-leaderboard-filters.php:12
 msgid "To: "
 msgstr ""
 
-#: ../templates/user-dashboard-filters.php:10
+#: ../templates/user-dashboard-filters.php:14
 msgid "Badges and points"
 msgstr ""
 
-#: ../templates/user-dashboard.php:9
+#: ../templates/user-dashboard.php:13
 msgid "User Dashboard"
 msgstr ""
 
-#: ../templates/user-dashboard.php:14
+#: ../templates/user-dashboard.php:18
 msgid "You must be logged in to view your user dashboard."
 msgstr ""
 
-#: ../templates/user-leaderboard-filters.php:9
+#: ../templates/user-leaderboard-filters.php:13
 msgid "Sort: "
 msgstr ""
 
-#: ../templates/user-leaderboard-filters.php:11
+#: ../templates/user-leaderboard-filters.php:15
 msgid "Most badges"
 msgstr ""
 
-#: ../templates/user-leaderboard-filters.php:12
+#: ../templates/user-leaderboard-filters.php:16
 msgid "Most points"
 msgstr ""
 
-#: ../templates/user-leaderboard-table.php:9
+#: ../templates/user-leaderboard-table.php:13
 msgid "Rank"
 msgstr ""
 
-#: ../templates/user-leaderboard.php:9
+#: ../templates/user-leaderboard.php:13
 msgid "Leaderboard"
 msgstr ""
