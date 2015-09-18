@@ -1,15 +1,19 @@
 <?php 
+
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 /**
  * Badge list template
  */
 ?>
 
-<div class="<?php if ( isset( $class ) ) { echo esc_attr( $class ); } ?> ub-badge-list">
+<div class="<?php if ( isset( $class ) ) { echo esc_attr( $class ); } ?> broo-badge-list">
 	
 	<?php
 	
 	if ( count( $badges ) == 0 ) {
-		_e( 'No badges', 'user-badges' );
+		_e( 'No badges', 'badgearoo' );
 	} else {
 		
 		// layout: summary, table
@@ -28,7 +32,7 @@
 					}
 				}
 			
-				ub_get_template_part( 'badge', 'summary', true, array(
+				broo_get_template_part( 'badge', 'summary', true, array(
 						'badge_id' => $badge->id,
 						'badge_theme' => $badge_theme,
 						'badge_icon' => $badge->badge_icon,
@@ -51,9 +55,9 @@
 			?>
 			<table>
 				<tr>
-					<th><?php _e( 'Badge', 'user-badges' ); ?></th>
-					<th><?php _e( 'Description', 'user-badges' ); ?></th>
-					<th><?php _e( 'Awarded', 'user-badges' ); ?></th>
+					<th><?php _e( 'Badge', 'badgearoo' ); ?></th>
+					<th><?php _e( 'Description', 'badgearoo' ); ?></th>
+					<th><?php _e( 'Awarded', 'badgearoo' ); ?></th>
 				</tr>
 				
 				<?php 
@@ -62,7 +66,7 @@
 					<tr>
 						<td>
 							<?php
-							ub_get_template_part( 'badge', null, true, array(
+							broo_get_template_part( 'badge', null, true, array(
 									'badge_id' => $badge->id,
 									'show_title' => true,
 									'badge_theme' => $badge_theme,
@@ -84,11 +88,11 @@
 							$users_count = count( $badge->users );
 							
 							if ( $users_count == 0 ) {
-								_e( 'No users', 'user-badges' );
+								_e( 'No users', 'badgearoo' );
 							} else if ( $users_count == 1 ) {
-								_e( '1 user', 'user-badges' ); 
+								_e( '1 user', 'badgearoo' ); 
 							} else {
-								printf( __( '%d users', 'user-badges' ), $users_count );
+								printf( __( '%d users', 'badgearoo' ), $users_count );
 							}
 							?>
 						</td>

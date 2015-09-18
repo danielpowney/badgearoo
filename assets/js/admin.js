@@ -2,10 +2,10 @@ jQuery(document).ready(function($) {
 	
 	// Metabox toggle
 	jQuery(".if-js-closed").removeClass("if-js-closed").addClass("closed");
-	postboxes.add_postbox_toggles( 'user-badges');
+	postboxes.add_postbox_toggles( 'badgearoo');
 	
-	jQuery(".ub-step-list").sortable({
-		items: '.ub-step',
+	jQuery(".broo-step-list").sortable({
+		items: '.broo-step',
 		opacity: '0.6',
 		cursor: 'move',
 		axis: 'y',
@@ -16,7 +16,7 @@ jQuery(document).ready(function($) {
 	        
 	        var steps = new Array();
 	        
-	        jQuery(".ub-step-list li").each(function() {    
+	        jQuery(".broo-step-list li").each(function() {    
 
                 //get the id
                 var id  = jQuery(this).attr("id");
@@ -24,7 +24,7 @@ jQuery(document).ready(function($) {
 
 	    }
 	});
-	jQuery(".ub-step-list").disableSelection();
+	jQuery(".broo-step-list").disableSelection();
 	
 	/**
 	 * Click Save Changes
@@ -45,7 +45,7 @@ jQuery(document).ready(function($) {
 	function saveCondition(conditionId) {
 		
 		var steps = [];
-		jQuery.each( jQuery("#condition-" + conditionId + " li.ub-step"), function(index, value) {
+		jQuery.each( jQuery("#condition-" + conditionId + " li.broo-step"), function(index, value) {
 			
 			var parts = value.id.split("-")
 			var stepId = parts[1];
@@ -82,7 +82,7 @@ jQuery(document).ready(function($) {
 		
 		var data = {
 				action : "save_condition",
-				nonce : ub_admin_data.ajax_nonce,
+				nonce : broo_admin_data.ajax_nonce,
 				conditionId : conditionId,
 				name : jQuery("#condition-" + conditionId + " input[name=name]").val(),
 				enabled : jQuery("#condition-" + conditionId + " input[name=enabled]").is(':checked'),
@@ -94,18 +94,24 @@ jQuery(document).ready(function($) {
 				steps : steps
 		};
 	
-		jQuery.post(ub_admin_data.ajax_url, data, function(response) {
+		jQuery.post(broo_admin_data.ajax_url, data, function(response) {
 			var jsonResponse = jQuery.parseJSON(response);
 			
 			// remove any previous message
-			jQuery("div#condition-" + conditionId + " div.updated").remove();
+			jQuery("div#condition-" + conditionId + " div.updated, div#condition-" + conditionId 
+					+ " div.error, div#condition-" + conditionId + " div.update-nag").remove();
 			
 			if (jsonResponse.success == true) {
-				jQuery("<div class=\"updated\" style=\"margin: 10px 0 10px;\"><p>" + jsonResponse.message + "</p></div>").insertBefore("div#condition-" + conditionId + " form");
+				
+				if ( jsonResponse.data.messages_html ) {
+					jQuery(jsonResponse.data.messages_html).insertBefore("div#condition-" + conditionId + " form");
+				}
+				
 				jQuery("div#condition-" + conditionId + " h3 span").remove();
+				
 				var html = '<span>' + jsonResponse.data.name + '</span>';
-				if ( jsonResponse.data.status ) {
-					html += jsonResponse.data.status;
+				if ( jsonResponse.data.status_html ) {
+					html += jsonResponse.data.status_html;
 				}
 				jQuery("div#condition-" + conditionId + " h3").append(html);
 			}
@@ -119,16 +125,16 @@ jQuery(document).ready(function($) {
 		
 		var data = {
 				action : "add_condition",
-				nonce : ub_admin_data.ajax_nonce
+				nonce : broo_admin_data.ajax_nonce
 		};
 	
-		jQuery.post(ub_admin_data.ajax_url, data, function(response) {
+		jQuery.post(broo_admin_data.ajax_url, data, function(response) {
 			var jsonResponse = jQuery.parseJSON(response);
 			
-			jQuery("#postbox-container #normal-sortables").append(jsonResponse.html);
+			jQuery("#postbox-container #normal-sortables").prepend(jsonResponse.html);
 			
 			jQuery(".postbox .hndle, .postbox .handlediv , .postbox a.dismiss, .hide-postbox-tog").unbind("click.postboxes");
-			postboxes.add_postbox_toggles('user-badges');
+			postboxes.add_postbox_toggles('badgearoo');
 			
 			// delete condition
 			jQuery("div#condition-" + jsonResponse.data.conditionId + " .delete-condition-btn").on("click", function(e) {
@@ -314,15 +320,15 @@ jQuery(document).ready(function($) {
 		
 		var data = {
 				action : "add_step",
-				nonce : ub_admin_data.ajax_nonce,
+				nonce : broo_admin_data.ajax_nonce,
 				conditionId : conditionId
 		};
 	
-		jQuery.post(ub_admin_data.ajax_url, data, function(response) {
+		jQuery.post(broo_admin_data.ajax_url, data, function(response) {
 			var jsonResponse = jQuery.parseJSON(response);
 			
 			//var conditionId = jsonResponse.data.conditionId;
-			jQuery("div#condition-" + conditionId + " .ub-step-list").append(jsonResponse.html);
+			jQuery("div#condition-" + conditionId + " .broo-step-list").append(jsonResponse.html);
 			
 			// Change step action name
 			jQuery("li#step-" + jsonResponse.data.stepId + " select[name=action-name]").on("change", function(e) {
@@ -349,11 +355,11 @@ jQuery(document).ready(function($) {
 		
 		var data = {
 				action : "delete_step",
-				nonce : ub_admin_data.ajax_nonce,
+				nonce : broo_admin_data.ajax_nonce,
 				stepId : stepId
 		};
 	
-		jQuery.post(ub_admin_data.ajax_url, data, function(response) {
+		jQuery.post(broo_admin_data.ajax_url, data, function(response) {
 			var jsonResponse = jQuery.parseJSON(response);
 			
 			if (jsonResponse.success == true ) {
@@ -369,11 +375,11 @@ jQuery(document).ready(function($) {
 		
 		var data = {
 				action : "delete_condition",
-				nonce : ub_admin_data.ajax_nonce,
+				nonce : broo_admin_data.ajax_nonce,
 				conditionId : conditionId
 		};
 	
-		jQuery.post(ub_admin_data.ajax_url, data, function(response) {
+		jQuery.post(broo_admin_data.ajax_url, data, function(response) {
 			var jsonResponse = jQuery.parseJSON(response);
 			
 			if (jsonResponse.success == true ) {
@@ -391,12 +397,12 @@ jQuery(document).ready(function($) {
 		
 		var data = {
 				action : "step_meta",
-				nonce : ub_admin_data.ajax_nonce,
+				nonce : broo_admin_data.ajax_nonce,
 				actionName : newActionName,
 				stepId : stepId
 		};
 	
-		jQuery.post(ub_admin_data.ajax_url, data, function(response) {
+		jQuery.post(broo_admin_data.ajax_url, data, function(response) {
 			var jsonResponse = jQuery.parseJSON(response);
 
 			jQuery("li#step-" + stepId + " .step-meta").html(jsonResponse.html);
@@ -453,9 +459,9 @@ jQuery(document).ready(function($) {
 	 
 	        // After that, set the properties of the image and display it
 	        
-	        jQuery("#ub-badge-icon-preview").remove();
+	        jQuery("#broo-badge-icon-preview").remove();
 			
-			jQuery("<img id=\"ub-badge-icon-preview\" src=\"" + json.url + "\">").insertAfter("#ub-badge-icon-upload-btn");
+			jQuery("<img id=\"broo-badge-icon-preview\" src=\"" + json.url + "\">").insertAfter("#broo-badge-icon-upload-btn");
 	        
 	        // Store the image's information into the meta data fields
 	        jQuery(field).val( json.url );
@@ -466,23 +472,23 @@ jQuery(document).ready(function($) {
 	 
 	}
 	
-	jQuery("#ub-badge-icon-upload-btn").on("click", function(evt) {
+	jQuery("#broo-badge-icon-upload-btn").on("click", function(evt) {
         // Stop the anchor's default behavior
         evt.preventDefault();
 
         // Display the media uploader
-        renderMediaUploader( '#ub-badge-icon' );
+        renderMediaUploader( '#broo-badge-icon' );
     });
 	
 	jQuery("#add-new-assignment-form select#type").on("change", function(e) {
 		
 		var data = {
 				action : "change_assignment_type",
-				nonce : ub_admin_data.ajax_nonce,
+				nonce : broo_admin_data.ajax_nonce,
 				type : jQuery("#add-new-assignment-form select#type").val()
 		};
 	
-		jQuery.post(ub_admin_data.ajax_url, data, function(response) {
+		jQuery.post(broo_admin_data.ajax_url, data, function(response) {
 			var jsonResponse = jQuery.parseJSON(response);
 			
 			jQuery("#add-new-assignment-form #assignment").replaceWith(jsonResponse.data.html);
@@ -499,39 +505,39 @@ jQuery(document).ready(function($) {
 	
 	function updateStatus(e) {
 		
-		var anchorId = e.id; // e.g. ub-anchor-approve-82
+		var anchorId = e.id; // e.g. broo-anchor-approve-82
 		var parts = anchorId.split("-"); 
 		var rowId = parts[3]; 
 		
-		var status = jQuery("#" + anchorId).hasClass("ub-approve") ? "approve" : "unapprove";
+		var status = jQuery("#" + anchorId).hasClass("broo-approve") ? "approve" : "unapprove";
 		
 		
 		var data =  { 
 				action : "update_user_assignment_status",
-				nonce : ub_admin_data.ajax_nonce,
+				nonce : broo_admin_data.ajax_nonce,
 				assignmentId : rowId,
 				status : status
 		};
 				
-		jQuery.post(ub_admin_data.ajax_url, data, function(response) {
+		jQuery.post(broo_admin_data.ajax_url, data, function(response) {
 			var jsonResponse = jQuery.parseJSON(response);
 			
 			var assignmentId = jsonResponse.assignment_id;
 			var actionId = null;
 			
-			jQuery("#ub-row-actions-" + assignmentId).empty();
+			jQuery("#broo-row-actions-" + assignmentId).empty();
 			if (jsonResponse.data.status != "approved") {
-				actionId = "ub-anchor-approve-" + assignmentId;
-				jQuery("#ub-row-actions-" + assignmentId).append("<a href='#' id='" + actionId + "' class='ub-approve'>" + jsonResponse.data.approve + "</a>");
-				jQuery("#ub-text-approve-" + assignmentId).css('display', 'none');
-				jQuery("#ub-text-pending-" + assignmentId).css('display', 'none');
-				jQuery("#ub-text-unapprove-" + assignmentId).css('display', 'block');
+				actionId = "broo-anchor-approve-" + assignmentId;
+				jQuery("#broo-row-actions-" + assignmentId).append("<a href='#' id='" + actionId + "' class='broo-approve'>" + jsonResponse.data.approve + "</a>");
+				jQuery("#broo-text-approve-" + assignmentId).css('display', 'none');
+				jQuery("#broo-text-pending-" + assignmentId).css('display', 'none');
+				jQuery("#broo-text-unapprove-" + assignmentId).css('display', 'block');
 			} else {
-				actionId = "ub-anchor-unapprove-" + assignmentId;
-				jQuery("#ub-row-actions-" + assignmentId).append("<a href='#' id='" + actionId + "' class='ub-unapprove'>" + jsonResponse.data.unapprove + "</a>");
-				jQuery("#ub-text-approve-" + assignmentId).css('display', 'block');
-				jQuery("#ub-text-pending-" + assignmentId).css('display', 'none');
-				jQuery("#ub-text-unapprove-" + assignmentId).css('display', 'none');
+				actionId = "broo-anchor-unapprove-" + assignmentId;
+				jQuery("#broo-row-actions-" + assignmentId).append("<a href='#' id='" + actionId + "' class='broo-unapprove'>" + jsonResponse.data.unapprove + "</a>");
+				jQuery("#broo-text-approve-" + assignmentId).css('display', 'block');
+				jQuery("#broo-text-pending-" + assignmentId).css('display', 'none');
+				jQuery("#broo-text-unapprove-" + assignmentId).css('display', 'none');
 			}
 			
 			jQuery("#" + actionId).click(function(e) { 
@@ -543,5 +549,15 @@ jQuery(document).ready(function($) {
 		// stop event
 		event.preventDefault();
 	}
+	
+
+	
+	jQuery('.color-picker').wpColorPicker({
+	    defaultColor: false,
+	    change: function(event, ui){},
+	    clear: function() {},
+	    hide: true,
+	    palettes: true
+	});
 
 });

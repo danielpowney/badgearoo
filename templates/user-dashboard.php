@@ -1,22 +1,26 @@
 <?php
+
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 /**
  * User Dashboard template
  */
 ?>
 
-<div class="<?php if ( isset( $class ) ) { echo esc_attr( $class ); } ?> ub-user-dashboard">
+<div class="<?php if ( isset( $class ) ) { echo esc_attr( $class ); } ?> broo-user-dashboard">
 
-	<h2><?php _e( 'User Dashboard', 'user-badges' ); ?></h2>
+	<h2><?php _e( 'User Dashboard', 'badgearoo' ); ?></h2>
 	
 	<?php 
 	if ( $user_id == 0 ) {
 		?>
-		<p><?php _e( 'You must be logged in to view your user dashboard.', 'user-badges' ); ?></p>
+		<p><?php _e( 'You must be logged in to view your user dashboard.', 'badgearoo' ); ?></p>
 		<?php
 	} else {
 	
 		if ( $show_filters == true ) { 
-			ub_get_template_part( 'user-dashboard', 'filters', true, array( 
+			broo_get_template_part( 'user-dashboard', 'filters', true, array( 
 					'to_date' => $to_date, 
 					'from_date' => $from_date, 
 					'type' => $type
@@ -24,20 +28,20 @@
 		}
 		
 		if ( $show_points || $show_badges ) { ?>
-			<table class="ub-user-dashboard-summary">
+			<table class="broo-user-dashboard-summary">
 				<tbody>
 					<tr>
-						<th scope="col"><?php _e( 'Assignments', 'user-badges' ); ?></th>
+						<th scope="col"><?php _e( 'Assignments', 'badgearoo' ); ?></th>
 						<td>
 							<?php echo $count_assignments; ?>
 						 </td>
 					</tr>
 					<?php if ( $show_points && $type != 'badge' ) { ?>
 						<tr>
-							<th scope="col"><?php _e( 'Points', 'user-badges' ); ?></th>
+							<th scope="col"><?php _e( 'Points', 'badgearoo' ); ?></th>
 							<td>
 								<?php 
-								ub_get_template_part( 'points', null, true, array(
+								broo_get_template_part( 'points', null, true, array(
 										'points' => $points
 								) );
 							 	?>
@@ -46,14 +50,14 @@
 					<?php }
 					if ( $show_badges && $type != 'points' ) { ?>
 						<tr>
-							<th scope="col"><?php _e( 'Badges', 'user-badges' ); ?></th>
+							<th scope="col"><?php _e( 'Badges', 'badgearoo' ); ?></th>
 							<td>
 								<?php 
 								if ( count( $badges ) > 0 ) {
 									
 									foreach ( $badges as $badge ) {
 										
-										ub_get_template_part( 'badge', null, true, array(
+										broo_get_template_part( 'badge', null, true, array(
 												'badge_id' => $badge->id,
 												'show_title' => true,
 												'badge_theme' => $badge_theme,
@@ -68,7 +72,7 @@
 										) );
 									}
 								} else {
-									_e( 'No badges', 'user-badges' );
+									_e( 'No badges', 'badgearoo' );
 								}
 							 ?>
 							</td>
@@ -79,7 +83,7 @@
 		<?php }
 		
 		if ( $show_assignments ) {
-			ub_get_template_part( 'user-dashboard', 'assignments', true, array(
+			broo_get_template_part( 'user-dashboard', 'assignments', true, array(
 					'assignments' => $assignments,
 					'limit' => $limit,
 					'offset' => $offset,

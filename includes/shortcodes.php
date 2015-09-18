@@ -1,5 +1,14 @@
 <?php
-function ub_user_badges( $atts) {
+
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
+/**
+ * 
+ * @param unknown $atts
+ * @return string
+ */
+function broo_user_badges( $atts) {
 	
 	extract( shortcode_atts( array(
 			'user_id' => 0,
@@ -14,7 +23,7 @@ function ub_user_badges( $atts) {
 		$user_id = isset( $authordata->ID ) ? $authordata->ID : 0;
 	}
 	
-	$badges = User_Badges::instance()->api->get_user_badges( $user_id );
+	$badges = Badgearoo::instance()->api->get_user_badges( $user_id );
 	
 	// count badges by id
 	$badge_count_lookup = array();
@@ -27,41 +36,27 @@ function ub_user_badges( $atts) {
 		}
 	}
 	
-	$general_settings = (array) get_option( 'ub_general_settings' );
+	$general_settings = (array) get_option( 'broo_general_settings' );
 	
 	$html = '';
 	
-	if (count( $badges ) > 0 ) {
-	
-		foreach ( $badges as $badge ) {
-				
-			ob_start();
-			ub_get_template_part( 'badge', null, true, array(
-					'badge_id' => $badge->id,
-					'badge_theme' => $general_settings['ub_badge_theme'],
-					'badge_icon' => $badge->badge_icon,
-					'badge_html' => $badge->badge_html,
-					'badge_color' => $badge->badge_color,
-					'title' => $badge->title,
-					'content'=> $badge->content,
-					'excerpt'=> $badge->excerpt,
-					'show_title' => true,
-					'badge_count' => isset( $badge_count_lookup[$badge->id] ) ? $badge_count_lookup[$badge->id] : 1,
-					'enable_badge_permalink' => $general_settings['ub_enable_badge_permalink']
-			) );
-			$html .= ob_get_contents();
-			ob_end_clean();
-			
-		}
-	}
+	ob_start();
+	broo_get_template_part( 'user-badges', null, true, array(
+			'badges' => $badges,
+			'badge_theme' => $general_settings['broo_badge_theme'],
+			'badge_count_lookup' => $badge_count_lookup,
+			'enable_badge_permalink' => $general_settings['broo_enable_badge_permalink']
+	) );
+	$html .= ob_get_contents();
+	ob_end_clean();
 	
 	return $html;
 }
-add_shortcode( 'ub_user_badges', 'ub_user_badges' );
+add_shortcode( 'broo_user_badges', 'broo_user_badges' );
 
 
 
-function ub_user_points( $atts) {
+function broo_user_points( $atts) {
 
 	extract( shortcode_atts( array(
 			'user_id' => 0,
@@ -76,11 +71,11 @@ function ub_user_points( $atts) {
 		$user_id = isset( $authordata->ID ) ? $authordata->ID : 0;
 	}
 
-	$points = User_Badges::instance()->api->get_user_points( $user_id );
+	$points = Badgearoo::instance()->api->get_user_points( $user_id );
 
 	$html = '';
 	ob_start();
-	ub_get_template_part( 'points', null, true, array(
+	broo_get_template_part( 'points', null, true, array(
 			'points' => $points
 	) );
 	$html .= ob_get_contents();
@@ -88,7 +83,7 @@ function ub_user_points( $atts) {
 	
 	return $html;
 }
-add_shortcode( 'ub_user_points', 'ub_user_points' );
+add_shortcode( 'broo_user_points', 'broo_user_points' );
 
 
 
@@ -98,16 +93,18 @@ add_shortcode( 'ub_user_points', 'ub_user_points' );
  * @param unknown $atts
  * @return string
  */
-function ub_leaderboard( $atts) {
+function broo_leaderboard( $atts) {
 
 	extract( shortcode_atts( array(
-			'show_avatar' => false,
+			'show_avatar' => true,
 			'before_name' => '',
 			'after_name' => '',
 			'show_badges' => true,
 			'show_points' => true,
 			'sort_by' => 'points',
-			'show_filters' => true
+			'show_filters' => true,
+			'from_date' => null,
+			'to_date' => null
 	), $atts ) );
 	
 	if ( is_string( $show_avatar ) ) {
@@ -123,14 +120,36 @@ function ub_leaderboard( $atts) {
 		$show_filters = $show_filters == 'true' ? true : false;
 	}
 	
+	if ( $sort_by != 'badges' && $sort_by != 'points' ) {
+		$sort_by = null;
+	}
+	
+	if ( $from_date != null && strlen( $from_date ) > 0 ) {
+		list( $year, $month, $day ) = explode( '-', $from_date ); // default yyyy-mm-dd format
+		if ( ! checkdate( $month , $day , $year ) ) {
+			$from_date = null;
+		}
+	}
+	
+	if ( $to_date != null && strlen($to_date) > 0 ) {
+		list( $year, $month, $day ) = explode( '-', $to_date ); // default yyyy-mm-dd format
+		if ( ! checkdate( $month , $day , $year ) ) {
+			$to_date = null;
+		}
+	}
+	
 	global $wpdb;
 	
-	$user_rows = ub_get_user_leaderboard( );
+	$user_rows = broo_get_user_leaderboard( array(
+			'sort_by' => $sort_by,
+			'from_date' => $from_date,
+			'to_date' => $to_date
+	) );
 	
 	$html = '';
 
 	ob_start();
-	ub_get_template_part( 'user-leaderboard', null, true, array(
+	broo_get_template_part( 'user-leaderboard', null, true, array(
 			'user_rows'=> $user_rows,
 			'show_avatar' => $show_avatar,
 			'before_name' => $before_name,
@@ -138,14 +157,16 @@ function ub_leaderboard( $atts) {
 			'show_badges' => $show_badges,
 			'show_points' => $show_points,
 			'sort_by' => $sort_by,
-			'show_filters' => $show_filters
+			'show_filters' => $show_filters,
+			'from_date' => $from_date,
+			'to_date' => $to_date
 	) );
 	$html .= ob_get_contents();
 	ob_end_clean();
 
 	return $html;
 }
-add_shortcode( 'ub_leaderboard', 'ub_leaderboard' );
+add_shortcode( 'broo_leaderboard', 'broo_leaderboard' );
 
 
 
@@ -158,7 +179,7 @@ add_shortcode( 'ub_leaderboard', 'ub_leaderboard' );
  * @param unknown $atts
  * @return unknown
  */
-function ub_badge( $atts ) {
+function broo_badge( $atts ) {
 
 	extract( shortcode_atts( array(
 			'badge_id' => null,
@@ -170,7 +191,7 @@ function ub_badge( $atts ) {
 	), $atts ) );
 
 	if ( $badge_id == null) {
-		return __( 'Badge not found.', 'user-badges' );;
+		return __( 'Badge not found.', 'badgearoo' );;
 	}
 	
 	if ( is_string( $show_description ) ) {
@@ -183,10 +204,10 @@ function ub_badge( $atts ) {
 		$show_users_count = $show_users_count == 'true' ? true : false;
 	}
 	
-	$badge = User_Badges::instance()->api->get_badge( $badge_id, ( $show_users || $show_users_count ) );
+	$badge = Badgearoo::instance()->api->get_badge( $badge_id, ( $show_users || $show_users_count ) );
 	
 	if ( $badge == null) {
-		return __( 'Badge not found.', 'user-badges' );
+		return __( 'Badge not found.', 'badgearoo' );
 	}
 
 	$users = array();
@@ -199,13 +220,13 @@ function ub_badge( $atts ) {
 		}
 	}
 	
-	$general_settings = (array) get_option( 'ub_general_settings' );
+	$general_settings = (array) get_option( 'broo_general_settings' );
 	
 	$html = '';
 
 	ob_start();
-	ub_get_template_part( 'badge', 'summary', true, array(
-			'badge_theme' => $general_settings['ub_badge_theme'],
+	broo_get_template_part( 'badge', 'summary', true, array(
+			'badge_theme' => $general_settings['broo_badge_theme'],
 			'badge_icon' => $badge->badge_icon,
 			'badge_html' => $badge->badge_html,
 			'badge_color' => $badge->badge_color,
@@ -217,7 +238,7 @@ function ub_badge( $atts ) {
 			'show_users' => $show_users,
 			'show_users_count' => $show_users_count,
 			'show_description' => $show_description,
-			'enable_badge_permalink' => $general_settings['ub_enable_badge_permalink']
+			'enable_badge_permalink' => $general_settings['broo_enable_badge_permalink']
 			
 	) );
 	$html .= ob_get_contents();
@@ -225,7 +246,7 @@ function ub_badge( $atts ) {
 
 	return $html;
 }
-add_shortcode( 'ub_badge', 'ub_badge' );
+add_shortcode( 'broo_badge', 'broo_badge' );
 
 
 
@@ -235,7 +256,7 @@ add_shortcode( 'ub_badge', 'ub_badge' );
  * @param unknown $atts
  * @return unknown
  */
-function ub_badge_list( $atts ) {
+function broo_badge_list( $atts ) {
 
 	extract( shortcode_atts( array(
 			'badge_ids' => null,
@@ -259,44 +280,32 @@ function ub_badge_list( $atts ) {
 	
 	if ( isset( $badge_ids ) && strlen( trim( $badge_ids ) ) > 0 ) {
 		$badge_ids = explode( ',', $badge_ids );
-			
-		if ( function_exists( 'icl_object_id' ) ) {
-			$temp_badge_ids = array();
-	
-			foreach ( $badge_ids as $temp_badge_id ) {
-				global $sitepress;
-				array_push( $temp_badge_ids, icl_object_id( $temp_badge_id , get_post_type( $temp_badge_id ), true,
-						$sitepress->get_default_language() ) );
-			}
-			
-			$badge_ids = $temp_badge_ids;
-		}
 	} else {
 		$badge_ids = null;
 	}
 	
-	$badges =  User_Badges::instance()->api->get_badges( array( 'badge_ids' => $badge_ids ), ( $show_users || $show_users_count ) );
+	$badges =  Badgearoo::instance()->api->get_badges( array( 'badge_ids' => $badge_ids ), ( $show_users || $show_users_count ) );
 
-	$general_settings = (array) get_option( 'ub_general_settings' );
+	$general_settings = (array) get_option( 'broo_general_settings' );
 	
 	$html = '';
 
 	ob_start();
-	ub_get_template_part( 'badge', 'list', true, array(
+	broo_get_template_part( 'badge', 'list', true, array(
 			'layout' => $layout,
 			'badges' => $badges,
 			'show_users' => $show_users,
 			'show_users_count' => $show_users_count,
 			'show_description' => $show_description,
-			'enable_badge_permalink' => $general_settings['ub_enable_badge_permalink'],
-			'badge_theme' => $general_settings['ub_badge_theme']
+			'enable_badge_permalink' => $general_settings['broo_enable_badge_permalink'],
+			'badge_theme' => $general_settings['broo_badge_theme']
 	) );
 	$html .= ob_get_contents();
 	ob_end_clean();
 
 	return $html;
 }
-add_shortcode( 'ub_badge_list', 'ub_badge_list' );
+add_shortcode( 'broo_badge_list', 'broo_badge_list' );
 
 
 
@@ -306,17 +315,17 @@ add_shortcode( 'ub_badge_list', 'ub_badge_list' );
  * @param unknown $atts
  * @return unknown
  */
-function ub_condition( $atts ) {
+function broo_condition( $atts ) {
 
 	extract( shortcode_atts( array(
-			'condition_id' => null,
-			'show_steps' => true,
-			'show_badges' => true,
-			'show_points' => true
+				'condition_id' => null,
+				'show_steps' => true,
+				'show_badges' => true,
+				'show_points' => true
 	), $atts ) );
 
 	if ( $condition_id == null) {
-		return __( 'Condition not found.', 'user-badges' );
+		return __( 'Condition not found.', 'badgearoo' );
 	}
 	
 	if ( is_string( $show_steps ) ) {
@@ -329,16 +338,16 @@ function ub_condition( $atts ) {
 		$show_points = $show_points == 'true' ? true : false;
 	}
 
-	$condition = User_Badges::instance()->api->get_condition( $condition_id );
+	$condition = Badgearoo::instance()->api->get_condition( $condition_id );
 
 	if ( $condition == null) {
-		return __( 'Condition not found.', 'user-badges' );
+		return __( 'Condition not found.', 'badgearoo' );
 	}
 	
 	$badges = array();
 	if ( $show_badges ) {
 		foreach ( $condition->badges as $badge_id ) {
-			$badge = User_Badges::instance()->api->get_badge( $badge_id );
+			$badge = Badgearoo::instance()->api->get_badge( $badge_id );
 			
 			if ( $badge ) {
 				array_push( $badges, $badge );
@@ -346,13 +355,13 @@ function ub_condition( $atts ) {
 		}
 	}
 	
-	$general_settings = (array) get_option( 'ub_general_settings' );
+	$general_settings = (array) get_option( 'broo_general_settings' );
 
 	$html = '';
 
 	ob_start();
-	ub_get_template_part( 'condition', null, true, array(
-			'badge_theme' => $general_settings['ub_badge_theme'],
+	broo_get_template_part( 'condition', null, true, array(
+			'badge_theme' => $general_settings['broo_badge_theme'],
 			'name' => $condition->name,
 			'steps' => $condition->steps,
 			'badges' => $badges,
@@ -361,24 +370,24 @@ function ub_condition( $atts ) {
 			'show_badges' => $show_badges,
 			'show_points' => $show_points,
 			'enabled' => $condition->enabled,
-			'enable_badge_permalink' => $general_settings['ub_enable_badge_permalink']
+			'enable_badge_permalink' => $general_settings['broo_enable_badge_permalink']
 	) );
 	$html .= ob_get_contents();
 	ob_end_clean();
 
 	return $html;
 }
-add_shortcode( 'ub_condition', 'ub_condition' );
+add_shortcode( 'broo_condition', 'broo_condition' );
 
 
 
 /**
  * Filters the user leaderboard
  */
-function ub_user_leaderboard_filter() {
+function broo_user_leaderboard_filter() {
 	
 	$ajax_nonce = $_POST['nonce'];
-	if ( wp_verify_nonce($ajax_nonce, User_Badges::ID.'-nonce' ) ) {
+	if ( wp_verify_nonce($ajax_nonce, Badgearoo::ID.'-nonce' ) ) {
 		
 		$filters = array();
 		
@@ -410,7 +419,7 @@ function ub_user_leaderboard_filter() {
 			}
 		}
 		
-		$user_rows = ub_get_user_leaderboard( array(
+		$user_rows = broo_get_user_leaderboard( array(
 				'sort_by' => $sort_by,
 				'from_date' => $from_date,
 				'to_date' => $to_date
@@ -419,7 +428,7 @@ function ub_user_leaderboard_filter() {
 		$html = '';
 		
 		ob_start();
-		ub_get_template_part( 'user-leaderboard-table', null, true, array(
+		broo_get_template_part( 'user-leaderboard-table', null, true, array(
 				'user_rows'=> $user_rows,
 				'show_avatar' => $show_avatar,
 				'before_name' => $before_name,
@@ -445,7 +454,7 @@ function ub_user_leaderboard_filter() {
 	
 }
 
-function ub_get_user_leaderboard( $filters = array() ) {
+function broo_get_user_leaderboard( $filters = array() ) {
 	
 	$sort_by = isset( $filters['sort_by'] ) ? $filters['sort_by'] : 'points';
 	$from_date = isset( $filters['from_date'] ) ? $filters['from_date'] : null;
@@ -460,10 +469,10 @@ function ub_get_user_leaderboard( $filters = array() ) {
 	
 	$query = 'SELECT a.user_id, u.display_name, SUM(CASE WHEN a.type = "badge" THEN 1 ELSE 0 END) AS count_badges, '
 			. 'SUM(CASE WHEN a.type = "points" THEN a.value ELSE 0 END) AS points FROM ' 
-			. $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME . ' a LEFT JOIN ' . $wpdb->posts . ' p'
+			. $wpdb->prefix . BROO_USER_ASSIGNMENT_TABLE_NAME . ' a LEFT JOIN ' . $wpdb->posts . ' p'
 			. ' ON ( a.type = "badge" AND a.value = p.ID AND p.post_status = "publish" ) LEFT JOIN ' 
 			. $wpdb->users . ' u ON a.user_id = u.ID WHERE ( ( a.type = "badge" AND p.post_status = "publish" )'
-			. ' OR ( a.type = "points" ) )';
+			. ' OR ( a.type = "points" ) ) AND a.status = "approved"';
 	
 	$added_to_query = true;
 	
@@ -502,7 +511,7 @@ function ub_get_user_leaderboard( $filters = array() ) {
  * @param unknown $atts
  * @return string
  */
-function ub_user_dashboard($atts) {
+function broo_user_dashboard($atts) {
 
 	extract( shortcode_atts( array(
 			'show_badges' => true,
@@ -512,8 +521,8 @@ function ub_user_dashboard($atts) {
 			'offset' => 0,
 			'type' => null,
 			'show_filters' => true,
-			'to_date' => null,
 			'from_date' => null,
+			'to_date' => null
 	), $atts ) );
 	
 	
@@ -558,7 +567,7 @@ function ub_user_dashboard($atts) {
 	
 	if ( $user_id != 0 ) {
 			
-		$assignments = User_Badges::instance()->api->get_assignments( array( 
+		$assignments = Badgearoo::instance()->api->get_user_assignments( array( 
 				'user_id' => $user_id,
 				'limit' => $limit, 
 				'offset' => $offset,
@@ -567,15 +576,15 @@ function ub_user_dashboard($atts) {
 				'type' => $type
 		), false );
 		
-		$count_assignments = User_Badges::instance()->api->get_assignments( array(
+		$count_assignments = Badgearoo::instance()->api->get_user_assignments( array(
 				'user_id' => $user_id, 
 				'to_date' => $to_date,
 				'from_date' => $from_date,
 				'type' => $type
 		), true );
 	
-		$points = User_Badges::instance()->api->get_user_points( $user_id, array( 'to_date' => $to_date, 'from_date' => $from_date ) );
-		$badges = User_Badges::instance()->api->get_user_badges( $user_id, array( 'to_date' => $to_date, 'from_date' => $from_date ) );
+		$points = Badgearoo::instance()->api->get_user_points( $user_id, array( 'to_date' => $to_date, 'from_date' => $from_date ) );
+		$badges = Badgearoo::instance()->api->get_user_badges( $user_id, array( 'to_date' => $to_date, 'from_date' => $from_date ) );
 		
 		// count badges by id
 		foreach ( $badges as $index => $badge ) {
@@ -598,10 +607,10 @@ function ub_user_dashboard($atts) {
 
 	$html = '';
 	
-	$general_settings = (array) get_option( 'ub_general_settings' );
+	$general_settings = (array) get_option( 'broo_general_settings' );
 
 	ob_start();
-	ub_get_template_part( 'user-dashboard', null, true, array(
+	broo_get_template_part( 'user-dashboard', null, true, array(
 			'assignments' => $assignments,
 			'points' => $points,
 			'badges' => $badges,
@@ -616,8 +625,8 @@ function ub_user_dashboard($atts) {
 			'limit' => $limit,
 			'offset' => $offset,
 			'count_assignments' => $count_assignments,
-			'badge_theme' => $general_settings['ub_badge_theme'],
-			'enable_badge_permalink' => $general_settings['ub_enable_badge_permalink'],
+			'badge_theme' => $general_settings['broo_badge_theme'],
+			'enable_badge_permalink' => $general_settings['broo_enable_badge_permalink'],
 			'user_id' => $user_id
 	) );
 	$html .= ob_get_contents();
@@ -625,7 +634,7 @@ function ub_user_dashboard($atts) {
 
 	return $html;
 }
-add_shortcode( 'ub_user_dashboard', 'ub_user_dashboard' );
+add_shortcode( 'broo_user_dashboard', 'broo_user_dashboard' );
 
 
 
@@ -633,10 +642,10 @@ add_shortcode( 'ub_user_dashboard', 'ub_user_dashboard' );
 /**
  * Loads more user dashboard assignments
  */
-function ub_user_dashboard_assignments_more() {
+function broo_user_dashboard_assignments_more() {
 
 	$ajax_nonce = $_POST['nonce'];
-	if ( wp_verify_nonce($ajax_nonce, User_Badges::ID.'-nonce' ) ) {
+	if ( wp_verify_nonce($ajax_nonce, Badgearoo::ID.'-nonce' ) ) {
 
 		$from_date = isset( $_POST['from-date'] ) ? $_POST['from-date'] : null;
 		$to_date = isset( $_POST['to-date'] ) ? $_POST['to-date'] : null;
@@ -666,7 +675,7 @@ function ub_user_dashboard_assignments_more() {
 			}
 		}
 
-		$assignments = User_Badges::instance()->api->get_assignments( array( 
+		$assignments = Badgearoo::instance()->api->get_user_assignments( array( 
 			'user_id' => $user_id,
 			'limit' => $limit, 
 			'offset' => $offset,
@@ -677,21 +686,19 @@ function ub_user_dashboard_assignments_more() {
 		
 		$offset += $limit; // next offset
 		
-		$general_settings = (array) get_option( 'ub_general_settings' );
+		$general_settings = (array) get_option( 'broo_general_settings' );
 
 		$html = '';
 
 		ob_start();
 		
 		foreach ( $assignments as $assignment ) {
-			ub_get_template_part( 'assignments-table-row', null, true, array(
+			broo_get_template_part( 'assignments-table-row', null, true, array(
 					'assignment' => $assignment,
-					'badge_theme' => $general_settings['ub_badge_theme'],
-					'enable_badge_permalink' => $general_settings['ub_enable_badge_permalink']
+					'badge_theme' => $general_settings['broo_badge_theme'],
+					'enable_badge_permalink' => $general_settings['broo_enable_badge_permalink']
 			) );
 		}
-		
-		
 		
 		$html .= ob_get_contents();
 		ob_end_clean();

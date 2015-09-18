@@ -10,7 +10,7 @@ table.badges .column-description {
 	width: 40%;
 }
 
-.ub-condition .ub-step {
+.broo-condition .broo-step {
 	margin-bottom: 9px;
 	border: 1px solid #e5e5e5;
 	background: #f9f9f9;
@@ -19,10 +19,10 @@ table.badges .column-description {
 	display: block;
 }
 
-.ub-condition .ub-expiry-value {
+.broo-condition .broo-expiry-value {
 	width: 75px;
 }
-.ub-condition .ub-step label, .ub-condition .ub-step select, .ub-condition .ub-step input, .ub-condition .ub-step a {
+.broo-condition .broo-step label, .broo-condition .broo-step select, .broo-condition .broo-step input, .broo-condition .broo-step a {
 	display: inline-block;
 	padding: 3px 5px;
 	vertical-align: middle;
@@ -30,7 +30,7 @@ table.badges .column-description {
 	margin-bottom: 3px;
 }
 
-.ub-condition .form-table, .ub-condition .ub-step-list {
+.broo-condition .form-table, .broo-condition .broo-step-list {
 	margin-right: 10px;
 	width: auto;
 	margin: 0px;
@@ -38,32 +38,35 @@ table.badges .column-description {
 	display: block;
 }
 
-.ub-condition td.ub-condition-steps {
+.broo-condition td.broo-condition-steps {
 	vertical-align: top;
 }
 
-.ub-condition .tagchecklist span {
+.broo-condition .tagchecklist span {
 	margin-top: 10px;
 }
 
 
-.ub-step .step-meta, .ub-step .step-meta .step-meta-value {
+.broo-step .step-meta, .broo-step .step-meta .step-meta-value {
 	display: inline-block;
 	vertical-align: middle;
 }
-.ub-step .step-action, .ub-step .step-meta .step-meta-value {
+.broo-step .step-action, .broo-step .step-meta .step-meta-value {
 	margin-right: 10px;
 }
 
-.ub-step a {
+.broo-step a {
 	color: #0074a2 !important;
 	text-decoration: underline !important;
 }
 
-#ub-badge-icon-upload-btn {
+#broo-badge-icon-upload-btn {
 	display: block;
 }
-#ub-badge-icon-preview {
+#broo-badge-icon-preview {
 	margin-top: 10px;
 }
 
+.broo-about-wrap .three-col .col {
+    width: 29.95% !important;
+}

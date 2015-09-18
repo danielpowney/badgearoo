@@ -1,12 +1,15 @@
 <?php
 
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 /**
  * Step for a condition
  * 
  * @author dpowney
  *
  */
-class UB_Step {
+class BROO_Step {
 	
 	public $step_id;
 	public $condition_id;

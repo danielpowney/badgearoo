@@ -1,12 +1,16 @@
 <?php 
+
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 /**
  * Badge template
  */
 ?>
-<div class="ub-badge-container">
+<div class="broo-badge-container">
 
 	<?php
-	ub_get_template_part( 'badge-theme', $badge_theme, true, array(
+	broo_get_template_part( 'badge-theme', $badge_theme, true, array(
 			'badge_theme' => $badge_theme,
 			'badge_id' => $badge_id,
 			'badge_icon' => $badge_icon,
@@ -16,7 +20,7 @@
 			'title' => $title,
 			'content' => $content,
 			'enable_badge_permalink' => $enable_badge_permalink,
-			'class' => 'ub-badge-theme-' .  $badge_theme
+			'class' => 'broo-badge-theme-' .  $badge_theme
 	) );
 	
 	if ( isset( $badge_count ) && $badge_count > 1 ) {

@@ -1,8 +1,12 @@
 <?php
+
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 /**
  * UB User Details Widget
  */
-class UB_User_Details_Widget extends WP_Widget {
+class BROO_User_Details_Widget extends WP_Widget {
 
 	/**
 	 * Constructor
@@ -10,11 +14,11 @@ class UB_User_Details_Widget extends WP_Widget {
 
 	function __construct( ) {
 
-		$id_base = 'ub_user_badges';
-		$name = __( 'Badgearoo User Badges', 'user-badges' );
+		$id_base = 'broo_user_badges';
+		$name = __( 'Badgearoo User Badges', 'badgearoo' );
 		$widget_opts = array(
-				'classname' => 'ub-user-badges-widget',
-				'description' => __( 'Shows the post author details including any badges and points they have.', 'user-badges' )
+				'classname' => 'broo-user-badges-widget',
+				'description' => __( 'Shows the post author details including any badges and points they have.', 'badgearoo' )
 		);
 		$control_ops = array( 'width' => 400, 'height' => 350 );
 
@@ -29,19 +33,44 @@ class UB_User_Details_Widget extends WP_Widget {
 		
 		global $authordata;
 		
-		$post_id = url_to_postid( UB_Utils::get_current_url() );
+		$post_id = url_to_postid( BROO_Utils::get_current_url() );
 		
 		setup_postdata( get_post( $post_id ) );
 		
-		if ( ! ( is_author() || is_singular() ) // wrong page
-				|| ! is_object( $authordata )       // wrong type
-				|| ! isset ( $authordata->ID ) ) {   // wrong object {
-			return; // Nothing to do.
-		}
+		$post_type = get_post_type( $post_id );
 		
-		$general_settings = (array) get_option( 'ub_general_settings' );
+		$can_show_user_badges_widget = 
+				( is_author() || is_singular() ) // wrong page
+				&& is_object( $authordata )       // wrong type
+				&& isset ( $authordata->ID ) 
+				&& $post_type != 'badge';
+		
+		if ( ! apply_filters( 'broo_can_show_user_badges_widget', $can_show_user_badges_widget, $post_id ) ) {
+			return;
+		}
+			
+		$general_settings = (array) get_option( 'broo_general_settings' );
 		
 		extract( $args );
+		
+		$user_id = isset( $authordata->ID ) ? $authordata->ID : 0;
+		$user_id = apply_filters( 'broo_user_badges_user_id', $user_id, $post_id );
+		
+		$points = Badgearoo::instance()->api->get_user_points( $user_id );
+		$badges = Badgearoo::instance()->api->get_user_badges( $user_id );
+		
+		// count badges by id
+		$badge_count_lookup = array();
+		foreach ( $badges as $index => $badge ) {
+			if ( ! isset( $badge_count_lookup[$badge->id] ) ) {
+				$badge_count_lookup[$badge->id] = 1;
+			} else {
+				$badge_count_lookup[$badge->id]++;
+				unset( $badges[$index] );
+			}
+		}
+		
+		$general_settings = (array) get_option( 'broo_general_settings' );	
 
 		$header = empty( $instance['header'] ) ? 'h3' : $instance['header'];
 		
@@ -50,12 +79,16 @@ class UB_User_Details_Widget extends WP_Widget {
 		
 		echo $before_widget;
 		
-		ub_get_template_part( 'user-badges-widget', null, true, array(
-				'badge_theme' => $general_settings['ub_badge_theme'],
+		broo_get_template_part( 'user-badges-widget', null, true, array(
+				'badge_theme' => $general_settings['broo_badge_theme'],
 				'before_title' => $before_title,
 				'after_title' => $after_title,
-				'class' => 'user-badges-widget',
-				'enable_badge_permalink' => $general_settings['ub_enable_badge_permalink']
+				'class' => 'broo-user-badges-widget',
+				'enable_badge_permalink' => $general_settings['broo_enable_badge_permalink'],
+				'user_id' => $user_id,
+				'badges' => $badges,
+				'points' => $points,
+				'badge_count_lookup' => $badge_count_lookup,
 		) );
 		
 		wp_reset_postdata();
@@ -86,12 +119,17 @@ class UB_User_Details_Widget extends WP_Widget {
 				'title' => '',
 				'header' => 'h3'
 		) );
+		
+		// TODO options to:
+		// - show name
+		// - show biography
+		// - type: badges, points or both
 
 		$header = $instance['header'];
 		
 		?>
 		<p>
-			<label for="<?php echo $this->get_field_id( 'header' ); ?>"><?php _e( 'Header', 'user-badges' ); ?></label>
+			<label for="<?php echo $this->get_field_id( 'header' ); ?>"><?php _e( 'Header', 'badgearoo' ); ?></label>
 			<select class="widefat" name="<?php echo $this->get_field_name( 'header' ); ?>" id="<?php echo $this->get_field_id( 'header' ); ?>">
 				<?php 
 				$header_options = array( 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' );
@@ -115,7 +153,7 @@ class UB_User_Details_Widget extends WP_Widget {
 /**
  * UB Recent Assignments Widget
  */
-class UB_Recent_Assignments_Widget extends WP_Widget {
+class BROO_Recent_Assignments_Widget extends WP_Widget {
 
 	/**
 	 * Constructor
@@ -123,11 +161,11 @@ class UB_Recent_Assignments_Widget extends WP_Widget {
 
 	function __construct( ) {
 
-		$id_base = 'ub_recent_assignments';
-		$name = __( 'Badgearoo Recent Assignments', 'user-badges' );
+		$id_base = 'broo_recent_assignments';
+		$name = __( 'Badgearoo Recent Assignments', 'badgearoo' );
 		$widget_opts = array(
-				'classname' => 'ub-recent-assignments-widget',
-				'description' => __( 'Shows recent user assignments of badges and points.', 'user-badges' )
+				'classname' => 'broo-recent-assignments-widget',
+				'description' => __( 'Shows recent user assignments of badges and points.', 'badgearoo' )
 		);
 		$control_ops = array( 'width' => 400, 'height' => 350 );
 
@@ -140,7 +178,7 @@ class UB_Recent_Assignments_Widget extends WP_Widget {
 	 */
 	function widget( $args, $instance ) {
 
-		$general_settings = (array) get_option( 'ub_general_settings' );
+		$general_settings = (array) get_option( 'broo_general_settings' );
 
 		extract( $args );
 
@@ -154,7 +192,7 @@ class UB_Recent_Assignments_Widget extends WP_Widget {
 			$user_id = get_current_user_id();
 		}
 		
-		$assignments = User_Badges::instance()->api->get_assignments( array(
+		$assignments = Badgearoo::instance()->api->get_user_assignments( array(
 				'user_id' => $user_id,
 				'limit' => $limit,
 				'type' => $type
@@ -167,19 +205,19 @@ class UB_Recent_Assignments_Widget extends WP_Widget {
 		$before_title = '<' . $header . ' class="widget-title">';
 		$after_title = '</' . $header . '>';
 
-		$general_settings = (array) get_option( 'ub_general_settings' );
+		$general_settings = (array) get_option( 'broo_general_settings' );
 		
 		echo $before_widget;
 		
-		ub_get_template_part( 'recent-assignments-widget', null, true, array(
+		broo_get_template_part( 'recent-assignments-widget', null, true, array(
 				'assignments' => $assignments,
 				'type' => $type,
 				'limit' => $limit,
 				'before_title' => $before_title,
 				'after_title' => $after_title,
-				'class' => 'ub-recent-assignments-widget',
-				'badge_theme' => $general_settings['ub_badge_theme'],
-				'enable_badge_permalink' => $general_settings['ub_enable_badge_permalink']
+				'class' => 'broo-recent-assignments-widget',
+				'badge_theme' => $general_settings['broo_badge_theme'],
+				'enable_badge_permalink' => $general_settings['broo_enable_badge_permalink']
 		) );
 
 		echo $after_widget;
@@ -234,15 +272,15 @@ class UB_Recent_Assignments_Widget extends WP_Widget {
 			<label for="<?php echo $this->get_field_id( 'current_user' ); ?>"><?php _e( 'Current Logged In User?', 'multi-rating-pro' ); ?></label>
 		</p>
 		<p>
-			<label for="<?php echo $this->get_field_id( 'type' ); ?>"><?php _e( 'Type', 'user-badges' ); ?></label>
+			<label for="<?php echo $this->get_field_id( 'type' ); ?>"><?php _e( 'Type', 'badgearoo' ); ?></label>
 			<select class="widefat" name="<?php echo $this->get_field_name( 'type' ); ?>" id="<?php echo $this->get_field_id( 'type' ); ?>">
-				<option value=""<?php if ( $type == null ) echo ' selected'; ?>><?php _e( 'All types', 'user-badges' ); ?></option>
-				<option value="badge"<?php if ( $type == 'badges' ) echo ' selected'; ?>><?php _e( 'Badge', 'user-badges' ); ?></option>
-				<option value="points"<?php if ( $type == 'points' ) echo ' selected'; ?>><?php _e( 'Points', 'user-badges' ); ?></option>
+				<option value=""<?php if ( $type == null ) echo ' selected'; ?>><?php _e( 'All types', 'badgearoo' ); ?></option>
+				<option value="badge"<?php if ( $type == 'badges' ) echo ' selected'; ?>><?php _e( 'Badge', 'badgearoo' ); ?></option>
+				<option value="points"<?php if ( $type == 'points' ) echo ' selected'; ?>><?php _e( 'Points', 'badgearoo' ); ?></option>
 			</select>
 		</p>	
 		<p>
-			<label for="<?php echo $this->get_field_id( 'header' ); ?>"><?php _e( 'Header', 'user-badges' ); ?></label>
+			<label for="<?php echo $this->get_field_id( 'header' ); ?>"><?php _e( 'Header', 'badgearoo' ); ?></label>
 			<select class="widefat" name="<?php echo $this->get_field_name( 'header' ); ?>" id="<?php echo $this->get_field_id( 'header' ); ?>">
 				<?php 
 				$header_options = array( 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' );
@@ -264,8 +302,8 @@ class UB_Recent_Assignments_Widget extends WP_Widget {
 /**
  * Register widgets
  */
-function ub_register_widgets() {
-	register_widget( 'UB_User_Details_Widget' );
-	register_widget( 'UB_Recent_Assignments_Widget' );
+function broo_register_widgets() {
+	register_widget( 'BROO_User_Details_Widget' );
+	register_widget( 'BROO_Recent_Assignments_Widget' );
 }
-add_action( 'widgets_init', 'ub_register_widgets' );
+add_action( 'widgets_init', 'broo_register_widgets' );

@@ -1,22 +1,28 @@
-<div class="<?php if ( isset( $class ) ) { echo esc_attr( $class ); } ?> ub-condition">
+<?php 
+
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
+?>
+<div class="<?php if ( isset( $class ) ) { echo esc_attr( $class ); } ?> broo-condition">
 
 	<h2><?php echo $name; ?></h2>
 	
 	<?php
 	if ( $enabled == false ) {
 		?>
-		<p><?php _e( 'This condition is not enabled.', 'user-badges' ); ?></p>
+		<p><?php _e( 'This condition is not enabled.', 'badgearoo' ); ?></p>
 		<?php
 	}
 	
 	if ( $show_steps && count( $steps ) > 0 ) { ?>
-		<label class="ub-steps"><?php _e( 'Steps:', 'user-badges' ); ?></label>
+		<label class="broo-steps"><?php _e( 'Steps:', 'badgearoo' ); ?></label>
 		
-		<ul class="ub-steps">
+		<ul class="broo-steps">
 			<?php
 			foreach ( $steps as $step ) {
 				?>
-				<li class="ub-step"><?php echo $step->label; ?></li>
+				<li class="broo-step"><?php echo $step->label; ?></li>
 				<?php
 			}
 			?>
@@ -24,11 +30,11 @@
 	<?php }
 	
 	if ( $show_badges && count( $badges ) > 0 ) { ?>
-		<label class="ub-assignments"><?php _e( 'Assignments:', 'user-badges' ); ?></label>
+		<label class="broo-assignments"><?php _e( 'Assignments:', 'badgearoo' ); ?></label>
 		<?php
 		foreach ( $badges as $badge ) {
 
-			ub_get_template_part( 'badge', null, true, array(
+			broo_get_template_part( 'badge', null, true, array(
 					'badge_id' => $badge->id,
 					'show_title' => true,
 					'badge_theme' => $badge_theme,
@@ -44,7 +50,7 @@
 	}
 	
 	if ( $show_points && $points > 0 ) {
-		ub_get_template_part( 'points', null, true, array(
+		broo_get_template_part( 'points', null, true, array(
 				'points' => $points
 		) );
 	} ?>

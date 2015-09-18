@@ -1,11 +1,15 @@
 <?php 
+
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 /**
  * Shows the tools screen
  */
-function ub_tools_page() {
+function broo_tools_page() {
 	?>
 	<div class="wrap">
-		<h2><?php _e( 'Tools', 'user-badges' ); ?></h2>
+		<h2><?php _e( 'Tools', 'badgearoo' ); ?></h2>
 		
 		<?php 
 		if ( current_user_can( 'manage_options' ) ) {
@@ -13,9 +17,9 @@ function ub_tools_page() {
 			
 			<div class="metabox-holder">
 				<div class="postbox">
-					<h3><span><?php _e( 'Export', 'user-badges' ); ?></span></h3>
+					<h3><span><?php _e( 'Export', 'badgearoo' ); ?></span></h3>
 					<div class="inside">
-						<p><?php _e( 'Export assignments to a CSV file.', 'user-badges' ); ?></p>
+						<p><?php _e( 'Export assignments to a CSV file.', 'badgearoo' ); ?></p>
 						
 						<form method="post" id="export-assignments-form">
 							<p>
@@ -24,20 +28,20 @@ function ub_tools_page() {
 								<input type="text" class="date-picker" autocomplete="off" name="to-date1" placeholder="To - yyyy-MM-dd">
 								
 								<select name="type1" id="type1">
-									<option value=""<?php if ( $type == null ) echo ' selected'; ?>><?php _e( 'All types', 'user-badges' ); ?></option>
-									<option value="badge"<?php if ( $type == 'badges' ) echo ' selected'; ?>><?php _e( 'Badge', 'user-badges' ); ?></option>
-									<option value="points"<?php if ( $type == 'points' ) echo ' selected'; ?>><?php _e( 'Points', 'user-badges' ); ?></option>
+									<option value=""<?php if ( $type == null ) echo ' selected'; ?>><?php _e( 'All types', 'badgearoo' ); ?></option>
+									<option value="badge"<?php if ( $type == 'badges' ) echo ' selected'; ?>><?php _e( 'Badge', 'badgearoo' ); ?></option>
+									<option value="points"<?php if ( $type == 'points' ) echo ' selected'; ?>><?php _e( 'Points', 'badgearoo' ); ?></option>
 								</select>
 																
 								<?php
-								ub_dropdown_badges( array( 'name' => 'badge-id1', 'show_option_all' => true, 'echo' => true ) );
+								broo_dropdown_badges( array( 'name' => 'badge-id1', 'show_option_all' => true, 'echo' => true ) );
 								?>
 								
-								<input type="checkbox" name="expired1" /><label for="expired1"><?php _e( 'Include expired', 'user-badges' ); ?></label>
-								<input type="checkbox" name="approved1" /><label for="approved1"><?php _e( 'Approved only', 'user-badges' ); ?></label>
+								<input type="checkbox" name="expired1" /><label for="expired1"><?php _e( 'Include expired', 'badgearoo' ); ?></label>
+								<input type="checkbox" name="approved1" /><label for="approved1"><?php _e( 'Approved only', 'badgearoo' ); ?></label>
 								
 								<?php
-								submit_button( __( 'Export', 'user-badges' ), 'secondary', 'export-assignments-btn', false, null );
+								submit_button( __( 'Export', 'badgearoo' ), 'secondary', 'export-assignments-btn', false, null );
 								?>
 							</p>
 						</form>
@@ -47,11 +51,11 @@ function ub_tools_page() {
 			
 			<div class="metabox-holder">
 				<div class="postbox">
-					<h3><span><?php _e( 'Delete', 'user-badges' ); ?></span></h3>
+					<h3><span><?php _e( 'Delete', 'badgearoo' ); ?></span></h3>
 					
 					<div class="inside">
 						
-						<p><?php _e( 'Delete badges and points assigned to users.', 'user-badges' ); ?></p>
+						<p><?php _e( 'Delete badges and points assigned to users.', 'badgearoo' ); ?></p>
 						
 						<form method="post" id="delete-assignments-form">
 							<p>
@@ -60,17 +64,17 @@ function ub_tools_page() {
 								<input type="text" class="date-picker" autocomplete="off" name="to-date2" placeholder="To - yyyy-MM-dd">
 								
 								<select name="type2" id="type2">
-									<option value=""<?php if ( $type == null ) echo ' selected'; ?>><?php _e( 'All types', 'user-badges' ); ?></option>
-									<option value="badge"<?php if ( $type == 'badges' ) echo ' selected'; ?>><?php _e( 'Badge', 'user-badges' ); ?></option>
-									<option value="points"<?php if ( $type == 'points' ) echo ' selected'; ?>><?php _e( 'Points', 'user-badges' ); ?></option>
+									<option value=""<?php if ( $type == null ) echo ' selected'; ?>><?php _e( 'All types', 'badgearoo' ); ?></option>
+									<option value="badge"<?php if ( $type == 'badges' ) echo ' selected'; ?>><?php _e( 'Badge', 'badgearoo' ); ?></option>
+									<option value="points"<?php if ( $type == 'points' ) echo ' selected'; ?>><?php _e( 'Points', 'badgearoo' ); ?></option>
 								</select>
 																
 								<?php
-								ub_dropdown_badges( array( 'name' => 'badge-id2', 'show_option_all' => true, 'echo' => true ) );
+								broo_dropdown_badges( array( 'name' => 'badge-id2', 'show_option_all' => true, 'echo' => true ) );
 								?>
 																
 								<?php								
-								submit_button( __( 'Delete', 'user-badges' ), 'secondary', 'delete-assignments-btn', false, null );
+								submit_button( __( 'Delete', 'badgearoo' ), 'secondary', 'delete-assignments-btn', false, null );
 								?>
 							</p>
 						</form>
@@ -85,7 +89,7 @@ function ub_tools_page() {
 /**
  * Exports the rating results to a CSV file
  */
-function ub_export_assignments() {
+function broo_export_assignments() {
 
 	$file_name = 'assignments-' . date( 'YmdHis' ) . '.csv';
 		
@@ -136,7 +140,7 @@ function ub_export_assignments() {
 		}
 	}
 	
-	if ( ub_generate_assignments_csv( $file_name, $filters ) ) {
+	if ( broo_generate_assignments_csv( $file_name, $filters ) ) {
 			
 		header('Content-type: text/csv');
 		header('Content-Disposition: attachment; filename="' . $file_name . '"');
@@ -156,21 +160,21 @@ function ub_export_assignments() {
  * @param $filters used to filter the report e.g. from_date, to_date, user_id etc...
  * @returns true if report successfully generated and written to file
  */
-function ub_generate_assignments_csv( $file_name, $filters ) {
+function broo_generate_assignments_csv( $file_name, $filters ) {
 	
 	$header_row =
-			'"' . __( 'Assignment Id', 'user-badges' ) . '",' .
-			'"' . __( 'Assignment Type', 'user-badges' ) . '",' .
-			'"' . __( 'User Id', 'user-badges' ) . '",' .
-			'"' . __( 'Username', 'user-badges' ) . '",' .
-			'"' . __( 'Condition Id', 'user-badges' ) . '",' .
+			'"' . __( 'Assignment Id', 'badgearoo' ) . '",' .
+			'"' . __( 'Assignment Type', 'badgearoo' ) . '",' .
+			'"' . __( 'User Id', 'badgearoo' ) . '",' .
+			'"' . __( 'Username', 'badgearoo' ) . '",' .
+			'"' . __( 'Condition Id', 'badgearoo' ) . '",' .
 			'"' . __( 'Condition Name', 'user-bagdes' ) . '",' .
-			'"' . __( 'Badge Id', 'user-badges' ) . '",' .
-			'"' . __( 'Badge Title', 'user-badges' ) . '",' .
-			'"' . __( 'Points', 'user-badges' ) . '",' .
-			'"' . __( 'Created Dt', 'user-badges' ) . '",' .
-			'"' . __( 'Expiry Dt', 'user-badges' ) . '",' .
-			'"' . __( 'Status', 'user-badges' ) . '"';
+			'"' . __( 'Badge Id', 'badgearoo' ) . '",' .
+			'"' . __( 'Badge Title', 'badgearoo' ) . '",' .
+			'"' . __( 'Points', 'badgearoo' ) . '",' .
+			'"' . __( 'Created Dt', 'badgearoo' ) . '",' .
+			'"' . __( 'Expiry Dt', 'badgearoo' ) . '",' .
+			'"' . __( 'Status', 'badgearoo' ) . '"';
 	
 	if ( ! isset( $filters['status'] ) ) {
 		$filters['status'] = '';
@@ -178,7 +182,7 @@ function ub_generate_assignments_csv( $file_name, $filters ) {
 	$filters['limit'] = null;
 	$filters['offset'] = null;
 	
-	$assignments = User_Badges::instance()->api->get_assignments( $filters );
+	$assignments = Badgearoo::instance()->api->get_user_assignments( $filters );
 	
 	$data_rows = array( $header_row );
 	
@@ -235,7 +239,7 @@ function ub_generate_assignments_csv( $file_name, $filters ) {
 /**
  * Deletes assignments from the database
  */
-function ub_delete_assignments() {
+function broo_delete_user_assignments() {
 	
 	if ( ! current_user_can( 'manage_options' ) ) {
 		return;
@@ -252,9 +256,12 @@ function ub_delete_assignments() {
 		$user = get_user_by( 'login', $username );
 		if ( $user && $user->ID ) {
 			$user_id = $user->ID;
+		} else {
+			echo '<div class="error"><p>' . sprintf( __( 'Cannot find user with username "%s".', 'badgearoo' ), $username ) . '</p></div>';
+			return;
 		}
 	}
-	
+
 	if ( $from_date != null && strlen( $from_date ) > 0 ) {
 		list( $year, $month, $day ) = explode( '-', $from_date ); // default yyyy-mm-dd format
 		if ( ! checkdate( $month , $day , $year ) ) {
@@ -269,25 +276,26 @@ function ub_delete_assignments() {
 		}
 	}
 	
-	$count = User_Badges::instance()->api->delete_assignments( array( 
+	$count = Badgearoo::instance()->api->delete_user_assignments( array( 
 			'to_date' => $to_date,
 			'from_date' => $from_date,
 			'badge_id' => $badge_id,
-			'type' => $type
+			'type' => $type,
+			'user_id' => $user_id
 	) );
 	
 	if ( $count > 0 ) {
-		echo '<div class="updated"><p>' . sprintf( __( '%d assignments deleted.', 'user-badges' ), $count ) . '</p></div>';
+		echo '<div class="updated"><p>' . sprintf( __( '%d assignments deleted.', 'badgearoo' ), $count ) . '</p></div>';
 	} else {
-		echo '<div class="error"><p>' . __( 'No assignments found', 'user-badges' ) . '</p></div>';
+		echo '<div class="error"><p>' . __( 'No assignments found', 'badgearoo' ) . '</p></div>';
 	}
 }
 
 if ( isset( $_POST['export-assignments-btn'] ) ) {
-	add_action( 'admin_init', 'ub_export_assignments' );
+	add_action( 'admin_init', 'broo_export_assignments' );
 }
 
 if ( isset( $_POST['delete-assignments-btn'] ) ) {
-	add_action( 'admin_init', 'ub_delete_assignments' );
+	add_action( 'admin_init', 'broo_delete_user_assignments' );
 }
 ?>

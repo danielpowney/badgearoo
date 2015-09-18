@@ -1,29 +1,33 @@
 <?php
+
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 /**
  * Checks whether conditions have been met given a new action has been performed
  *
  * @param unknown $action_name
  * @param unknown $user_id
  */
-function ub_check_conditions( $action_name, $user_id ) {
+function broo_check_conditions( $action_name, $user_id ) {
 
 	global $wpdb;
 
-	$query = 'SELECT cs.condition_id as condition_id FROM ' . $wpdb->prefix . UB_CONDITION_STEP_TABLE_NAME . ' cs, ' 
-			. $wpdb->prefix . UB_CONDITION_TABLE_NAME . ' c WHERE cs.action_name = "' . esc_sql( $action_name ) 
+	$query = 'SELECT cs.condition_id as condition_id FROM ' . $wpdb->prefix . BROO_CONDITION_STEP_TABLE_NAME . ' cs, ' 
+			. $wpdb->prefix . BROO_CONDITION_TABLE_NAME . ' c WHERE cs.action_name = "' . esc_sql( $action_name ) 
 			. '" AND c.condition_id = cs.condition_id AND c.enabled = 1 GROUP BY cs.condition_id';
 	
 	$conditions = $wpdb->get_col( $query );
 
 	foreach ( $conditions as $condition_id ) {
-		$condition = User_Badges::instance()->api->get_condition( $condition_id, false, true );
+		$condition = Badgearoo::instance()->api->get_condition( $condition_id, false, true );
 		$condition->check( $user_id );
 	}
 
 }
-add_action( 'ub_check_conditions', 'ub_check_conditions', 10, 2 );
+add_action( 'broo_check_conditions', 'broo_check_conditions', 10, 2 );
 
-define( 'NEW_USER_ASSIGNMENTS_COOKIE', 'ub_new_assignment' );
+define( 'NEW_USER_ASSIGNMENTS_COOKIE', 'broo_new_assignment' );
 
 /**
  * Sets new user assignments cookie
@@ -36,19 +40,22 @@ define( 'NEW_USER_ASSIGNMENTS_COOKIE', 'ub_new_assignment' );
  * @param unknown $created_dt
  * @param unknown $status
  */
-function ub_new_assignment( $assignment_id, $condition_id, $user_id, $type, $value, $created_dt, $status ) {
+function broo_add_new_user_assignment_cookie( $assignment_id, $condition_id, $user_id, $type, $value, $created_dt, $status ) {
 	
-	if ( $status == 'approved' ) {
+	if ( $status == 'approved' && get_current_user_id() == $user_id ) {
 		
-		$assignment = User_Badges::instance()->api->get_assignment( $assignment_id );
+		$assignment = Badgearoo::instance()->api->get_user_assignment( $assignment_id );
 		$user = get_userdata( $user_id );
 		
 		if ( $assignment && $user ) {
 			
 			// you can use this filter to only set the cookie for certain assignments
-			if ( apply_filters( 'ub_show_user_assignment_modal', true, $assignment ) ) {
+			if ( apply_filters( 'broo_show_user_assignment_modal', true, $assignment ) ) {
 
-				$cookie_data = isset( $_COOKIE[NEW_USER_ASSIGNMENTS_COOKIE] ) ? $_COOKIE[NEW_USER_ASSIGNMENTS_COOKIE] : array();
+				$cookie_data = array();
+				if ( isset( $_COOKIE[NEW_USER_ASSIGNMENTS_COOKIE] ) ) {
+					$cookie_data = json_decode( stripslashes( $_COOKIE[NEW_USER_ASSIGNMENTS_COOKIE] ) );
+				}
 				
 				$message = '';
 				if ( $assignment['type'] == 'badge' ) {
@@ -64,15 +71,20 @@ function ub_new_assignment( $assignment_id, $condition_id, $user_id, $type, $val
 						'message' => $message
 				) );
 				
-				$cookie_data = apply_filters( 'ub_new_user_assignment_cookie_data', $cookie_data, $assignment, $user );
-	
-				setcookie( NEW_USER_ASSIGNMENTS_COOKIE, json_encode( $cookie_data ), time()+3600, COOKIEPATH, COOKIE_DOMAIN );
+				$cookie_data = apply_filters( 'broo_new_user_assignment_cookie_data', $cookie_data, $assignment, $user );
+				$cookie_data = json_encode( $cookie_data, JSON_HEX_QUOT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT );
+				
+				setcookie( NEW_USER_ASSIGNMENTS_COOKIE, $cookie_data, time()+3600, COOKIEPATH, COOKIE_DOMAIN );
+				$_COOKIE[NEW_USER_ASSIGNMENTS_COOKIE] = $cookie_data; // since $_COOKIE is set when the page loads...
+				
 			}
 		}
 	}
 }
 
-$general_settings = (array) get_option( 'ub_general_settings' );
-if ( $general_settings['ub_show_user_assignment_modal'] ) {
-	add_action( 'ub_add_user_assignment', 'ub_new_assignment', 10, 7 );
+
+$general_settings = (array) get_option( 'broo_general_settings' );
+
+if ( $general_settings['broo_show_user_assignment_modal'] ) {
+	add_action( 'broo_add_user_assignment', 'broo_add_new_user_assignment_cookie', 10, 7 );
 }

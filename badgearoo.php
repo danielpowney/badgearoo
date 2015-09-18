@@ -1,34 +1,37 @@
 <?php
 /*
- Plugin Name: User Badges
- Plugin URI: http://wordpress.org/plugins/user-badges/
+ Plugin Name: Badgearoo
+ Plugin URI: http://wordpress.org/plugins/badgearoo/
  Description: Create your own badges for WordPress users. You can manually assign badges or configure automatic assignment of predefined badges to to users.
  Version: 1.0
  Author: Daniel Powney
  Author URI: http://danielpowney.com
  License: GPL2
- Text Domain: user-badges
+ Text Domain: badgearoo
  Domain Path: languages
  */
 
-define( 'UB_ACTION_TABLE_NAME', 'ub_action' ); // stores predefined actions e.g. publishes a post
-define( 'UB_USER_ACTION_TABLE_NAME', 'ub_user_action' ); // stores what actions a user has done
-define( 'UB_USER_ASSIGNMENT_TABLE_NAME', 'ub_user_assignment' ); // stores badges/points assigned to users
-define( 'UB_CONDITION_TABLE_NAME', 'ub_condition' );
-define( 'UB_CONDITION_STEP_META_TABLE_NAME', 'ub_condition_step_meta' );
-define( 'UB_CONDITION_STEP_TABLE_NAME', 'ub_condition_step' );
-define( 'UB_USER_ACTION_META_TABLE_NAME', 'ub_user_action_meta' );
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
+define( 'BROO_ACTION_TABLE_NAME', 'broo_action' ); // stores predefined actions e.g. publishes a post
+define( 'BROO_USER_ACTION_TABLE_NAME', 'broo_user_action' ); // stores what actions a user has done
+define( 'BROO_USER_ASSIGNMENT_TABLE_NAME', 'broo_user_assignment' ); // stores badges/points assigned to users
+define( 'BROO_CONDITION_TABLE_NAME', 'broo_condition' );
+define( 'BROO_CONDITION_STEP_META_TABLE_NAME', 'broo_condition_step_meta' );
+define( 'BROO_CONDITION_STEP_TABLE_NAME', 'broo_condition_step' );
+define( 'BROO_USER_ACTION_META_TABLE_NAME', 'broo_user_action_meta' );
 
 
 /**
- * User_Badges plugin class
+ * Badgearoo plugin class
  */
-class User_Badges {
+class Badgearoo {
 
 	/** Singleton *************************************************************/
 
 	/**
-	 * @var User_Badges The one true User_Badges
+	 * @var Badgearoo The one true Badgearoo
 	 */
 	private static $instance;
 
@@ -46,18 +49,18 @@ class User_Badges {
 	 */
 	const
 	VERSION = '1.0',
-	ID = 'user-badges',
+	ID = 'badgearoo',
 	
 	// options
-	DO_ACTIVATION_REDIRECT_OPTION = 'ub_active_redirect',
+	DO_ACTIVATION_REDIRECT_OPTION = 'broo_active_redirect',
 	
 	// slugs
-	ABOUT_PAGE_SLUG = 'ub_about',
-	BADGES_PAGE_SLUG = 'ub_badges',
-	CONDITIONS_PAGE_SLUG = 'ub_conditions',
-	SETTINGS_PAGE_SLUG = 'ub_settings',
-	TOOLS_PAGE_SLUG = 'ub_tools',
-	ASSIGNMENTS_PAGE_SLUG = 'ub_assignments';
+	ABOUT_PAGE_SLUG = 'broo_about',
+	BADGES_PAGE_SLUG = 'broo_badges',
+	CONDITIONS_PAGE_SLUG = 'broo_conditions',
+	SETTINGS_PAGE_SLUG = 'broo_settings',
+	TOOLS_PAGE_SLUG = 'broo_tools',
+	ASSIGNMENTS_PAGE_SLUG = 'broo_assignments';
 	
 	/**
 	 *
@@ -65,16 +68,14 @@ class User_Badges {
 	 */
 	public static function instance() {
 	
-		if ( ! isset( self::$instance )	&& ! ( self::$instance instanceof User_Badges ) ) {
+		if ( ! isset( self::$instance )	&& ! ( self::$instance instanceof Badgearoo ) ) {
 	
-			self::$instance = new User_Badges;
+			self::$instance = new Badgearoo;
 			
 			self::$instance->includes();
 			
-			self::$instance->settings = new UB_Settings();
-			self::$instance->api = new UB_API_Impl();
-
-			//add_action( 'admin_enqueue_scripts', array( self::$instance, 'assets' ) );
+			self::$instance->settings = new BROO_Settings();
+			self::$instance->api = apply_filters( 'broo_api_instance', new BROO_API_Impl() );
 			
 			if ( is_admin() && ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) ) {
 	
@@ -97,21 +98,21 @@ class User_Badges {
 			
 		}
 	
-		return User_Badges::$instance;
+		return Badgearoo::$instance;
 	}
 	
 	function setup_actions() {
 		
-		self::$instance->actions = (array) apply_filters( 'ub_init_actions', self::$instance->actions );
+		self::$instance->actions = (array) apply_filters( 'broo_init_actions', self::$instance->actions );
 		
-		$actions_enabled = (array) get_option( 'ub_actions_enabled' );
+		$actions_enabled = (array) get_option( 'broo_actions_enabled' );
 		
 		// Make sure all actions are stored in database
 		if ( is_admin() && ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) ) {
 			
 			global $wpdb;
 			
-			$query = 'SELECT DISTINCT name FROM ' . $wpdb->prefix . UB_ACTION_TABLE_NAME;
+			$query = 'SELECT DISTINCT name FROM ' . $wpdb->prefix . BROO_ACTION_TABLE_NAME;
 			
 			$results = $wpdb->get_results( $query );
 			
@@ -132,7 +133,7 @@ class User_Badges {
 			$count_missing = count( $missing_rows );
 			if ( $count_missing > 0 ) {
 				
-				$query = 'INSERT INTO ' . $wpdb->prefix . UB_ACTION_TABLE_NAME . ' ( name, description, source ) VALUES';
+				$query = 'INSERT INTO ' . $wpdb->prefix . BROO_ACTION_TABLE_NAME . ' ( name, description, source ) VALUES';
 			
 				$index = 0;
 				foreach ( $missing_rows as $missing_row ) {
@@ -162,7 +163,7 @@ class User_Badges {
 		}
 		
 		
-		do_action( 'ub_init_actions_complete', self::$instance->actions );
+		do_action( 'broo_init_actions_complete', self::$instance->actions );
 	}
 	
 	/**
@@ -185,11 +186,12 @@ class User_Badges {
 		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'class-action.php';
 		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'class-condition.php';
 		
-		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'actions' . DIRECTORY_SEPARATOR . 'common.php';
-		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'actions' . DIRECTORY_SEPARATOR . 'buddypress.php';
-		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'actions' . DIRECTORY_SEPARATOR . 'bbpress.php';
-		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'actions' . DIRECTORY_SEPARATOR . 'woocommerce.php';
-		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'actions' . DIRECTORY_SEPARATOR . 'easy-digital-downloads.php';
+		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'integrations' . DIRECTORY_SEPARATOR . 'common.php';
+		
+		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'integrations' . DIRECTORY_SEPARATOR . 'buddypress.php';
+		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'integrations' . DIRECTORY_SEPARATOR . 'bbpress.php';
+		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'integrations' . DIRECTORY_SEPARATOR . 'woocommerce.php';
+		require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'integrations' . DIRECTORY_SEPARATOR . 'easy-digital-downloads.php';
 		
 		if ( is_admin() ) {
 			require dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'conditions.php';
@@ -213,7 +215,7 @@ class User_Badges {
 		global $wpdb;
 		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 		
-		$action_query = 'CREATE TABLE ' . $wpdb->prefix . UB_ACTION_TABLE_NAME . ' (
+		$action_query = 'CREATE TABLE ' . $wpdb->prefix . BROO_ACTION_TABLE_NAME . ' (
 				name varchar(50) NOT NULL,
 				description varchar(50) NOT NULL,
 				source varchar(100) NOT NULL,
@@ -223,7 +225,7 @@ class User_Badges {
 		
 		dbDelta( $action_query );
 		
-		$user_assignment_query = 'CREATE TABLE ' . $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME . ' (
+		$user_assignment_query = 'CREATE TABLE ' . $wpdb->prefix . BROO_USER_ASSIGNMENT_TABLE_NAME . ' (
 				id  bigint(20) NOT NULL AUTO_INCREMENT,
 				user_id bigint(20) NOT NULL,
 				condition_id bigint(20),
@@ -238,7 +240,7 @@ class User_Badges {
 		
 		dbDelta( $user_assignment_query );
 		
-		$user_action_query = 'CREATE TABLE ' . $wpdb->prefix . UB_USER_ACTION_TABLE_NAME . ' (
+		$user_action_query = 'CREATE TABLE ' . $wpdb->prefix . BROO_USER_ACTION_TABLE_NAME . ' (
 				id  bigint(20) NOT NULL AUTO_INCREMENT,
 				user_id bigint(20) NOT NULL,
 				action_name varchar(50) NOT NULL,
@@ -248,7 +250,7 @@ class User_Badges {
 		
 		dbDelta( $user_action_query );
 			
-		$condition_query = 'CREATE TABLE ' . $wpdb->prefix . UB_CONDITION_TABLE_NAME . ' (
+		$condition_query = 'CREATE TABLE ' . $wpdb->prefix . BROO_CONDITION_TABLE_NAME . ' (
 				condition_id  bigint(20) NOT NULL AUTO_INCREMENT,
 				name varchar(255) NOT NULL,
 				points bigint(20) DEFAULT 0,
@@ -265,7 +267,7 @@ class User_Badges {
 		
 		dbDelta( $condition_query );
 		
-		$condition_step_query = 'CREATE TABLE ' . $wpdb->prefix . UB_CONDITION_STEP_TABLE_NAME . ' (
+		$condition_step_query = 'CREATE TABLE ' . $wpdb->prefix . BROO_CONDITION_STEP_TABLE_NAME . ' (
 				step_id  bigint(20) NOT NULL AUTO_INCREMENT,
 				condition_id bigint(20) NOT NULL,
 				label varchar(50),
@@ -276,7 +278,7 @@ class User_Badges {
 		
 		dbDelta( $condition_step_query );
 		
-		$condition_step_meta_query = 'CREATE TABLE ' . $wpdb->prefix . UB_CONDITION_STEP_META_TABLE_NAME . ' (
+		$condition_step_meta_query = 'CREATE TABLE ' . $wpdb->prefix . BROO_CONDITION_STEP_META_TABLE_NAME . ' (
 				meta_id  bigint(20) NOT NULL AUTO_INCREMENT,
 				step_id  bigint(20) NOT NULL,
 				meta_key varchar(255),
@@ -286,7 +288,7 @@ class User_Badges {
 		
 		dbDelta( $condition_step_meta_query );
 		
-		$user_actions_meta_query = 'CREATE TABLE ' . $wpdb->prefix . UB_USER_ACTION_META_TABLE_NAME . ' (
+		$user_actions_meta_query = 'CREATE TABLE ' . $wpdb->prefix . BROO_USER_ACTION_META_TABLE_NAME . ' (
 				meta_id bigint(20) NOT NULL AUTO_INCREMENT,
 				user_action_id bigint(20) NOT NULL,
 				meta_key varchar(255),
@@ -308,9 +310,9 @@ class User_Badges {
 	 * Redirects to about page on activation
 	 */
 	function redirect_about_page() {
-		if ( get_option( User_Badges::DO_ACTIVATION_REDIRECT_OPTION, false ) ) {
-			delete_option( User_Badges::DO_ACTIVATION_REDIRECT_OPTION );
-			wp_redirect( 'admin.php?page=' . User_Badges::ABOUT_PAGE_SLUG );
+		if ( get_option( Badgearoo::DO_ACTIVATION_REDIRECT_OPTION, false ) ) {
+			delete_option( Badgearoo::DO_ACTIVATION_REDIRECT_OPTION );
+			wp_redirect( 'admin.php?page=' . Badgearoo::ABOUT_PAGE_SLUG );
 		}
 	}
 	
@@ -318,7 +320,7 @@ class User_Badges {
 	 * Loads plugin text domain
 	 */
 	public function load_textdomain() {
-		load_plugin_textdomain( 'user-badges', false, dirname( plugin_basename( __FILE__) ) . DIRECTORY_SEPARATOR . 'languages' . DIRECTORY_SEPARATOR );
+		load_plugin_textdomain( 'badgearoo', false, dirname( plugin_basename( __FILE__) ) . DIRECTORY_SEPARATOR . 'languages' . DIRECTORY_SEPARATOR );
 	}
 	
 	/**
@@ -326,12 +328,12 @@ class User_Badges {
 	 */	
 	public function add_admin_menus() {
 		
-		add_dashboard_page( __( 'About Badgearoo', 'user-badges' ), '', 'manage_options', User_Badges::ABOUT_PAGE_SLUG, 'ub_about_page' );
-		add_submenu_page( 'edit.php?post_type=badge', __( 'Conditions', 'user-badges' ), __( 'Conditions', 'user-badges' ), 'manage_options', User_Badges::CONDITIONS_PAGE_SLUG, 'ub_conditions_page' );
+		add_dashboard_page( __( 'About Badgearoo', 'badgearoo' ), '', 'manage_options', Badgearoo::ABOUT_PAGE_SLUG, 'broo_about_page' );
+		add_submenu_page( 'edit.php?post_type=badge', __( 'Conditions', 'badgearoo' ), __( 'Conditions', 'badgearoo' ), 'manage_options', Badgearoo::CONDITIONS_PAGE_SLUG, 'broo_conditions_page' );
 		
 		global $wpdb;
 		
-		$query = 'SELECT COUNT(*) FROM ' . $wpdb->prefix . UB_USER_ASSIGNMENT_TABLE_NAME . ' WHERE status = "pending"';
+		$query = 'SELECT COUNT(*) FROM ' . $wpdb->prefix . BROO_USER_ASSIGNMENT_TABLE_NAME . ' WHERE status = "pending"';
 		$pending_count = intval( $wpdb->get_var( $query ) );
 		
 		$pending_assignments_counter = '';
@@ -339,10 +341,10 @@ class User_Badges {
 			$pending_assignments_counter = '<span class="awaiting-mod count-' . $pending_count . '"><span class="pending-count">' . $pending_count . '</span></span>';
 		}
 		
-		add_submenu_page( 'edit.php?post_type=badge', __( 'Assignments', 'user-badges' ), __( 'Assignments', 'user-badges' ) . $pending_assignments_counter, 'manage_options', User_Badges::ASSIGNMENTS_PAGE_SLUG, 'ub_assignments_page' );
-		add_submenu_page( 'edit.php?post_type=badge', __( 'Settings', 'user-badges' ), __( 'Settings', 'user-badges' ), 'manage_options', User_Badges::SETTINGS_PAGE_SLUG, 'ub_settings_page' );
-		add_submenu_page( 'edit.php?post_type=badge', __( 'Tools', 'user-badges' ), __( 'Tools', 'user-badges' ), 'manage_options', User_Badges::TOOLS_PAGE_SLUG, 'ub_tools_page' );
-		add_submenu_page( 'edit.php?post_type=badge', __( 'About', 'user-badges' ), __( 'About', 'user-badges' ), 'manage_options', User_Badges::ABOUT_PAGE_SLUG, 'ub_about_page' );
+		add_submenu_page( 'edit.php?post_type=badge', __( 'Assignments', 'badgearoo' ), __( 'Assignments', 'badgearoo' ) . $pending_assignments_counter, 'manage_options', Badgearoo::ASSIGNMENTS_PAGE_SLUG, 'broo_assignments_page' );
+		add_submenu_page( 'edit.php?post_type=badge', __( 'Settings', 'badgearoo' ), __( 'Settings', 'badgearoo' ), 'manage_options', Badgearoo::SETTINGS_PAGE_SLUG, 'broo_settings_page' );
+		add_submenu_page( 'edit.php?post_type=badge', __( 'Tools', 'badgearoo' ), __( 'Tools', 'badgearoo' ), 'manage_options', Badgearoo::TOOLS_PAGE_SLUG, 'broo_tools_page' );
+		add_submenu_page( 'edit.php?post_type=badge', __( 'About', 'badgearoo' ), __( 'About', 'badgearoo' ), 'manage_options', Badgearoo::ABOUT_PAGE_SLUG, 'broo_about_page' );
 	}
 	
 	/**
@@ -357,13 +359,13 @@ class User_Badges {
 		
 		$config_array = array(
 				'ajax_url' => admin_url( 'admin-ajax.php' ),
-				'ajax_nonce' => wp_create_nonce( User_Badges::ID.'-nonce' )
+				'ajax_nonce' => wp_create_nonce( Badgearoo::ID.'-nonce' )
 		);
 		
-		wp_enqueue_script( 'ub-admin-script', plugins_url('assets' . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'admin.js', __FILE__), array('jquery'), User_Badges::VERSION, true );
-		wp_localize_script( 'ub-admin-script', 'ub_admin_data', $config_array );
+		wp_enqueue_script( 'broo-admin-script', plugins_url('assets' . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'admin.js', __FILE__), array('jquery'), Badgearoo::VERSION, true );
+		wp_localize_script( 'broo-admin-script', 'broo_admin_data', $config_array );
 
-		wp_enqueue_style( 'ub-admin-style', plugins_url( 'assets' . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'admin.css', __FILE__ ) );
+		wp_enqueue_style( 'broo-admin-style', plugins_url( 'assets' . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'admin.css', __FILE__ ) );
 		
 		wp_enqueue_script ( 'common' );
 		wp_enqueue_script( 'wp-lists' );
@@ -382,21 +384,21 @@ class User_Badges {
 	 */
 	public function assets() {
 		
-		$general_settings = (array) get_option( 'ub_general_settings' );
+		$general_settings = (array) get_option( 'broo_general_settings' );
 		
 		$config_array = array(
 				'ajax_url' => admin_url( 'admin-ajax.php' ),
-				'ajax_nonce' => wp_create_nonce( User_Badges::ID.'-nonce' ),
+				'ajax_nonce' => wp_create_nonce( Badgearoo::ID.'-nonce' ),
 				'cookie_path' => COOKIEPATH,
 				'cookie_domain' => COOKIE_DOMAIN,
-				'show_user_assignment_modal' => $general_settings['ub_show_user_assignment_modal']
+				'show_user_assignment_modal' => $general_settings['broo_show_user_assignment_modal']
 		);
 
-		wp_enqueue_style( 'ub-frontend-style', plugins_url( 'assets' . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'frontend.css', __FILE__ ) );
+		wp_enqueue_style( 'broo-frontend-style', plugins_url( 'assets' . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'frontend.css', __FILE__ ) );
 		
-		wp_enqueue_script( 'js-cookie-script', plugins_url('assets' . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'js.cookie.js', __FILE__), array(), User_Badges::VERSION, true );
-		wp_enqueue_script( 'ub-frontend-script', plugins_url('assets' . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'frontend.js', __FILE__), array( 'jquery', 'js-cookie-script' ), User_Badges::VERSION, true );
-		wp_localize_script( 'ub-frontend-script', 'ub_frontend_data', $config_array );
+		wp_enqueue_script( 'js-cookie-script', plugins_url('assets' . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'js.cookie.js', __FILE__), array(), Badgearoo::VERSION, true );
+		wp_enqueue_script( 'broo-frontend-script', plugins_url('assets' . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'frontend.js', __FILE__), array( 'jquery', 'js-cookie-script' ), Badgearoo::VERSION, true );
+		wp_localize_script( 'broo-frontend-script', 'broo_frontend_data', $config_array );
 		
 	}
 	
@@ -406,23 +408,23 @@ class User_Badges {
 	public function add_ajax_callbacks() {
 		
 		if ( is_admin() ) {
-			add_action( 'wp_ajax_add_condition', 'ub_add_condition' );
-			add_action( 'wp_ajax_delete_condition', 'ub_delete_condition' );
-			add_action( 'wp_ajax_add_step', 'ub_add_step' );
-			add_action( 'wp_ajax_delete_step', 'ub_delete_step' );
-			add_action( 'wp_ajax_step_meta', 'ub_step_meta' );
-			add_action( 'wp_ajax_save_condition', 'ub_save_condition' );
-			add_action( 'wp_ajax_change_assignment_type', 'ub_change_assignment_type' );
-			add_action( 'wp_ajax_nopriv_update_user_assignment_status', 'ub_update_user_assignment_status' );
-			add_action( 'wp_ajax_update_user_assignment_status', 'ub_update_user_assignment_status' );
+			add_action( 'wp_ajax_add_condition', 'broo_add_condition' );
+			add_action( 'wp_ajax_delete_condition', 'broo_delete_condition' );
+			add_action( 'wp_ajax_add_step', 'broo_add_step' );
+			add_action( 'wp_ajax_delete_step', 'broo_delete_step' );
+			add_action( 'wp_ajax_step_meta', 'broo_step_meta' );
+			add_action( 'wp_ajax_save_condition', 'broo_save_condition' );
+			add_action( 'wp_ajax_change_assignment_type', 'broo_change_assignment_type' );
+			add_action( 'wp_ajax_nopriv_update_user_assignment_status', 'broo_update_user_assignment_status' );
+			add_action( 'wp_ajax_update_user_assignment_status', 'broo_update_user_assignment_status' );
 				
 		}
 		
-		add_action( 'wp_ajax_user_leaderboard_filter', 'ub_user_leaderboard_filter' );
-		add_action( 'wp_ajax_nopriv_user_leaderboard_filter', 'ub_user_leaderboard_filter' );
+		add_action( 'wp_ajax_user_leaderboard_filter', 'broo_user_leaderboard_filter' );
+		add_action( 'wp_ajax_nopriv_user_leaderboard_filter', 'broo_user_leaderboard_filter' );
 		
-		add_action( 'wp_ajax_user_dashboard_assignments_more', 'ub_user_dashboard_assignments_more' );
-		add_action( 'wp_ajax_nopriv_user_dashboard_assignments_more', 'ub_user_dashboard_assignments_more' );
+		add_action( 'wp_ajax_user_dashboard_assignments_more', 'broo_user_dashboard_assignments_more' );
+		add_action( 'wp_ajax_nopriv_user_dashboard_assignments_more', 'broo_user_dashboard_assignments_more' );
 		
 	}
 	
@@ -438,18 +440,18 @@ class User_Badges {
 		$slug = get_theme_mod( 'badge_permalink' );
 		
 		register_post_type( 'badge', array(
-				'label' => __( 'Badges', 'user-badges' ),
+				'label' => __( 'Badges', 'badgearoo' ),
 				'labels' => array(
-						'name' => __( 'Badges', 'user-badges' ),
-						'singular_name' => __( 'Badge', 'user-badges' ),
-						'add_new_item' => __( 'Add New Badge', 'user-badges' ),
-						'edit_item' => __( 'Edit Badge', 'user-badges' ),
-						'new_item' => __( 'New Badge', 'user-badges' ),
-						'view_item' => __( 'View Badge', 'user-badges' ),
-						'search_items' => __( 'Search Badges', 'user-badges' ),
-						'not_found' => __( 'No badge found.', 'user-badges' ),
-						'not_found_in_trash' => __( 'No badges found in trash.', 'user-badges' ),
-						'parent_item_colon' => __( 'Parent Badge', 'user-badges' )
+						'name' => __( 'Badges', 'badgearoo' ),
+						'singular_name' => __( 'Badge', 'badgearoo' ),
+						'add_new_item' => __( 'Add New Badge', 'badgearoo' ),
+						'edit_item' => __( 'Edit Badge', 'badgearoo' ),
+						'new_item' => __( 'New Badge', 'badgearoo' ),
+						'view_item' => __( 'View Badge', 'badgearoo' ),
+						'search_items' => __( 'Search Badges', 'badgearoo' ),
+						'not_found' => __( 'No badge found.', 'badgearoo' ),
+						'not_found_in_trash' => __( 'No badges found in trash.', 'badgearoo' ),
+						'parent_item_colon' => __( 'Parent Badge', 'badgearoo' )
 				),
 				'description' => '',
 				'public' => true,
@@ -489,31 +491,31 @@ class User_Badges {
 /**
  * Activate plugin
  */
-function ub_activate_plugin() {
+function broo_activate_plugin() {
 
 	if ( is_admin() && ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) ) {
-		add_option(User_Badges::DO_ACTIVATION_REDIRECT_OPTION, true);
-		User_Badges::activate_plugin();
+		add_option(Badgearoo::DO_ACTIVATION_REDIRECT_OPTION, true);
+		Badgearoo::activate_plugin();
 	}
 
 }
-register_activation_hook( __FILE__, 'ub_activate_plugin' );
+register_activation_hook( __FILE__, 'broo_activate_plugin' );
 
 /**
  * Uninstall plugin
 */
-function ub_uninstall_plugin() {
+function broo_uninstall_plugin() {
 
 	if ( is_admin() && ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) ) {
-		User_Badges::uninstall_plugin();
+		Badgearoo::uninstall_plugin();
 	}
 }
-register_uninstall_hook( __FILE__, 'ub_uninstall_plugin' );
+register_uninstall_hook( __FILE__, 'broo_uninstall_plugin' );
 
 /*
  * Instantiate plugin main class
  */
-function ub_plugin_init() {
-	return User_Badges::instance();
+function broo_plugin_init() {
+	return Badgearoo::instance();
 }
-ub_plugin_init();
+broo_plugin_init();
