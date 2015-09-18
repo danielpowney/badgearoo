@@ -216,7 +216,7 @@ function broo_bbp_template_after_user_profile() {
 	<p class="broo-bbp-profile-points"><?php printf( __( 'Points: %d', 'broo' ), $points ); ?></p>
 	<?php
 }
-add_action( 'bbp_template_after_user_profile', 'broo_bbp_template_after_user_profile', 10, 1 );
+
 
 /**
  * Adds badges and points to bbPress reply author details
@@ -249,16 +249,23 @@ function broo_bbp_theme_after_reply_author_details() {
 			'enable_badge_permalink' => $general_settings['broo_enable_badge_permalink']
 	) );
 }
-add_action( 'bbp_theme_after_reply_author_details', 'broo_bbp_theme_after_reply_author_details', 10, 1 );
 
 
-function broo_bbp_filters() {
+function broo_bbp_init() {
 	if ( class_exists( 'bbPress' ) ) {
+		
 		add_filter( 'broo_can_show_user_badges_widget', 'broo_bbp_can_show_user_badges_widget', 10, 2 );
 		add_filter( 'broo_user_badges_user_id', 'broo_bbp_user_badges_user_id', 10, 2);
+		
+		add_action( 'bbp_theme_after_reply_author_details', 'broo_bbp_theme_after_reply_author_details', 10, 1 );
+		add_action( 'bbp_template_after_user_profile', 'broo_bbp_template_after_user_profile', 10, 1 );
+		
+		if ( is_admin() ) {
+			add_filter( 'broo_user_permalinks_options', 'broo_bp_user_permalinks_options', 10, 1 );
+		}
 	}
 }
-add_action( 'init', 'broo_bbp_filters' );
+add_action( 'init', 'broo_bbp_init' );
 
 /**
  * Checks whether user badges widget can be shown
@@ -303,7 +310,4 @@ function broo_bp_user_permalinks_options( $user_permalinks_options = array() ) {
 	$user_permalinks_options['bbp_user_profile_url'] = __( 'bbPress User Profile', 'badgearoo' );
 	
 	return $user_permalinks_options;
-}
-if ( is_admin() ) {
-	add_filter( 'broo_user_permalinks_options', 'broo_bp_user_permalinks_options', 10, 1 );
 }

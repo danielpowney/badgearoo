@@ -515,22 +515,6 @@ function broo_bp_activity_allowed_tags( $activity_allowedtags ) {
 	
 	return $activity_allowedtags;
 }
-add_filter( 'bp_activity_allowed_tags', 'broo_bp_activity_allowed_tags' );
-
-
-$broo_bp_settings = (array) get_option( 'broo_bp_settings' );
-
-if ( $broo_bp_settings['broo_bp_assignments_activity_stream'] ) {
-	add_action( 'broo_add_user_assignment', 'broo_bp_add_activity', 10, 7 );
-}
-
-if ( $broo_bp_settings['broo_bp_assignment_summary_placement'] == 'tab' ) {
-	add_action( 'bp_setup_nav', 'broo_bp_add_assignments_tab', 50 );
-}
-
-if ( $broo_bp_settings['broo_bp_assignment_summary_placement'] == 'header' ) {
-	add_action( 'bp_before_member_header_meta', 'broo_bp_before_member_header_meta' );
-}
 
 
 /**
@@ -541,17 +525,36 @@ function broo_bp_register_activity_actions() {
     bp_activity_set_action( 'broo', 'points', __( 'Points assignment', 'broo' ), false, __( 'Points', 'broo' ), array( 'member' ), 0 );
     
 }
-add_action( 'bp_register_activity_actions', 'broo_bp_register_activity_actions' );
 
-
-
-function broo_bp_filters() {
+function broo_bp_init() {
 	if ( class_exists( 'BuddyPress' ) ) {
+		
+		$broo_bp_settings = (array) get_option( 'broo_bp_settings' );
+		
 		add_filter( 'broo_can_show_user_badges_widget', 'broo_bp_can_show_user_badges_widget', 10, 2 );
 		add_filter( 'broo_user_badges_user_id', 'broo_bp_user_badges_user_id', 10, 2);
+		add_filter( 'bp_activity_allowed_tags', 'broo_bp_activity_allowed_tags' );
+		
+		add_action( 'bp_register_activity_actions', 'broo_bp_register_activity_actions' );
+		
+		if ( $broo_bp_settings['broo_bp_assignments_activity_stream'] ) {
+			add_action( 'broo_add_user_assignment', 'broo_bp_add_activity', 10, 7 );
+		}
+		
+		if ( $broo_bp_settings['broo_bp_assignment_summary_placement'] == 'tab' ) {
+			add_action( 'bp_setup_nav', 'broo_bp_add_assignments_tab', 50 );
+		}
+		
+		if ( $broo_bp_settings['broo_bp_assignment_summary_placement'] == 'header' ) {
+			add_action( 'bp_before_member_header_meta', 'broo_bp_before_member_header_meta' );
+		}
+		
+		if ( is_admin() ) {
+			add_filter( 'broo_user_permalinks_options', 'broo_bbp_user_permalinks_options', 10, 1 );
+		}
 	}
 }
-add_action( 'init', 'broo_bp_filters' );
+add_action( 'init', 'broo_bp_init' );
 
 /**
  * Checks whether user badges widget can be shown
@@ -592,10 +595,7 @@ function broo_bbp_user_permalinks_options( $user_permalinks_options = array() ) 
 		$user_permalinks_options = array();
 	}
 
-	$user_permalinks_options['bbp_user_profile_url'] = __( 'bbPress User Profile', 'badgearoo' );
+	$user_permalinks_options['bp_core_get_userlink'] = __( 'BuddyPress User Link', 'badgearoo' );
 
 	return $user_permalinks_options;
-}
-if ( is_admin() ) {
-	add_filter( 'broo_user_permalinks_options', 'broo_bbp_user_permalinks_options', 10, 1 );
 }
