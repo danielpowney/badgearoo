@@ -75,9 +75,7 @@ class Badgearoo {
 			self::$instance->includes();
 			
 			self::$instance->settings = new BROO_Settings();
-			self::$instance->api = new BROO_API_Impl();
-
-			//add_action( 'admin_enqueue_scripts', array( self::$instance, 'assets' ) );
+			self::$instance->api = apply_filters( 'broo_api_instance', new BROO_API_Impl() );
 			
 			if ( is_admin() && ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) ) {
 	

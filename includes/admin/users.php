@@ -171,7 +171,7 @@ function broo_update_user_profile( $user_id ) {
 		$temp_badges = array();
 		foreach ( $current_badges as $current_badge ) {
 			if ( ! in_array( $current_badge->id, $badges ) ) {
-				Badgearoo::instance()->api->delete_assignment( null, null, $user_id, $type = 'badge', $current_badge->id );
+				Badgearoo::instance()->api->delete_user_assignment( null, null, $user_id, $type = 'badge', $current_badge->id );
 			}
 			
 			array_push( $temp_badges, $current_badge->id );

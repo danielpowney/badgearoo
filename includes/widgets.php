@@ -192,7 +192,7 @@ class BROO_Recent_Assignments_Widget extends WP_Widget {
 			$user_id = get_current_user_id();
 		}
 		
-		$assignments = Badgearoo::instance()->api->get_assignments( array(
+		$assignments = Badgearoo::instance()->api->get_user_assignments( array(
 				'user_id' => $user_id,
 				'limit' => $limit,
 				'type' => $type

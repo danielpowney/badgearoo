@@ -182,7 +182,7 @@ function broo_generate_assignments_csv( $file_name, $filters ) {
 	$filters['limit'] = null;
 	$filters['offset'] = null;
 	
-	$assignments = Badgearoo::instance()->api->get_assignments( $filters );
+	$assignments = Badgearoo::instance()->api->get_user_assignments( $filters );
 	
 	$data_rows = array( $header_row );
 	
@@ -239,7 +239,7 @@ function broo_generate_assignments_csv( $file_name, $filters ) {
 /**
  * Deletes assignments from the database
  */
-function broo_delete_assignments() {
+function broo_delete_user_assignments() {
 	
 	if ( ! current_user_can( 'manage_options' ) ) {
 		return;
@@ -276,7 +276,7 @@ function broo_delete_assignments() {
 		}
 	}
 	
-	$count = Badgearoo::instance()->api->delete_assignments( array( 
+	$count = Badgearoo::instance()->api->delete_user_assignments( array( 
 			'to_date' => $to_date,
 			'from_date' => $from_date,
 			'badge_id' => $badge_id,
@@ -296,6 +296,6 @@ if ( isset( $_POST['export-assignments-btn'] ) ) {
 }
 
 if ( isset( $_POST['delete-assignments-btn'] ) ) {
-	add_action( 'admin_init', 'broo_delete_assignments' );
+	add_action( 'admin_init', 'broo_delete_user_assignments' );
 }
 ?>

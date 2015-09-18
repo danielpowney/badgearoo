@@ -31,14 +31,14 @@ interface BROO_API {
 	 * @param string $type
 	 * @param int $value
 	 */
-	public function delete_assignment( $assignment_id = null, $condition_id = null, $user_id = 0, $type = 'badge', $value = 0 );
+	public function delete_user_assignment( $assignment_id = null, $condition_id = null, $user_id = 0, $type = 'badge', $value = 0 );
 
 	/**
 	 * Deletes assignments (e.g. badge, points) from a user
 	 *
 	 * @param array filters
 	 */
-	public function delete_assignments( $filters = array() );
+	public function delete_user_assignments( $filters = array() );
 	
 	/**
 	 * Gets assignments
@@ -46,14 +46,14 @@ interface BROO_API {
 	 * @param unknown $user_id
 	 * @param unknown $filters
 	 */
-	public function get_assignments( $filters = array() );
+	public function get_user_assignments( $filters = array() );
 	
 	/**
 	 * Gets an assignment by assignment id
 	 * 
 	 * @param unknown $assignment_id
 	 */
-	public function get_assignment( $assignment_id );
+	public function get_user_assignment( $assignment_id );
 	
 	/**
 	 * Gets badges by user id
@@ -321,9 +321,9 @@ class BROO_API_Impl implements BROO_API {
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see BROO_API::delete_assignment()
+	 * @see BROO_API::delete_user_assignment()
 	 */
-	public function delete_assignments( $filters = array() ) {
+	public function delete_user_assignments( $filters = array() ) {
 		
 		extract( wp_parse_args( $filters, array(
 				'to_date' => null,
@@ -409,9 +409,9 @@ class BROO_API_Impl implements BROO_API {
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see BROO_API::delete_assignment()
+	 * @see BROO_API::delete_user_assignment()
 	 */
-	public function delete_assignment( $assignment_id = null, $condition_id = null, $user_id = 0, $type = 'badge', $value = 0 ) {
+	public function delete_user_assignment( $assignment_id = null, $condition_id = null, $user_id = 0, $type = 'badge', $value = 0 ) {
 		
 		global $wpdb;
 		
@@ -458,9 +458,9 @@ class BROO_API_Impl implements BROO_API {
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see BROO_API::get_assignments()
+	 * @see BROO_API::get_user_assignments()
 	 */
-	public function get_assignments( $filters = array(), $is_count = false ) {
+	public function get_user_assignments( $filters = array(), $is_count = false ) {
 		
 		extract( wp_parse_args( $filters, array(
 				'to_date' => null,
@@ -617,9 +617,9 @@ class BROO_API_Impl implements BROO_API {
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see BROO_API::get_assignment()
+	 * @see BROO_API::get_user_assignment()
 	 */
-	public function get_assignment( $assignment_id ) {
+	public function get_user_assignment( $assignment_id ) {
 
 		global $wpdb;
 	
@@ -937,9 +937,8 @@ class BROO_API_Impl implements BROO_API {
 	public function get_badges( $filters = array( 'badge_ids' => array() ), $load_users = false ) {
 		
 		$wpml_current_language = apply_filters( 'wpml_current_language', null ); // if this return null, WPML is not active
-		$wpml_default_language = apply_filters( 'wpml_default_language', null ); // if this return null, WPML is not active
 		
-		$wpml_active = ( $wpml_current_language || $wpml_default_language );
+		$wpml_active = ( $wpml_current_language );
 		
 		if ( isset( $filters['badge_ids'] ) && $wpml_active ) { // for WPML, badge id may not be for default language
 			
@@ -954,7 +953,8 @@ class BROO_API_Impl implements BROO_API {
 		
 		$query = new WP_Query( array(
 				'post_type' => 'badge',
-				'post__in' => ( isset( $filters['badge_ids'] ) && count( $filters['badge_ids'] ) > 0 ) ? $filters['badge_ids'] : null
+				'post__in' => ( isset( $filters['badge_ids'] ) && count( $filters['badge_ids'] ) > 0 ) ? $filters['badge_ids'] : null,
+				'suppress_filters' => false
 		) );
 		
 		$posts = $query->get_posts();
@@ -966,17 +966,14 @@ class BROO_API_Impl implements BROO_API {
 			
 			$users = array();
 			if ( $load_users == true ) {
-				
-				$wpml_default_language = apply_filters( 'wpml_default_language', null );
-				$badge_id = apply_filters( 'wpml_object_id', $post->ID, get_post_type( $post->ID ), true, $wpml_default_language );
-				
+								
 				$user_rows = $wpdb->get_results( $wpdb->prepare( '
 							SELECT      DISTINCT( user_id ) AS user_id
 							FROM        ' . $wpdb->prefix . BROO_USER_ASSIGNMENT_TABLE_NAME . '
 							WHERE       value = %d AND type = "badge"
 										AND ( NOW() <= expiry_dt OR expiry_dt IS NULL )
 										AND status = "approved"',
-						$badge_id
+						$post->ID
 				) );
 				
 				foreach ( $user_rows as $user_row ) {

@@ -567,7 +567,7 @@ function broo_user_dashboard($atts) {
 	
 	if ( $user_id != 0 ) {
 			
-		$assignments = Badgearoo::instance()->api->get_assignments( array( 
+		$assignments = Badgearoo::instance()->api->get_user_assignments( array( 
 				'user_id' => $user_id,
 				'limit' => $limit, 
 				'offset' => $offset,
@@ -576,7 +576,7 @@ function broo_user_dashboard($atts) {
 				'type' => $type
 		), false );
 		
-		$count_assignments = Badgearoo::instance()->api->get_assignments( array(
+		$count_assignments = Badgearoo::instance()->api->get_user_assignments( array(
 				'user_id' => $user_id, 
 				'to_date' => $to_date,
 				'from_date' => $from_date,
@@ -675,7 +675,7 @@ function broo_user_dashboard_assignments_more() {
 			}
 		}
 
-		$assignments = Badgearoo::instance()->api->get_assignments( array( 
+		$assignments = Badgearoo::instance()->api->get_user_assignments( array( 
 			'user_id' => $user_id,
 			'limit' => $limit, 
 			'offset' => $offset,
