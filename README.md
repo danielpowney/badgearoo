@@ -75,7 +75,7 @@ Other features:
 * Adds a summary of badges and points assigned to users in the reply author details
 * Adds a summary of badges and points assigned to users in user profile page
 
-= WooCommerce (requires WooCommerce plugin) =
+## WooCommerce (requires WooCommerce plugin)
 
 Step actions:
 * Checkout order processed.
