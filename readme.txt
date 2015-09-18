@@ -41,6 +41,8 @@ The following shortcodes are available:
 * [broo_user_dashboard] - Shows a dashboard of badges, points and assignents for a user e.g. [broo_user_dashboard show_assignments="true" limit="5" to_date="205-01-01" from_date="2015-12-12"]
 * [broo_badge_list] - Shows a list of badge details e.g. [broo_badge_list badge_ids="34,55,56" layout="table"]
     
+See FAQ for shortcode usage.    
+
 The following widgets are available:
 * User Badges - Shows the post author details including any badges and points they have
 * Recent Assignments - Shows recent user assignments of badges and points.
@@ -137,6 +139,13 @@ If you want to display icons for badges, you first need to make sure the badge i
 = How do I create my own step actions or custom assign badges or points in my plugin or theme =
 
 Sample code and developer notes are documented in the plugin-sample.php file.
+
+The API function add_user_assignment() can be used to assign badges or points using PHP code. See the class-api.php file.
+‘$user_id = get_current_user_id(); 
+$condition_id = null; // optional to have a condition otherwise null
+$expiry_dt = null; // date format "Y-m-d H:i:s" or null
+$points = 100;
+Badgearoo::instance()->api->add_user_assignment( $condition_id, $user_id, 'points', $points, $expiry_dt );’ 
 
 = [broo_user_badges] =
 
