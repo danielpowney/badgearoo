@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: multi-rating-pro\n"
-"POT-Creation-Date: 2015-09-15 22:01+1000\n"
-"PO-Revision-Date: 2015-09-15 22:01+1000\n"
+"POT-Creation-Date: 2015-09-18 21:35+1000\n"
+"PO-Revision-Date: 2015-09-18 21:35+1000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en_AU\n"
@@ -16,16 +16,16 @@ msgstr ""
 "X-Poedit-KeywordsList: __;_e\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: ../badgearoo.php:333
+#: ../badgearoo.php:331
 msgid "About Badgearoo"
 msgstr ""
 
-#: ../badgearoo.php:334 ../includes/admin/about.php:58
+#: ../badgearoo.php:332 ../includes/admin/about.php:58
 #: ../includes/admin/conditions.php:14
 msgid "Conditions"
 msgstr ""
 
-#: ../badgearoo.php:346 ../includes/admin/about.php:50
+#: ../badgearoo.php:344 ../includes/admin/about.php:50
 #: ../includes/admin/assignments.php:56
 #: ../includes/admin/class-assignments-table.php:26
 #: ../includes/integrations/buddypress.php:380
@@ -33,64 +33,64 @@ msgstr ""
 msgid "Assignments"
 msgstr ""
 
-#: ../badgearoo.php:347
+#: ../badgearoo.php:345
 msgid "Settings"
 msgstr ""
 
-#: ../badgearoo.php:348 ../includes/admin/tools.php:12
+#: ../badgearoo.php:346 ../includes/admin/tools.php:12
 msgid "Tools"
 msgstr ""
 
-#: ../badgearoo.php:349
+#: ../badgearoo.php:347
 msgid "About"
 msgstr ""
 
-#: ../badgearoo.php:445 ../badgearoo.php:447 ../includes/admin/about.php:84
+#: ../badgearoo.php:443 ../badgearoo.php:445 ../includes/admin/about.php:84
 #: ../includes/admin/conditions.php:144 ../includes/admin/users.php:10
-#: ../includes/admin/users.php:99 ../includes/integrations/buddypress.php:540
+#: ../includes/admin/users.php:99 ../includes/integrations/buddypress.php:524
 #: ../templates/user-dashboard-filters.php:15
 #: ../templates/user-dashboard.php:53
 #: ../templates/user-leaderboard-table.php:16
 msgid "Badges"
 msgstr ""
 
-#: ../badgearoo.php:448 ../includes/admin/assignments.php:29
+#: ../badgearoo.php:446 ../includes/admin/assignments.php:29
 #: ../includes/admin/class-assignments-table.php:102
 #: ../includes/admin/class-assignments-table.php:387
 #: ../includes/admin/tools.php:32 ../includes/admin/tools.php:68
-#: ../includes/widgets.php:281 ../templates/badge-list.php:58
+#: ../includes/widgets.php:278 ../templates/badge-list.php:58
 msgid "Badge"
 msgstr ""
 
-#: ../badgearoo.php:449
+#: ../badgearoo.php:447
 msgid "Add New Badge"
 msgstr ""
 
-#: ../badgearoo.php:450
+#: ../badgearoo.php:448
 msgid "Edit Badge"
 msgstr ""
 
-#: ../badgearoo.php:451
+#: ../badgearoo.php:449
 msgid "New Badge"
 msgstr ""
 
-#: ../badgearoo.php:452
+#: ../badgearoo.php:450
 msgid "View Badge"
 msgstr ""
 
-#: ../badgearoo.php:453
+#: ../badgearoo.php:451
 msgid "Search Badges"
 msgstr ""
 
-#: ../badgearoo.php:454
+#: ../badgearoo.php:452
 msgid "No badge found."
 msgstr ""
 
-#: ../badgearoo.php:455
+#: ../badgearoo.php:453
 msgid "No badges found in trash."
 msgstr ""
 
-#: ../badgearoo.php:456
+#: ../badgearoo.php:454
 msgid "Parent Badge"
 msgstr ""
 
@@ -332,7 +332,7 @@ msgstr ""
 
 #: ../includes/admin/assignments.php:26
 #: ../includes/admin/class-assignments-table.php:132
-#: ../includes/widgets.php:278
+#: ../includes/widgets.php:275
 msgid "Type"
 msgstr ""
 
@@ -342,7 +342,7 @@ msgstr ""
 #: ../includes/admin/conditions.php:167 ../includes/admin/tools.php:33
 #: ../includes/admin/tools.php:69 ../includes/admin/tools.php:174
 #: ../includes/admin/users.php:11 ../includes/admin/users.php:91
-#: ../includes/integrations/buddypress.php:541 ../includes/widgets.php:282
+#: ../includes/integrations/buddypress.php:525 ../includes/widgets.php:279
 #: ../templates/user-dashboard-filters.php:16
 #: ../templates/user-dashboard.php:41
 #: ../templates/user-leaderboard-table.php:15
@@ -453,7 +453,7 @@ msgstr ""
 
 #: ../includes/admin/class-assignments-table.php:101
 #: ../includes/admin/tools.php:31 ../includes/admin/tools.php:67
-#: ../includes/widgets.php:280
+#: ../includes/widgets.php:277
 msgid "All types"
 msgstr ""
 
@@ -739,14 +739,14 @@ msgstr ""
 msgid "User Badges"
 msgstr ""
 
-#: ../includes/class-api.php:856 ../includes/class-api.php:1115
+#: ../includes/class-api.php:856 ../includes/class-api.php:1112
 #: ../includes/class-condition.php:36
 #, php-format
 msgid "Condition %d Step %d Label"
 msgstr ""
 
 #: ../includes/class-api.php:873 ../includes/class-api.php:920
-#: ../includes/class-api.php:1089
+#: ../includes/class-api.php:1086
 #, php-format
 msgid "Condition %d Name"
 msgstr ""
@@ -963,8 +963,7 @@ msgstr ""
 msgid "Points: %d"
 msgstr ""
 
-#: ../includes/integrations/bbpress.php:303
-#: ../includes/integrations/buddypress.php:595
+#: ../includes/integrations/bbpress.php:310
 msgid "bbPress User Profile"
 msgstr ""
 
@@ -1006,12 +1005,16 @@ msgstr ""
 msgid "<a href=\"%s\">%s</a> has been assigned %d points."
 msgstr ""
 
-#: ../includes/integrations/buddypress.php:540
+#: ../includes/integrations/buddypress.php:524
 msgid "Badge assignment"
 msgstr ""
 
-#: ../includes/integrations/buddypress.php:541
+#: ../includes/integrations/buddypress.php:525
 msgid "Points assignment"
+msgstr ""
+
+#: ../includes/integrations/buddypress.php:598
+msgid "BuddyPress User Link"
 msgstr ""
 
 #: ../includes/integrations/common.php:41
@@ -1068,23 +1071,23 @@ msgid ""
 "Shows the post author details including any badges and points they have."
 msgstr ""
 
-#: ../includes/widgets.php:135 ../includes/widgets.php:286
+#: ../includes/widgets.php:132 ../includes/widgets.php:283
 msgid "Header"
 msgstr ""
 
-#: ../includes/widgets.php:168
+#: ../includes/widgets.php:165
 msgid "Badgearoo Recent Assignments"
 msgstr ""
 
-#: ../includes/widgets.php:171
+#: ../includes/widgets.php:168
 msgid "Shows recent user assignments of badges and points."
 msgstr ""
 
-#: ../includes/widgets.php:270
+#: ../includes/widgets.php:267
 msgid "Limit"
 msgstr ""
 
-#: ../includes/widgets.php:275
+#: ../includes/widgets.php:272
 msgid "Current Logged In User?"
 msgstr ""
 
