@@ -6,29 +6,20 @@
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define ( 'BP_ACTIVITY_COMMENT_POSTED_ACTION', 'bp_activity_comment_posted' ); // works
-define ( 'BP_ACTIVITY_ADD_USER_FAVORITE_ACTION', 'bp_activity_add_user_favorite' ); // works
-define ( 'BP_ACTIVITY_POST_TYPE_PUBLISHED_ACTION', 'bp_activity_post_type_published' );
-define ( 'BP_FRIENDS_FRIENDSHIP_ACCEPTED_ACTION', 'friends_friendship_accepted' ); // works
-define ( 'BP_FRIENDS_FRIENDSHIP_REQUESTED_ACTION', 'friends_friendship_requested' ); // works
-define ( 'BP_GROUPS_CREATE_GROUP_ACTION', 'groups_create_group' ); // works - may rename
-define ( 'BP_GROUPS_JOIN_GROUP_ACTION', 'groups_join_group' ); // workds
-// TODO Add the following actions
-// * Invite Someone to Join a Group
-// * Get Promoted to Group Moderator/Administrator
-// * Promote another Group Member to Group Moderator/Administrator
-// * Activated Account
-// * Change Profile Avatar
-// * Update Profile information
-// * Send/reply to a Private Message
-
-// TODO custom BuddyPress wp-admin settings
-// * select which assignments can be displayed on user profiles and Activity Streams
-// * enable adding assignments to activity streams
-
-// Add an assignments tab
-
-// TODO member e-mail settings to receieve e-mail notifications
+define( 'BP_ACTIVITY_COMMENT_POSTED_ACTION', 'bp_activity_comment_posted' );
+define( 'BP_ACTIVITY_ADD_USER_FAVORITE_ACTION', 'bp_activity_add_user_favorite' ); 
+define( 'BP_ACTIVITY_POST_TYPE_PUBLISHED_ACTION', 'bp_activity_post_type_published' );
+define( 'BP_FRIENDS_FRIENDSHIP_ACCEPTED_ACTION', 'friends_friendship_accepted' );
+define( 'BP_FRIENDS_FRIENDSHIP_REQUESTED_ACTION', 'friends_friendship_requested' );
+define( 'BP_GROUPS_CREATE_GROUP_ACTION', 'groups_create_group' );
+define( 'BP_GROUPS_JOIN_GROUP_ACTION', 'groups_join_group' );
+define( 'BP_GROUPS_INVITE_USER', 'groups_invite_user' );
+define( 'BP_GROUPS_MEMBER_PROMOTED', 'groups_member_promoted' ); // has a  different action name...
+define( 'BP_GROUPS_PROMOTE_MEMBER', 'groups_promote_member' );
+define( 'BP_MEMBER_CHANGE_PROFILE_AVATAR', 'xprofile_avatar_uploaded' );
+define( 'BP_MEMBER_UPDATE_PROFILE', 'xprofile_updated_profile' );
+define( 'BP_CORE_ACTIVATED_USER', 'bp_core_activated_user' );
+define( 'BP_SEND_REPLY_PRIVATE_MESSAGE', 'messages_message_sent' );
 
 // do_action( 'bp_activity_comment_posted', $comment_id, $r, $activity );
 // do_action( 'bp_activity_add_user_favorite', $activity_id, $user_id );
@@ -36,6 +27,12 @@ define ( 'BP_GROUPS_JOIN_GROUP_ACTION', 'groups_join_group' ); // workds
 // do_action( 'friends_friendship_' . $action, $friendship->id, $friendship->initiator_user_id, $friendship->friend_user_id, $friendship );
 // do_action( 'groups_create_group', $group->id, $member, $group );
 // do_action( 'groups_join_group', $group_id, $user_id ); and groups_accept_invite
+// do_action( 'groups_invite_user', $args );
+// do_action( 'groups_promote_member', $group_id, $user_id, $status );
+// do_action( 'xprofile_avatar_uploaded' );
+// do_action( 'xprofile_updated_profile', $user_id, $posted_field_ids, $errors );
+// do_action( 'bp_core_activated_user', $user_id, $key, $user );
+// do_action_ref_array( 'messages_message_sent', array( &$message ) );
 
 function broo_init_bp_actions( $broo_actions ) {
 	
@@ -72,6 +69,41 @@ function broo_init_bp_actions( $broo_actions ) {
 	$broo_actions[BP_GROUPS_JOIN_GROUP_ACTION] = array(
 			'description' => __( 'Join Group.', 'badgearoo' ),
 			'source' =>	__( 'BuddyPress', 'badgearoo' )
+	);
+	
+	$broo_actions[BP_GROUPS_INVITE_USER]= array( 
+			'description' => __( 'Invite someone to join a group.', 'badgearoo' ),
+			'source' => __( 'BuddyPress', 'badgearoo' )
+	);
+	
+	$broo_actions[BP_GROUPS_MEMBER_PROMOTED] = array(
+			'description' => __( 'Get promoted to group moderator/administrator.', 'badgearoo' ),
+			'source' => __( 'BuddyPress', 'badgearoo' )
+	);
+	
+	$broo_actions[BP_GROUPS_PROMOTE_MEMBER] = array(
+			'description' => __( 'Promote another group member to group moderator/administrator.', 'badgearoo' ),
+			'source' => __( 'BuddyPress', 'badgearoo' )
+	);
+	
+	$broo_actions[BP_MEMBER_CHANGE_PROFILE_AVATAR] = array( 
+			'description' => __( 'Change your profile avatar.', 'badgearoo' ),
+			'source' => __( 'BuddyPress' ,'badgearoo' )
+	);
+	
+	$broo_actions[BP_MEMBER_UPDATE_PROFILE] = array(
+			'description' => __( 'Update your profile information.', 'badgearoo' ),
+			'source' => __( 'BuddyPress', 'badgearoo' )	
+	);
+	
+	$broo_actions[BP_CORE_ACTIVATED_USER] = array(
+			'description' => __( 'Activate your account.', 'badgearoo' ),
+			'source' => __( 'BuddyPress', 'badgearoo' )	
+	);
+	
+	$broo_actions[BP_SEND_REPLY_PRIVATE_MESSAGE] = array( 
+			'description' => __( 'Send/reply to a private message.', 'badgearoo' ),
+			'source' => __( 'BuddyPress', 'badgearoo' )	
 	);
 	
 	return $broo_actions;
@@ -121,7 +153,42 @@ function broo_add_bp_actions( $actions = array() ) {
 		add_action( 'groups_accept_invite',  'broo_groups_join_group', 10, 2 );
 		add_filter( 'broo_condition_step_check_groups_join_group', 'broo_condition_step_check_bp_action_count', 10, 4 );
 	}
+	
+	if ( isset( $actions[BP_GROUPS_INVITE_USER] ) && $actions[BP_GROUPS_INVITE_USER]['enabled'] == true ) {
+		add_action( 'groups_invite_user', 'broo_groups_invite_user', 10, 1 );
+		add_filter( 'broo_condition_step_check_groups_invite_user', 'broo_condition_step_check_bp_action_count', 10, 4 );
+	}
+	
+	if ( isset( $actions[BP_GROUPS_MEMBER_PROMOTED] ) && $actions[BP_GROUPS_MEMBER_PROMOTED]['enabled'] == true ) {
+		add_action( 'groups_promote_member', 'broo_groups_member_promoted', 10, 3 );
+		add_filter( 'broo_condition_step_check_groups_promote_member', 'broo_condition_step_check_once', 10, 4 );
+	}
+	
+	if ( isset( $actions[BP_GROUPS_PROMOTE_MEMBER] ) && $actions[BP_GROUPS_PROMOTE_MEMBER]['enabled'] == true ) {
+		add_action( 'groups_promote_member', 'broo_groups_promote_member', 10, 3 );
+		add_filter( 'broo_condition_step_check_groups_invite_user', 'broo_condition_step_check_bp_action_count', 10, 4 );
+	}
+	
+	if ( isset( $actions[BP_MEMBER_CHANGE_PROFILE_AVATAR] ) && $actions[BP_MEMBER_CHANGE_PROFILE_AVATAR]['enabled'] == true ) {
+		add_action( 'xprofile_avatar_uploaded', 'broo_xprofile_avatar_uploaded', 10, 0 );
+		add_filter( 'broo_condition_step_check_xprofile_avatar_uploaded', 'broo_condition_step_check_bp_action_count', 10, 4 );
+	}
 
+	if ( isset( $actions[BP_MEMBER_UPDATE_PROFILE] ) && $actions[BP_MEMBER_UPDATE_PROFILE]['enabled'] == true ) {
+		add_action( 'xprofile_updated_profile', 'broo_xprofile_updated_profile', 10, 3 );
+		add_filter( 'broo_condition_step_check_xprofile_updated_profile', 'broo_condition_step_check_bp_action_count', 10, 4 );
+	}
+	
+	if ( isset( $actions[BP_CORE_ACTIVATED_USER] ) && $actions[BP_CORE_ACTIVATED_USER]['enabled'] == true ) {
+		add_action( 'bp_core_activated_user', 'broo_bp_core_activated_user', 10, 3 );
+		add_filter( 'broo_condition_step_check_bp_core_activated_user', 'broo_condition_step_check_once', 10, 4 );
+	}
+	
+	if ( isset( $actions[BP_SEND_REPLY_PRIVATE_MESSAGE] ) && $actions[BP_SEND_REPLY_PRIVATE_MESSAGE]['enabled'] == true ) {
+		add_action( 'messages_message_sent', 'broo_messages_message_sent', 10, 1 );
+		add_filter( 'broo_condition_step_check_messages_message_sent', 'broo_condition_step_check_bp_action_count', 10, 4 );
+	}
+	
 	add_filter('broo_step_meta_count_enabled', 'broo_step_meta_count_enabled_bp', 10, 2 );
 	//add_filter('broo_step_meta_bp_activity_type_enabled', 'broo_step_meta_bp_activity_type_enabled', 10, 2 );
 
@@ -160,6 +227,7 @@ function broo_condition_step_check_bp_action_count( $step_result, $step, $user_i
 	return $step_result;
 }
 
+
 /**
  * Activity Comment Posted
  *
@@ -179,12 +247,38 @@ function broo_bp_activity_comment_posted( $comment_id, $r, $activity ) {
 
 
 /**
+ * Invite someone to a join a group
+ *
+ * @param array $args
+ */
+function broo_groups_invite_user( $args = array() ) {
+	
+	Badgearoo::instance()->api->add_user_action( BP_GROUPS_INVITE_USER, $args['inviter_id'], array(
+			'group_id' => $args['group_id'],
+			'user_id' => $args['user_id']
+	) );
+}
+
+
+/**
+ * Send/reply to a private message
+ * 
+ * @param unknown $message
+ */
+function broo_messages_message_sent( $message ) {
+	
+	Badgearoo::instance()->api->add_user_action( BP_SEND_REPLY_PRIVATE_MESSAGE, $message->sender_id, array() );
+}
+
+
+/**
  * Activity Add User Favorite
  * 
  * @param unknown $activity_id
  * @param unknown $user_id
  */
 function broo_bp_activity_add_user_favorite( $activity_id, $user_id ) {
+	
 	Badgearoo::instance()->api->add_user_action( BP_ACTIVITY_ADD_USER_FAVORITE_ACTION, $user_id, array(
 			'activity_id' => $activity_id
 	) );
@@ -205,6 +299,66 @@ function broo_bp_activity_post_type_published( $activity_id, $post, $activity_ar
 
 
 /**
+ * Activate your account
+ *  
+ * @param unknown $user_id
+ * @param unknown $key
+ * @param unknown $user
+ */
+function broo_bp_core_activated_user( $user_id, $key, $user ) {
+	
+	Badgearoo::instance()->api->add_user_action( BP_CORE_ACTIVATED_USER, $user_id );
+	
+}
+
+/**
+ * Get promoted to group moderator/administrator
+ * 
+ * @param unknown $group_id
+ * @param unknown $user_id
+ * @param unknown $status
+ */
+function broo_groups_member_promoted( $group_id, $user_id, $status ) {
+	
+	Badgearoo::instance()->api->add_user_action( BP_GROUPS_MEMBER_PROMOTED, $user_id, array( 
+			'status' => $status,
+			'group_id' => $group_id
+	 ) );
+	
+}
+
+/**
+ * Update your profile information
+ * 
+ * @param unknown $user_id
+ * @param unknown $posted_field_ids
+ * @param unknown $errors
+ */
+function broo_xprofile_updated_profile( $user_id, $posted_field_ids, $errors ) {
+	
+	Badgearoo::instance()->api->add_user_action( BP_MEMBER_UPDATE_PROFILE, $user_id, array() );
+}
+
+/**
+ * Promote another group member to group moderator/administrator
+ *
+ * @param unknown $group_id
+ * @param unknown $user_id
+ * @param unknown $status
+ */
+function broo_groups_promote_member( $group_id, $user_id, $status ) {
+
+	Badgearoo::instance()->api->add_user_action( BP_GROUPS_PROMOTE_MEMBER, get_current_user_id(), array(
+			'user_id' => $user_id,
+			'group_id' => $group_id
+	) );
+
+}
+
+
+/**
+ * 
+ * Accept a friend request.
  * 
  * @param unknown $friendship_id
  * @param unknown $initiator_user_id
@@ -214,6 +368,25 @@ function broo_bp_activity_post_type_published( $activity_id, $post, $activity_ar
 function broo_friends_friendship_accepted( $friendship_id, $initiator_user_id, $friend_user_id, $friendship ) {
 	
 	Badgearoo::instance()->api->add_user_action( BP_FRIENDS_FRIENDSHIP_ACCEPTED_ACTION, $initiator_user_id, array() );
+	
+}
+
+/**
+ * Change your profile avatar
+ * 
+ */
+function broo_xprofile_avatar_uploaded() {
+	
+	// See bp-xprofile-activity.php
+	
+	// Bail if activity component is not active
+	if ( ! bp_is_active( 'activity' ) ) {
+		return;
+	}
+	
+	$user_id = apply_filters( 'bp_xprofile_new_avatar_user_id', bp_displayed_user_id() );
+	
+	Badgearoo::instance()->api->add_user_action( BP_MEMBER_CHANGE_PROFILE_AVATAR, $user_id, array() );
 	
 }
 
@@ -275,7 +448,14 @@ function broo_default_bp_actions_enabled( $actions_enabled ) {
 			BP_FRIENDS_FRIENDSHIP_ACCEPTED_ACTION		=> true,
 			BP_FRIENDS_FRIENDSHIP_REQUESTED_ACTION		=> true,
 			BP_GROUPS_CREATE_GROUP_ACTION				=> true,
-			BP_GROUPS_JOIN_GROUP_ACTION					=> true
+			BP_GROUPS_JOIN_GROUP_ACTION					=> true,
+			BP_GROUPS_INVITE_USER						=> true,
+			BP_GROUPS_MEMBER_PROMOTED					=> true,
+			BP_GROUPS_PROMOTE_MEMBER					=> true,
+			BP_MEMBER_CHANGE_PROFILE_AVATAR				=> true,
+			BP_MEMBER_UPDATE_PROFILE					=> true,
+			BP_CORE_ACTIVATED_USER						=> true,
+			BP_SEND_REPLY_PRIVATE_MESSAGE				=> true
 	), $actions_enabled );
 
 }
@@ -340,6 +520,7 @@ function broo_step_meta_bp_activity_type( $step_id, $action  ) {
 		<?php
 	}
 }
+// FIXME
 //add_action( 'broo_step_meta', 'broo_step_meta_bp_activity_type', 10, 2 );
 
 /**
@@ -358,43 +539,59 @@ function broo_step_meta_bp_activity_type_enabled( $enabled, $action ) {
 	return $enabled;
 }
 
+/**
+ * 
+ * @param unknown $enabled
+ * @param unknown $action
+ * @return boolean|unknown
+ */
 function broo_step_meta_count_enabled_bp( $enabled, $action ) {
 
 	if ( $action == BP_ACTIVITY_COMMENT_POSTED_ACTION || $action == BP_ACTIVITY_ADD_USER_FAVORITE_ACTION
 			|| $action == BP_ACTIVITY_POST_TYPE_PUBLISHED_ACTION || $action == BP_FRIENDS_FRIENDSHIP_ACCEPTED_ACTION
 			|| $action == BP_FRIENDS_FRIENDSHIP_REQUESTED_ACTION || $action == BP_GROUPS_CREATE_GROUP_ACTION
-			|| $action == BP_GROUPS_JOIN_GROUP_ACTION ) {
+			|| $action == BP_GROUPS_JOIN_GROUP_ACTION || $action == BP_GROUPS_INVITE_USER 
+			|| $action == BP_GROUPS_PROMOTE_MEMBER || $action == BP_MEMBER_CHANGE_PROFILE_AVATAR
+			|| $action == BP_MEMBER_UPDATE_PROFILE || $action == BP_SEND_REPLY_PRIVATE_MESSAGE ) {
 		return true;
 	}
 
 	return $enabled;
 }
 
+
 /**
- * Adds assignments BuddyPress tab
+ * Adds new BuddyPress Assignments tab
  */
 function broo_bp_add_assignments_tab() {
+
 	global $bp;
-	bp_core_new_nav_item(
-			array(
-					'name'                => __( 'Assignments', 'buddypress' ),
-					'slug'                => 'broo-bp-assignments',
-					'position'            => 75,
-					'screen_function'     => 'broo_bp_assignments_tab',
-					'default_subnav_slug' => 'broo-bp-assignments',
-					'parent_url'          => $bp->loggedin_user->domain . $bp->slug . '/',
-					'parent_slug'         => $bp->slug
-			) );
+	bp_core_new_nav_item( array(
+			'name'                => __( 'Assignments', 'buddypress' ),
+			'slug'                => 'broo-bp-assignments',
+			'position'            => 75,
+			'screen_function'     => 'broo_bp_assignments_tab',
+			'default_subnav_slug' => 'broo-bp-assignments',
+			'parent_url'          => $bp->loggedin_user->domain . $bp->slug . '/',
+			'parent_slug'         => $bp->slug
+	) );
 }
+
+
+/**
+ * Setup BuddyPress Assignments tab
+ */
 function broo_bp_assignments_tab() {
-	//add title and content here - last is to call the members plugin.php template
-	add_action( 'bp_template_title', 'broo_bp_assignments_tab_title' );
+	
 	add_action( 'bp_template_content', 'broo_bp_assignments_tab_content' );
 	bp_core_load_template( apply_filters( 'bp_core_template_plugin', 'members/single/plugins' ) );
+
 }
-function broo_bp_assignments_tab_title() {
-	//_e( 'Assignments', 'badgearoo' );
-}
+
+
+/**
+ * Shows BuddyPress Assignments tab content
+ */
 function broo_bp_assignments_tab_content() {
 	
 	global $bp;
@@ -497,6 +694,7 @@ function broo_bp_add_activity( $assignment_id, $condition_id, $user_id, $type, $
 	}
 }
 
+
 /**
  * Allows activity content tags
  * 
@@ -521,12 +719,17 @@ function broo_bp_activity_allowed_tags( $activity_allowedtags ) {
  * Regiters BuddyPress badge and points assigment actions
  */
 function broo_bp_register_activity_actions() {
-    bp_activity_set_action( 'broo', 'badge', __( 'Badge assignment', 'broo' ), false, __( 'Badges', 'broo' ), array( 'member' ), 0 );
-    bp_activity_set_action( 'broo', 'points', __( 'Points assignment', 'broo' ), false, __( 'Points', 'broo' ), array( 'member' ), 0 );
+    bp_activity_set_action( 'broo', 'badge', __( 'Badge Assignment', 'broo' ), false, __( 'Badges', 'broo' ), array( 'member' ), 0 );
+    bp_activity_set_action( 'broo', 'points', __( 'Points Assignment', 'broo' ), false, __( 'Points', 'broo' ), array( 'member' ), 0 );
     
 }
 
+
+/**
+ * Initialises BuddyPress integration
+ */
 function broo_bp_init() {
+	
 	if ( class_exists( 'BuddyPress' ) ) {
 		
 		$broo_bp_settings = (array) get_option( 'broo_bp_settings' );
@@ -556,6 +759,7 @@ function broo_bp_init() {
 }
 add_action( 'init', 'broo_bp_init' );
 
+
 /**
  * Checks whether user badges widget can be shown
  * 
@@ -571,6 +775,7 @@ function broo_bp_can_show_user_badges_widget( $can_show_user_badges_widget, $pos
 	
 	return $can_show_user_badges_widget;
 }
+
 
 /**
  * Sets BuddyPress user id for user badges widget
@@ -589,6 +794,12 @@ function broo_bp_user_badges_user_id( $user_id, $post_id ) {
 	
 }
 
+
+/**
+ * 
+ * @param unknown $user_permalinks_options
+ * @return unknown
+ */
 function broo_bbp_user_permalinks_options( $user_permalinks_options = array() ) {
 
 	if ( ! is_array( $user_permalinks_options ) ) {

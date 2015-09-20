@@ -472,7 +472,7 @@ function broo_get_user_leaderboard( $filters = array() ) {
 			. $wpdb->prefix . BROO_USER_ASSIGNMENT_TABLE_NAME . ' a LEFT JOIN ' . $wpdb->posts . ' p'
 			. ' ON ( a.type = "badge" AND a.value = p.ID AND p.post_status = "publish" ) LEFT JOIN ' 
 			. $wpdb->users . ' u ON a.user_id = u.ID WHERE ( ( a.type = "badge" AND p.post_status = "publish" )'
-			. ' OR ( a.type = "points" ) ) AND a.status = "approved"';
+			. ' OR ( a.type = "points" ) ) AND a.status = "approved" AND ( NOW() <= expiry_dt OR expiry_dt IS NULL )';
 	
 	$added_to_query = true;
 	
