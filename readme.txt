@@ -257,6 +257,7 @@ e.g. [broo_user_dashboard limit="10" show_filters="false"]
 	5. Change your profile avatar.
 	6. Update your profile information.
 	7. Send/reply to a private message.
+* Added new view post step action
 
 = 1.0.1 =
 * Bug: Fixed expired badges and points included in the user leaderboard

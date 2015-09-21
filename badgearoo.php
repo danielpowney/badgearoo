@@ -217,7 +217,7 @@ class Badgearoo {
 		
 		$action_query = 'CREATE TABLE ' . $wpdb->prefix . BROO_ACTION_TABLE_NAME . ' (
 				name varchar(50) NOT NULL,
-				description varchar(50) NOT NULL,
+				description varchar(200) NOT NULL,
 				source varchar(100) NOT NULL,
 				created_dt datetime DEFAULT CURRENT_TIMESTAMP,
 				PRIMARY KEY  (name)

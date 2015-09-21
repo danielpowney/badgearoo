@@ -35,6 +35,10 @@ class BROO_User_Details_Widget extends WP_Widget {
 		
 		$post_id = url_to_postid( BROO_Utils::get_current_url() );
 		
+		if ( $post_id == 0 ) {
+			return;
+		}
+		
 		setup_postdata( get_post( $post_id ) );
 		
 		$post_type = get_post_type( $post_id );

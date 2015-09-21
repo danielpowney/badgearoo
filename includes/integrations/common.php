@@ -11,6 +11,7 @@ define( 'BROO_WP_SUBMIT_COMMENT_ACTION', 'wp_submit_comment' );
 define( 'BROO_WP_LOGIN_ACTION', 'wp_login' );
 define( 'BROO_WP_USER_REGISTER_ACTION', 'user_register' );
 define( 'BROO_WP_PROFILE_UPDATE_ACTION', 'wp_profile_update' );
+define( 'BROO_VIEW_POST_ACTION', 'broo_view_post' );
 
 // Non WordPress
 define( 'BROO_MIN_POINTS_ACTION', 'broo_min_points' );
@@ -45,6 +46,11 @@ function broo_init_common_actions( $broo_actions ) {
 	$broo_actions[BROO_MIN_POINTS_ACTION] = array(
 			'description' => __( 'Minimum points.', 'badgearoo' ),
 			'source' =>	__( 'Badgearoo', 'badgearoo' )
+	);
+	
+	$broo_actions[BROO_VIEW_POST_ACTION] = array( 
+			'description' => __( 'Views post.', 'badgearoo' ),
+			'source' => __( 'Badgearoo', 'badgearoo' )
 	);
 	
 	return $broo_actions;
@@ -88,6 +94,13 @@ function broo_add_common_actions( $actions = array() ) {
 		add_filter( 'broo_condition_step_check_broo_min_points', 'broo_condition_step_check_points', 10, 4 );
 	}
 	
+	if ( isset( $actions[BROO_VIEW_POST_ACTION] ) && $actions[BROO_VIEW_POST_ACTION]['enabled'] == true ) {
+		add_action( 'wp_head', 'broo_view_post', 10, 0 );
+		add_filter( 'broo_condition_step_check_broo_view_post', 'broo_condition_step_check_count', 10, 4 );
+		
+		// TODO add step meta: unique, post type, post id...
+	}
+	
 	
 	add_filter('broo_step_meta_count_enabled', 'broo_step_meta_count_enabled', 10, 2 );
 	add_filter('broo_step_meta_post_type_enabled', 'broo_step_meta_post_type_enabled', 10, 2 );
@@ -106,7 +119,8 @@ add_action( 'broo_init_actions_complete', 'broo_add_common_actions' );
 function broo_step_meta_count_enabled( $enabled, $action ) {
 	
 	if ( $action == BROO_WP_LOGIN_ACTION || $action == BROO_WP_PUBLISH_POST_ACTION 
-			|| $action == BROO_WP_SUBMIT_COMMENT_ACTION || $action == BROO_WP_PROFILE_UPDATE_ACTION ) {
+			|| $action == BROO_WP_SUBMIT_COMMENT_ACTION || $action == BROO_WP_PROFILE_UPDATE_ACTION 
+			|| $action == BROO_VIEW_POST_ACTION ) {
 		return true;
 	}
 	
@@ -235,12 +249,13 @@ add_action( 'broo_step_meta', 'broo_step_meta_post_type', 10, 2 );
 function broo_default_common_actions_enabled( $actions_enabled ) {
 	
 	return array_merge( array(
-			BROO_WP_PUBLISH_POST_ACTION			=> true,
+			BROO_WP_PUBLISH_POST_ACTION				=> true,
 			BROO_WP_SUBMIT_COMMENT_ACTION			=> true,
-			BROO_WP_LOGIN_ACTION					=> false,
-			BROO_WP_USER_REGISTER_ACTION				=> false,
-			BROO_MIN_POINTS_ACTION				=> true,
-			BROO_WP_PROFILE_UPDATE_ACTION			=> false
+			BROO_WP_LOGIN_ACTION					=> true,
+			BROO_WP_USER_REGISTER_ACTION			=> true,
+			BROO_MIN_POINTS_ACTION					=> true,
+			BROO_WP_PROFILE_UPDATE_ACTION			=> true,
+			BROO_VIEW_POST_ACTION						=> true
 	), $actions_enabled );
 
 }
@@ -301,6 +316,27 @@ function broo_submit_comment( $comment_id, $comment_approved = null) {
  */
 function broo_user_login( $user_login, $user ) {
 	Badgearoo::instance()->api->add_user_action( BROO_WP_LOGIN_ACTION, $user->ID );
+}
+
+/**
+ * Saves post view
+ */
+function broo_view_post() {
+
+	$post_id = url_to_postid( BROO_Utils::get_current_url() );
+	$user_id = get_current_user_id();
+
+	if ( $post_id == 0 || $user_id == 0 ) {
+		return;
+	}
+	
+	$post_type = get_post_type( $post_id );
+
+	Badgearoo::instance()->api->add_user_action( BROO_VIEW_POST_ACTION, $user_id, array(
+			'post_id' => $post_id,
+			'post_type' => $post_type
+	) );
+
 }
 
 
