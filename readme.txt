@@ -13,7 +13,7 @@ Create your own badges and points system for WordPress users.
 == Description ==
 
 Create your own badges and points system for WordPress users. You can configure automatic assignment or manually assign 
-badges and points to users. Upload your own badge icons, use a badge theme inspired by Stack Overflow or user custom HTML.
+badges and points to users. Upload your own badge icons, use a badge theme inspired by Stack Overflow or use custom HTML.
 
 * Setup conditions and steps that need to be satisfied for automatic assignment of badges and points to users
 * BuddyPress, bbPress, WooCommerce and Easy Digital Downloads plugins supported with predefined actions that can be used in condition steps
