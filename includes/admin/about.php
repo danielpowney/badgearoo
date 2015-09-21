@@ -107,6 +107,13 @@ function broo_about_page() {
 						<li><?php _e( 'Request a friend.', 'badgearoo' ); ?></li>
 						<li><?php _e( 'Create Group.', 'badgearoo' ); ?></li>
 						<li><?php _e( 'Join Group.', 'badgearoo' ); ?></li>
+						<li><?php _e( 'Invite someone to join a group.', 'badgearoo' ); ?></li>
+						<li><?php _e( 'Get promoted to group moderator/administrator.', 'badgearoo' ); ?></li>
+						<li><?php _e( 'Promote another group member to group moderator/administrator.', 'badgearoo' ); ?></li>
+						<li><?php _e( 'Activate your account.', 'badgearoo' ); ?></li>
+						<li><?php _e( 'Change your profile avatar.', 'badgearoo' ); ?></li>
+						<li><?php _e( 'Update your profile information.', 'badgearoo' ); ?></li>
+						<li><?php _e( 'Send/reply to a private message.', 'badgearoo' ); ?></li>
 					</ul>
 					
 				</div>
@@ -145,6 +152,7 @@ function broo_about_page() {
 					<h3><?php _e( 'Custom', 'badgearoo' ); ?></h3>
 					<ul>
 						<li><?php _e( 'Minimum points.', 'badgearoo' ); ?></li>
+						<li><?php _e( 'Views post.', 'badgearoo' ); ?></li>
 					</ul>
 									
 				</div>

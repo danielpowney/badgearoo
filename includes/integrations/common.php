@@ -45,12 +45,12 @@ function broo_init_common_actions( $broo_actions ) {
 	
 	$broo_actions[BROO_MIN_POINTS_ACTION] = array(
 			'description' => __( 'Minimum points.', 'badgearoo' ),
-			'source' =>	__( 'Badgearoo', 'badgearoo' )
+			'source' =>	__( 'Custom', 'badgearoo' )
 	);
 	
 	$broo_actions[BROO_VIEW_POST_ACTION] = array( 
 			'description' => __( 'Views post.', 'badgearoo' ),
-			'source' => __( 'Badgearoo', 'badgearoo' )
+			'source' => __( 'Custom', 'badgearoo' )
 	);
 	
 	return $broo_actions;

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: multi-rating-pro\n"
-"POT-Creation-Date: 2015-09-18 21:35+1000\n"
-"PO-Revision-Date: 2015-09-18 21:35+1000\n"
+"POT-Creation-Date: 2015-09-21 18:16+1000\n"
+"PO-Revision-Date: 2015-09-21 18:16+1000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en_AU\n"
@@ -28,7 +28,7 @@ msgstr ""
 #: ../badgearoo.php:344 ../includes/admin/about.php:50
 #: ../includes/admin/assignments.php:56
 #: ../includes/admin/class-assignments-table.php:26
-#: ../includes/integrations/buddypress.php:380
+#: ../includes/integrations/buddypress.php:570
 #: ../templates/user-dashboard.php:34
 msgid "Assignments"
 msgstr ""
@@ -47,7 +47,7 @@ msgstr ""
 
 #: ../badgearoo.php:443 ../badgearoo.php:445 ../includes/admin/about.php:84
 #: ../includes/admin/conditions.php:144 ../includes/admin/users.php:10
-#: ../includes/admin/users.php:99 ../includes/integrations/buddypress.php:524
+#: ../includes/admin/users.php:99 ../includes/integrations/buddypress.php:722
 #: ../templates/user-dashboard-filters.php:15
 #: ../templates/user-dashboard.php:53
 #: ../templates/user-leaderboard-table.php:16
@@ -58,7 +58,7 @@ msgstr ""
 #: ../includes/admin/class-assignments-table.php:102
 #: ../includes/admin/class-assignments-table.php:387
 #: ../includes/admin/tools.php:32 ../includes/admin/tools.php:68
-#: ../includes/widgets.php:278 ../templates/badge-list.php:58
+#: ../includes/widgets.php:282 ../templates/badge-list.php:58
 msgid "Badge"
 msgstr ""
 
@@ -205,17 +205,24 @@ msgid ""
 msgstr ""
 
 #: ../includes/admin/about.php:101 ../includes/admin/settings.php:20
-#: ../includes/integrations/buddypress.php:44
-#: ../includes/integrations/buddypress.php:49
-#: ../includes/integrations/buddypress.php:54
-#: ../includes/integrations/buddypress.php:59
-#: ../includes/integrations/buddypress.php:64
-#: ../includes/integrations/buddypress.php:69
-#: ../includes/integrations/buddypress.php:74
+#: ../includes/integrations/buddypress.php:41
+#: ../includes/integrations/buddypress.php:46
+#: ../includes/integrations/buddypress.php:51
+#: ../includes/integrations/buddypress.php:56
+#: ../includes/integrations/buddypress.php:61
+#: ../includes/integrations/buddypress.php:66
+#: ../includes/integrations/buddypress.php:71
+#: ../includes/integrations/buddypress.php:76
+#: ../includes/integrations/buddypress.php:81
+#: ../includes/integrations/buddypress.php:86
+#: ../includes/integrations/buddypress.php:91
+#: ../includes/integrations/buddypress.php:96
+#: ../includes/integrations/buddypress.php:101
+#: ../includes/integrations/buddypress.php:106
 msgid "BuddyPress"
 msgstr ""
 
-#: ../includes/admin/about.php:103 ../includes/integrations/buddypress.php:48
+#: ../includes/admin/about.php:103 ../includes/integrations/buddypress.php:45
 msgid "Add favorite."
 msgstr ""
 
@@ -227,97 +234,130 @@ msgstr ""
 msgid "Post activity. "
 msgstr ""
 
-#: ../includes/admin/about.php:106 ../includes/integrations/buddypress.php:58
+#: ../includes/admin/about.php:106 ../includes/integrations/buddypress.php:55
 msgid "Accept a friend request."
 msgstr ""
 
-#: ../includes/admin/about.php:107 ../includes/integrations/buddypress.php:63
+#: ../includes/admin/about.php:107 ../includes/integrations/buddypress.php:60
 msgid "Request a friend."
 msgstr ""
 
-#: ../includes/admin/about.php:108 ../includes/integrations/buddypress.php:68
+#: ../includes/admin/about.php:108 ../includes/integrations/buddypress.php:65
 msgid "Create Group."
 msgstr ""
 
-#: ../includes/admin/about.php:109 ../includes/integrations/buddypress.php:73
+#: ../includes/admin/about.php:109 ../includes/integrations/buddypress.php:70
 msgid "Join Group."
 msgstr ""
 
-#: ../includes/admin/about.php:115 ../includes/integrations/bbpress.php:34
+#: ../includes/admin/about.php:110 ../includes/integrations/buddypress.php:75
+msgid "Invite someone to join a group."
+msgstr ""
+
+#: ../includes/admin/about.php:111 ../includes/integrations/buddypress.php:80
+msgid "Get promoted to group moderator/administrator."
+msgstr ""
+
+#: ../includes/admin/about.php:112 ../includes/integrations/buddypress.php:85
+msgid "Promote another group member to group moderator/administrator."
+msgstr ""
+
+#: ../includes/admin/about.php:113 ../includes/integrations/buddypress.php:100
+msgid "Activate your account."
+msgstr ""
+
+#: ../includes/admin/about.php:114 ../includes/integrations/buddypress.php:90
+msgid "Change your profile avatar."
+msgstr ""
+
+#: ../includes/admin/about.php:115 ../includes/integrations/buddypress.php:95
+msgid "Update your profile information."
+msgstr ""
+
+#: ../includes/admin/about.php:116 ../includes/integrations/buddypress.php:105
+msgid "Send/reply to a private message."
+msgstr ""
+
+#: ../includes/admin/about.php:122 ../includes/integrations/bbpress.php:34
 #: ../includes/integrations/bbpress.php:39
 #: ../includes/integrations/bbpress.php:44
 #: ../includes/integrations/bbpress.php:49
 msgid "bbPress"
 msgstr ""
 
-#: ../includes/admin/about.php:117 ../includes/integrations/bbpress.php:48
+#: ../includes/admin/about.php:124 ../includes/integrations/bbpress.php:48
 msgid "Closes a forum topic."
 msgstr ""
 
-#: ../includes/admin/about.php:118
+#: ../includes/admin/about.php:125
 msgid "Creates a new forum (outside wp-admin). "
 msgstr ""
 
-#: ../includes/admin/about.php:119
+#: ../includes/admin/about.php:126
 msgid "Replies to forum topic (outside wp-admin). "
 msgstr ""
 
-#: ../includes/admin/about.php:120 ../includes/integrations/bbpress.php:43
+#: ../includes/admin/about.php:127 ../includes/integrations/bbpress.php:43
 msgid "Adds a new forum topic (outside wp-admin)."
 msgstr ""
 
-#: ../includes/admin/about.php:123 ../includes/integrations/woocommerce.php:16
+#: ../includes/admin/about.php:130 ../includes/integrations/woocommerce.php:16
 msgid "WooCommerce"
 msgstr ""
 
-#: ../includes/admin/about.php:125 ../includes/integrations/woocommerce.php:15
+#: ../includes/admin/about.php:132 ../includes/integrations/woocommerce.php:15
 msgid "Checkout order processed."
 msgstr ""
 
-#: ../includes/admin/about.php:129
+#: ../includes/admin/about.php:136
 #: ../includes/integrations/easy-digital-downloads.php:15
 msgid "Easy Digital Downloads"
 msgstr ""
 
-#: ../includes/admin/about.php:131
+#: ../includes/admin/about.php:138
 #: ../includes/integrations/easy-digital-downloads.php:14
 msgid "User completed purchase."
 msgstr ""
 
-#: ../includes/admin/about.php:136 ../includes/integrations/common.php:22
-#: ../includes/integrations/common.php:27
-#: ../includes/integrations/common.php:32
-#: ../includes/integrations/common.php:37
-#: ../includes/integrations/common.php:42
+#: ../includes/admin/about.php:143 ../includes/integrations/common.php:23
+#: ../includes/integrations/common.php:28
+#: ../includes/integrations/common.php:33
+#: ../includes/integrations/common.php:38
+#: ../includes/integrations/common.php:43
 msgid "WordPress"
 msgstr ""
 
-#: ../includes/admin/about.php:138 ../includes/integrations/common.php:21
+#: ../includes/admin/about.php:145 ../includes/integrations/common.php:22
 msgid "User publishes a post."
 msgstr ""
 
-#: ../includes/admin/about.php:139 ../includes/integrations/common.php:31
+#: ../includes/admin/about.php:146 ../includes/integrations/common.php:32
 msgid "User logs in."
 msgstr ""
 
-#: ../includes/admin/about.php:140
+#: ../includes/admin/about.php:147
 msgid "User updates their profile. "
 msgstr ""
 
-#: ../includes/admin/about.php:141 ../includes/integrations/common.php:36
+#: ../includes/admin/about.php:148 ../includes/integrations/common.php:37
 msgid "Register user."
 msgstr ""
 
-#: ../includes/admin/about.php:142 ../includes/integrations/common.php:26
+#: ../includes/admin/about.php:149 ../includes/integrations/common.php:27
 msgid "User submits a comment."
 msgstr ""
 
-#: ../includes/admin/about.php:145
+#: ../includes/admin/about.php:152 ../includes/integrations/common.php:48
+#: ../includes/integrations/common.php:53
 msgid "Custom"
 msgstr ""
 
-#: ../includes/admin/about.php:147 ../includes/integrations/common.php:46
+#: ../includes/admin/about.php:154 ../includes/integrations/common.php:47
 msgid "Minimum points."
+msgstr ""
+
+#: ../includes/admin/about.php:155 ../includes/integrations/common.php:52
+msgid "Views post."
 msgstr ""
 
 #: ../includes/admin/assignments.php:15
@@ -332,7 +372,7 @@ msgstr ""
 
 #: ../includes/admin/assignments.php:26
 #: ../includes/admin/class-assignments-table.php:132
-#: ../includes/widgets.php:275
+#: ../includes/widgets.php:279
 msgid "Type"
 msgstr ""
 
@@ -342,7 +382,7 @@ msgstr ""
 #: ../includes/admin/conditions.php:167 ../includes/admin/tools.php:33
 #: ../includes/admin/tools.php:69 ../includes/admin/tools.php:174
 #: ../includes/admin/users.php:11 ../includes/admin/users.php:91
-#: ../includes/integrations/buddypress.php:525 ../includes/widgets.php:279
+#: ../includes/integrations/buddypress.php:723 ../includes/widgets.php:283
 #: ../templates/user-dashboard-filters.php:16
 #: ../templates/user-dashboard.php:41
 #: ../templates/user-leaderboard-table.php:15
@@ -424,7 +464,7 @@ msgid "Badge Theme"
 msgstr ""
 
 #: ../includes/admin/class-assignments-table.php:47
-#: ../includes/admin/conditions.php:41 ../includes/integrations/common.php:215
+#: ../includes/admin/conditions.php:41 ../includes/integrations/common.php:229
 msgid "All"
 msgstr ""
 
@@ -453,7 +493,7 @@ msgstr ""
 
 #: ../includes/admin/class-assignments-table.php:101
 #: ../includes/admin/tools.php:31 ../includes/admin/tools.php:67
-#: ../includes/widgets.php:277
+#: ../includes/widgets.php:281
 msgid "All types"
 msgstr ""
 
@@ -967,73 +1007,69 @@ msgstr ""
 msgid "bbPress User Profile"
 msgstr ""
 
-#: ../includes/integrations/buddypress.php:43
+#: ../includes/integrations/buddypress.php:40
 msgid "Comment on an activity."
 msgstr ""
 
-#: ../includes/integrations/buddypress.php:53
+#: ../includes/integrations/buddypress.php:50
 msgid "Post activity."
 msgstr ""
 
-#: ../includes/integrations/buddypress.php:333
+#: ../includes/integrations/buddypress.php:513
 msgid "Activity Type"
 msgstr ""
 
-#: ../includes/integrations/buddypress.php:335
+#: ../includes/integrations/buddypress.php:515
 msgid "All activity types"
 msgstr ""
 
-#: ../includes/integrations/buddypress.php:336
+#: ../includes/integrations/buddypress.php:516
 msgid "Replied to a status update"
 msgstr ""
 
-#: ../includes/integrations/buddypress.php:337
+#: ../includes/integrations/buddypress.php:517
 msgid "Posted a status update"
 msgstr ""
 
-#: ../includes/integrations/buddypress.php:428
+#: ../includes/integrations/buddypress.php:625
 msgid "Invalid member profile."
 msgstr ""
 
-#: ../includes/integrations/buddypress.php:459
+#: ../includes/integrations/buddypress.php:656
 #, php-format
 msgid "<a href=\"%s\">%s</a> has been assigned badge %s."
 msgstr ""
 
-#: ../includes/integrations/buddypress.php:482
+#: ../includes/integrations/buddypress.php:679
 #, php-format
 msgid "<a href=\"%s\">%s</a> has been assigned %d points."
 msgstr ""
 
-#: ../includes/integrations/buddypress.php:524
-msgid "Badge assignment"
+#: ../includes/integrations/buddypress.php:722
+msgid "Badge Assignment"
 msgstr ""
 
-#: ../includes/integrations/buddypress.php:525
-msgid "Points assignment"
+#: ../includes/integrations/buddypress.php:723
+msgid "Points Assignment"
 msgstr ""
 
-#: ../includes/integrations/buddypress.php:598
+#: ../includes/integrations/buddypress.php:809
 msgid "BuddyPress User Link"
 msgstr ""
 
-#: ../includes/integrations/common.php:41
+#: ../includes/integrations/common.php:42
 msgid "User updates their profile."
 msgstr ""
 
-#: ../includes/integrations/common.php:47
-msgid "Badgearoo"
-msgstr ""
-
-#: ../includes/integrations/common.php:165
+#: ../includes/integrations/common.php:179
 msgid "points"
 msgstr ""
 
-#: ../includes/integrations/common.php:191
+#: ../includes/integrations/common.php:205
 msgid "time(s)"
 msgstr ""
 
-#: ../includes/integrations/common.php:213
+#: ../includes/integrations/common.php:227
 msgid "Post Type"
 msgstr ""
 
@@ -1071,23 +1107,23 @@ msgid ""
 "Shows the post author details including any badges and points they have."
 msgstr ""
 
-#: ../includes/widgets.php:132 ../includes/widgets.php:283
+#: ../includes/widgets.php:136 ../includes/widgets.php:287
 msgid "Header"
 msgstr ""
 
-#: ../includes/widgets.php:165
+#: ../includes/widgets.php:169
 msgid "Badgearoo Recent Assignments"
 msgstr ""
 
-#: ../includes/widgets.php:168
+#: ../includes/widgets.php:172
 msgid "Shows recent user assignments of badges and points."
 msgstr ""
 
-#: ../includes/widgets.php:267
+#: ../includes/widgets.php:271
 msgid "Limit"
 msgstr ""
 
-#: ../includes/widgets.php:272
+#: ../includes/widgets.php:276
 msgid "Current Logged In User?"
 msgstr ""
 
