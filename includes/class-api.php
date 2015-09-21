@@ -623,7 +623,7 @@ class BROO_API_Impl implements BROO_API {
 
 		global $wpdb;
 	
-		$query .= 'SELECT a.*, u.user_login FROM ' . $wpdb->prefix . BROO_USER_ASSIGNMENT_TABLE_NAME . ' a, ' . $wpdb->users . ' u'
+		$query = 'SELECT a.*, u.user_login FROM ' . $wpdb->prefix . BROO_USER_ASSIGNMENT_TABLE_NAME . ' a, ' . $wpdb->users . ' u'
 				. ' WHERE       a.id = %d AND u.ID = a.user_id';
 	
 		$row = $wpdb->get_row( $wpdb->prepare( $query, $assignment_id ) );
