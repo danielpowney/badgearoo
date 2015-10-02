@@ -822,7 +822,13 @@ class BROO_API_Impl implements BROO_API {
 		
 		global $wpdb;
 		
-		$wpdb->insert( $wpdb->prefix . BROO_USER_ACTION_TABLE_NAME, array( 'user_id' => $user_id, 'action_name' => $action_name ), array( '%d', '%s') );	
+		$created_dt = current_time( 'mysql' );
+		
+		$wpdb->insert( $wpdb->prefix . BROO_USER_ACTION_TABLE_NAME, 
+				array( 'user_id' => $user_id, 'action_name' => $action_name, 'created_dt' => $created_dt ),
+				array( '%d', '%s', '%s' )
+		);	
+		
 		$user_action_id = $wpdb->insert_id;
 		
 		foreach ( $meta as $meta_key => $meta_value )  {

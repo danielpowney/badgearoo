@@ -16,7 +16,7 @@ define( 'BROO_VIEW_POST_ACTION', 'broo_view_post' );
 // Non WordPress
 define( 'BROO_MIN_POINTS_ACTION', 'broo_min_points' );
 
-function broo_init_common_actions( $broo_actions ) {
+function broo_init_common_actions( $broo_actions = array() ) {
 	
 	$broo_actions[BROO_WP_PUBLISH_POST_ACTION] = array(
 			'description' => __( 'User publishes a post.', 'badgearoo' ),

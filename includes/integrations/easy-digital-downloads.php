@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 define( 'EDD_COMPLETE_DOWNLOAD_PURCHASE_ACTION', 'edd_complete_download_purchase' );
 
-function broo_init_edd_actions( $broo_actions ) {
+function broo_init_edd_actions( $broo_actions = array() ) {
 
 	$broo_actions[EDD_COMPLETE_DOWNLOAD_PURCHASE_ACTION] = array(
 			'description' => __( 'User completed purchase.', 'badgearoo' ),

@@ -34,7 +34,7 @@ define( 'BP_SEND_REPLY_PRIVATE_MESSAGE', 'messages_message_sent' );
 // do_action( 'bp_core_activated_user', $user_id, $key, $user );
 // do_action_ref_array( 'messages_message_sent', array( &$message ) );
 
-function broo_init_bp_actions( $broo_actions ) {
+function broo_init_bp_actions( $broo_actions = array()) {
 	
 	$broo_actions[BP_ACTIVITY_COMMENT_POSTED_ACTION] = array(
 			'description' => __( 'Comment on an activity.', 'badgearoo' ),

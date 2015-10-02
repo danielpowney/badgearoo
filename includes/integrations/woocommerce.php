@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 define( 'WOOCOMMERCE_CHECKOUT_ORDER_PROCESSED_ACTION', 'woocommerce_checkout_order_processed' );
 
 
-function broo_init_woocommerce_actions( $broo_actions ) {
+function broo_init_woocommerce_actions( $broo_actions = array() ) {
 
 	$broo_actions[WOOCOMMERCE_CHECKOUT_ORDER_PROCESSED_ACTION] = array(
 			'description' => __( 'Checkout order processed.', 'badgearoo' ),

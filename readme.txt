@@ -248,6 +248,10 @@ e.g. [broo_user_dashboard limit="10" show_filters="false"]
 
 == Changelog ==
 
+= 1.0.3 (2/10/2015) =
+* Bug: Fixed db tables not gettign created in some cases due to the plugin trying to default the datetime field to CURRENT_TIMESTAMP which only works in MySQL versions 5.6.5 and above.
+* Tweak: Improved actions settings tab to easily see inactive plugins and actions
+
 = 1.0.2 =
 * Added 7 new BuddyPress step actions:
 	1. Invite someone to join a group.
