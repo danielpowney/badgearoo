@@ -71,6 +71,20 @@
   padding-bottom: 10px;
 }
 
+#buddypress .broo-recent-assignments .broo-badge-container a, 
+#buddypress .broo-recent-assignments .broo-badge-container span, 
+#buddypress .broo-recent-assignments .broo-points, 
+#buddypress .broo-recent-assignments .broo-badges {
+	font-size: small;
+}
+
+
+#buddypress .broo-recent-assignments table {
+	border: none;
+	margin: 0px;
+	padding: 0px;
+}
+
 .broo-user-badges-summary ul.broo-badges li {
 	list-style: none;
 }

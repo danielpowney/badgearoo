@@ -752,12 +752,51 @@ function broo_bp_init() {
 			add_action( 'bp_before_member_header_meta', 'broo_bp_before_member_header_meta' );
 		}
 		
+		if ( $broo_bp_settings['broo_bp_directory_members_item_recent_assignments'] ) {
+			add_action( 'bp_directory_members_item', 'broo_bp_directory_members_item_recent_assignments' );
+		}
+		
 		if ( is_admin() ) {
 			add_filter( 'broo_user_permalinks_options', 'broo_bbp_user_permalinks_options', 10, 1 );
 		}
 	}
 }
 add_action( 'init', 'broo_bp_init' );
+
+
+/**
+ * Displays recent assignments inside the BP members directory list
+ */
+function broo_bp_directory_members_item_recent_assignments() {
+	$user_id = bp_get_member_user_id();
+	
+	if ( $user_id == null || $user_id == 0 ) {
+		return;
+	}
+	
+	$assignments = Badgearoo::instance()->api->get_user_assignments( array(
+			'user_id' => $user_id,
+			'limit' => 3,
+			'type' => null
+	), false );
+	
+	if ( ! is_array( $assignments ) ) {
+		$assignments = array();
+	}
+	
+	$general_settings = (array) get_option( 'broo_general_settings' );
+	
+	return broo_get_template_part( 'recent-assignments', null, true, array(
+			'assignments' => $assignments,
+			'type' => null,
+			'limit' => 3,
+			'class' => 'bp-directory-members-item-recent-assignments',
+			'show_title' => false,
+			'badge_theme' => $general_settings['broo_badge_theme'],
+			'enable_badge_permalink' => $general_settings['broo_enable_badge_permalink']
+	) );
+	
+}
 
 
 /**

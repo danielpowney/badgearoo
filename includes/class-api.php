@@ -20,7 +20,7 @@ interface BROO_API {
 	 * @param int $value
 	 * @param date $expiry_dt
 	 */
-	public function add_user_assignment( $condition_id, $user_id = 0, $type = 'badge', $value = 0, $expiry_dt = null );
+	public function add_user_assignment( $condition_id = null, $user_id = 0, $type = 'badge', $value = 0, $expiry_dt = null );
 	
 	/**
 	 * Deletes assignment (e.g. badge, points) from a user
@@ -958,6 +958,7 @@ class BROO_API_Impl implements BROO_API {
 		}
 		
 		$query = new WP_Query( array(
+				'posts_per_page' => -1,
 				'post_type' => 'badge',
 				'post__in' => ( isset( $filters['badge_ids'] ) && count( $filters['badge_ids'] ) > 0 ) ? $filters['badge_ids'] : null,
 				'suppress_filters' => false

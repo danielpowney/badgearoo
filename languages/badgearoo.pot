@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: multi-rating-pro\n"
-"POT-Creation-Date: 2015-09-21 18:16+1000\n"
-"PO-Revision-Date: 2015-09-21 18:16+1000\n"
+"POT-Creation-Date: 2015-11-08 20:05+1000\n"
+"PO-Revision-Date: 2015-11-08 20:05+1000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en_AU\n"
@@ -16,16 +16,16 @@ msgstr ""
 "X-Poedit-KeywordsList: __;_e\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: ../badgearoo.php:331
+#: ../badgearoo.php:335
 msgid "About Badgearoo"
 msgstr ""
 
-#: ../badgearoo.php:332 ../includes/admin/about.php:58
+#: ../badgearoo.php:336 ../includes/admin/about.php:58
 #: ../includes/admin/conditions.php:14
 msgid "Conditions"
 msgstr ""
 
-#: ../badgearoo.php:344 ../includes/admin/about.php:50
+#: ../badgearoo.php:348 ../includes/admin/about.php:50
 #: ../includes/admin/assignments.php:56
 #: ../includes/admin/class-assignments-table.php:26
 #: ../includes/integrations/buddypress.php:570
@@ -33,19 +33,19 @@ msgstr ""
 msgid "Assignments"
 msgstr ""
 
-#: ../badgearoo.php:345
+#: ../badgearoo.php:349
 msgid "Settings"
 msgstr ""
 
-#: ../badgearoo.php:346 ../includes/admin/tools.php:12
+#: ../badgearoo.php:350 ../includes/admin/tools.php:12
 msgid "Tools"
 msgstr ""
 
-#: ../badgearoo.php:347
+#: ../badgearoo.php:351
 msgid "About"
 msgstr ""
 
-#: ../badgearoo.php:443 ../badgearoo.php:445 ../includes/admin/about.php:84
+#: ../badgearoo.php:447 ../badgearoo.php:449 ../includes/admin/about.php:84
 #: ../includes/admin/conditions.php:144 ../includes/admin/users.php:10
 #: ../includes/admin/users.php:99 ../includes/integrations/buddypress.php:722
 #: ../templates/user-dashboard-filters.php:15
@@ -54,7 +54,7 @@ msgstr ""
 msgid "Badges"
 msgstr ""
 
-#: ../badgearoo.php:446 ../includes/admin/assignments.php:29
+#: ../badgearoo.php:450 ../includes/admin/assignments.php:29
 #: ../includes/admin/class-assignments-table.php:102
 #: ../includes/admin/class-assignments-table.php:387
 #: ../includes/admin/tools.php:32 ../includes/admin/tools.php:68
@@ -62,35 +62,35 @@ msgstr ""
 msgid "Badge"
 msgstr ""
 
-#: ../badgearoo.php:447
+#: ../badgearoo.php:451
 msgid "Add New Badge"
 msgstr ""
 
-#: ../badgearoo.php:448
+#: ../badgearoo.php:452
 msgid "Edit Badge"
 msgstr ""
 
-#: ../badgearoo.php:449
+#: ../badgearoo.php:453
 msgid "New Badge"
 msgstr ""
 
-#: ../badgearoo.php:450
+#: ../badgearoo.php:454
 msgid "View Badge"
 msgstr ""
 
-#: ../badgearoo.php:451
+#: ../badgearoo.php:455
 msgid "Search Badges"
 msgstr ""
 
-#: ../badgearoo.php:452
+#: ../badgearoo.php:456
 msgid "No badge found."
 msgstr ""
 
-#: ../badgearoo.php:453
+#: ../badgearoo.php:457
 msgid "No badges found in trash."
 msgstr ""
 
-#: ../badgearoo.php:454
+#: ../badgearoo.php:458
 msgid "Parent Badge"
 msgstr ""
 
@@ -446,7 +446,7 @@ msgid ""
 "pixels."
 msgstr ""
 
-#: ../includes/admin/badges.php:85 ../includes/class-settings.php:116
+#: ../includes/admin/badges.php:85 ../includes/class-settings.php:117
 msgid "Custom HTML"
 msgstr ""
 
@@ -459,7 +459,7 @@ msgid ""
 "badge permalink."
 msgstr ""
 
-#: ../includes/admin/badges.php:113 ../includes/class-settings.php:104
+#: ../includes/admin/badges.php:113 ../includes/class-settings.php:105
 msgid "Badge Theme"
 msgstr ""
 
@@ -701,6 +701,10 @@ msgstr ""
 msgid "Settings saved."
 msgstr ""
 
+#: ../includes/admin/settings.php:125
+msgid "inactive"
+msgstr ""
+
 #: ../includes/admin/tools.php:20 ../includes/admin/tools.php:44
 msgid "Export"
 msgstr ""
@@ -779,14 +783,14 @@ msgstr ""
 msgid "User Badges"
 msgstr ""
 
-#: ../includes/class-api.php:856 ../includes/class-api.php:1112
+#: ../includes/class-api.php:862 ../includes/class-api.php:1118
 #: ../includes/class-condition.php:36
 #, php-format
 msgid "Condition %d Step %d Label"
 msgstr ""
 
-#: ../includes/class-api.php:873 ../includes/class-api.php:920
-#: ../includes/class-api.php:1086
+#: ../includes/class-api.php:879 ../includes/class-api.php:926
+#: ../includes/class-api.php:1092
 #, php-format
 msgid "Condition %d Name"
 msgstr ""
@@ -820,125 +824,125 @@ msgstr ""
 msgid "New Assignment"
 msgstr ""
 
-#: ../includes/class-settings.php:99
+#: ../includes/class-settings.php:100
 msgid "Author Posts"
 msgstr ""
 
-#: ../includes/class-settings.php:111
+#: ../includes/class-settings.php:112
 msgid "Choose a theme to apply to badges."
 msgstr ""
 
-#: ../includes/class-settings.php:113
+#: ../includes/class-settings.php:114
 msgid "Icon"
 msgstr ""
 
-#: ../includes/class-settings.php:114
+#: ../includes/class-settings.php:115
 msgid "Light"
 msgstr ""
 
-#: ../includes/class-settings.php:115
+#: ../includes/class-settings.php:116
 msgid "Dark"
 msgstr ""
 
-#: ../includes/class-settings.php:121
+#: ../includes/class-settings.php:122
 msgid "Auto Approve Assignments"
 msgstr ""
 
-#: ../includes/class-settings.php:128
+#: ../includes/class-settings.php:129
 msgid ""
-"Do you want new user assignments of badges and points to be approved "
-"automatically?"
+"Check this box if you want new user assignments of badges and points to be "
+"approved automatically?"
 msgstr ""
 
-#: ../includes/class-settings.php:133
+#: ../includes/class-settings.php:134
 msgid "New Assignments Popup"
 msgstr ""
 
-#: ../includes/class-settings.php:140
+#: ../includes/class-settings.php:141
 msgid ""
-"Do you want to show a popup message when users are assigned new badges and "
-"points?"
+"Check this box if you want to show a popup message when users are assigned "
+"new badges and points?"
 msgstr ""
 
-#: ../includes/class-settings.php:145
+#: ../includes/class-settings.php:146
 msgid "Badge Permalinks"
 msgstr ""
 
-#: ../includes/class-settings.php:152
-msgid "Do you want to enabled badge permalinks?"
+#: ../includes/class-settings.php:153
+msgid "Check this box if you want to enabled badge permalinks?"
 msgstr ""
 
-#: ../includes/class-settings.php:156
+#: ../includes/class-settings.php:157
 msgid "User Permalinks"
 msgstr ""
 
-#: ../includes/class-settings.php:163
+#: ../includes/class-settings.php:164
 msgid "Choose a user permalink."
 msgstr ""
 
-#: ../includes/class-settings.php:183
+#: ../includes/class-settings.php:184
 msgid "Assignment Moderation"
 msgstr ""
 
-#: ../includes/class-settings.php:187
+#: ../includes/class-settings.php:188
 msgid "Enable Assignment Moderator Notifications"
 msgstr ""
 
-#: ../includes/class-settings.php:194
+#: ../includes/class-settings.php:195
 msgid ""
-"Send email notifications for new assignments of badges or points which "
-"require moderation."
+"Check this box if you want to send email notifications for new assignments "
+"of badges or points which require moderation."
 msgstr ""
 
-#: ../includes/class-settings.php:198
+#: ../includes/class-settings.php:199
 msgid "Moderators"
 msgstr ""
 
-#: ../includes/class-settings.php:205
+#: ../includes/class-settings.php:206
 msgid "Who should receive the assignment moderation notification?"
 msgstr ""
 
-#: ../includes/class-settings.php:206
+#: ../includes/class-settings.php:207
 msgid "Enter the email address(es), one per line."
 msgstr ""
 
-#: ../includes/class-settings.php:210
+#: ../includes/class-settings.php:211
 msgid "From Name"
 msgstr ""
 
-#: ../includes/class-settings.php:217
+#: ../includes/class-settings.php:218
 msgid "The name assignment moderation notifications are said to come from."
 msgstr ""
 
-#: ../includes/class-settings.php:221
+#: ../includes/class-settings.php:222
 msgid "From Email"
 msgstr ""
 
-#: ../includes/class-settings.php:228
+#: ../includes/class-settings.php:229
 msgid "Email to send assignment moderation notifications from."
 msgstr ""
 
-#: ../includes/class-settings.php:232
+#: ../includes/class-settings.php:233
 msgid "Email Subject"
 msgstr ""
 
-#: ../includes/class-settings.php:239
+#: ../includes/class-settings.php:240
 msgid "Enter the subject line for the assignment moderation notification email"
 msgstr ""
 
-#: ../includes/class-settings.php:243
+#: ../includes/class-settings.php:244
 msgid "Email Heading"
 msgstr ""
 
-#: ../includes/class-settings.php:250
+#: ../includes/class-settings.php:251
 msgid "Enter the heading for the assignment moderation notification email"
 msgstr ""
 
-#: ../includes/class-settings.php:254
+#: ../includes/class-settings.php:255
 msgid "Email Template"
 msgstr ""
 
-#: ../includes/class-settings.php:261
+#: ../includes/class-settings.php:262
 msgid ""
 "Enter the email that is sent to a moderator to notify them new assignment "
 "required approval. HTML is accepted. Available template tags:<br /"
@@ -950,37 +954,49 @@ msgid ""
 ">{assignment_moderation_link} - Link to assignments page"
 msgstr ""
 
-#: ../includes/class-settings.php:291
+#: ../includes/class-settings.php:292
 msgid "Assignment Summary Placement"
 msgstr ""
 
-#: ../includes/class-settings.php:298
+#: ../includes/class-settings.php:299
 msgid ""
 "Where do you want to display a summary of badges & points assigned to "
 "members?"
 msgstr ""
 
-#: ../includes/class-settings.php:300
+#: ../includes/class-settings.php:301
 msgid "New Member Tab"
 msgstr ""
 
-#: ../includes/class-settings.php:301
+#: ../includes/class-settings.php:302
 msgid "Member Header"
 msgstr ""
 
-#: ../includes/class-settings.php:302
+#: ../includes/class-settings.php:303
 msgid "Do not show"
 msgstr ""
 
-#: ../includes/class-settings.php:307
+#: ../includes/class-settings.php:308
 msgid "Assignments Activity Stream"
 msgstr ""
 
-#: ../includes/class-settings.php:314
-msgid "Do you want to display new assignments in member activity streams?"
+#: ../includes/class-settings.php:315
+msgid ""
+"Check this box if you want to display new assignments in member activity "
+"streams?"
 msgstr ""
 
-#: ../includes/class-settings.php:483
+#: ../includes/class-settings.php:319
+msgid "Members Directory Recent Assignments"
+msgstr ""
+
+#: ../includes/class-settings.php:326
+msgid ""
+"Check this box if you want to show each member's 3 most recent assignments "
+"in the member directory list?"
+msgstr ""
+
+#: ../includes/class-settings.php:495
 #, php-format
 msgid "Moderator email  \"%s\" is invalid."
 msgstr ""
@@ -1053,7 +1069,7 @@ msgstr ""
 msgid "Points Assignment"
 msgstr ""
 
-#: ../includes/integrations/buddypress.php:809
+#: ../includes/integrations/buddypress.php:848
 msgid "BuddyPress User Link"
 msgstr ""
 
@@ -1192,6 +1208,7 @@ msgid "Recent Assignments"
 msgstr ""
 
 #: ../templates/recent-assignments-widget.php:18
+#: ../templates/recent-assignments.php:17
 #: ../templates/user-dashboard-assignments.php:22
 #: ../templates/user-leaderboard.php:18
 msgid "No assignments."
@@ -1202,6 +1219,7 @@ msgid "by"
 msgstr ""
 
 #: ../templates/recent-assignments-widget.php:51
+#: ../templates/recent-assignments.php:45
 #, php-format
 msgid "%s ago"
 msgstr ""

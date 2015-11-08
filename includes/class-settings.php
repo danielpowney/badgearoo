@@ -77,7 +77,8 @@ class BROO_Settings {
 		
 		$this->bp_settings = array_merge( array(
 				'broo_bp_assignment_summary_placement'				=> 'tab',
-				'broo_bp_assignments_activity_stream'				=> true
+				'broo_bp_assignments_activity_stream'				=> true,
+				'broo_bp_directory_members_item_recent_assignments'	=> true
 		), $this->bp_settings );
 		
 		update_option( 'broo_actions_enabled', $this->actions_enabled );
@@ -125,7 +126,7 @@ class BROO_Settings {
 						'args' => array(
 								'option_name' 	=> 'broo_general_settings',
 								'setting_id' 	=> 'broo_assignment_auto_approve',
-								'label' 		=> __( 'Do you want new user assignments of badges and points to be approved automatically?', 'badgearoo' )
+								'label' 		=> __( 'Check this box if you want new user assignments of badges and points to be approved automatically?', 'badgearoo' )
 						)
 				
 				),
@@ -137,7 +138,7 @@ class BROO_Settings {
 						'args' => array(
 								'option_name' 	=> 'broo_general_settings',
 								'setting_id' 	=> 'broo_show_user_assignment_modal',
-								'label' 		=> __( 'Do you want to show a popup message when users are assigned new badges and points?', 'badgearoo' )
+								'label' 		=> __( 'Check this box if you want to show a popup message when users are assigned new badges and points?', 'badgearoo' )
 						)
 				
 				),
@@ -149,7 +150,7 @@ class BROO_Settings {
 						'args' => array(
 								'option_name' 	=> 'broo_general_settings',
 								'setting_id' 	=> 'broo_enable_badge_permalink',
-								'label' 		=> __( 'Do you want to enabled badge permalinks?', 'badgearoo' )
+								'label' 		=> __( 'Check this box if you want to enabled badge permalinks?', 'badgearoo' )
 						)			
 				),
 				'broo_user_permalinks' => array(
@@ -191,7 +192,7 @@ class BROO_Settings {
 						'args' => array(
 								'option_name' 	=> 'broo_email_settings',
 								'setting_id' 	=> 'broo_assignment_notify_moderators',
-								'label' 		=> __( 'Send email notifications for new assignments of badges or points which require moderation.', 'badgearoo' )
+								'label' 		=> __( 'Check this box if you want to send email notifications for new assignments of badges or points which require moderation.', 'badgearoo' )
 						)
 				),
 				'broo_assignment_moderators' => array(
@@ -311,7 +312,18 @@ class BROO_Settings {
 						'args' => array(
 								'option_name' 	=> 'broo_bp_settings',
 								'setting_id' 	=> 'broo_bp_assignments_activity_stream',
-								'label' 		=> __( 'Do you want to display new assignments in member activity streams?', 'badgearoo' )
+								'label' 		=> __( 'Check this box if you want to display new assignments in member activity streams?', 'badgearoo' )
+						)
+				),
+				'broo_bp_directory_members_item_recent_assignments' => array(
+						'title' 	=> __( 'Members Directory Recent Assignments', 'badgearoo' ),
+						'callback' 	=> 'field_checkbox',
+						'page' 		=> 'broo_bp_settings',
+						'section' 	=> 'section_bp',
+						'args' => array(
+								'option_name' 	=> 'broo_bp_settings',
+								'setting_id' 	=> 'broo_bp_directory_members_item_recent_assignments',
+								'label' 		=> __( 'Check this box if you want to show each member\'s 3 most recent assignments in the member directory list?', 'badgearoo' )
 						)
 				),
 				
@@ -432,7 +444,7 @@ class BROO_Settings {
 		</select>
 		<label><?php echo $args['label']; ?></label>
 		<?php 
-		}
+	}
 	
 	/**
 	 * Sanitize the general settings
@@ -500,6 +512,12 @@ class BROO_Settings {
 			$input['broo_bp_assignments_activity_stream'] = true;
 		} else {
 			$input['broo_bp_assignments_activity_stream'] = false;
+		}
+		
+		if ( isset( $input['broo_bp_directory_members_item_recent_assignments'] ) && $input['broo_bp_directory_members_item_recent_assignments'] == 'true' ) {
+			$input['broo_bp_directory_members_item_recent_assignments'] = true;
+		} else {
+			$input['broo_bp_directory_members_item_recent_assignments'] = false;
 		}
 	
 		return $input;

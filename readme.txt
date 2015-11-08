@@ -3,7 +3,7 @@ Contributors: dpowney
 Donate link: http://danielpowney.com/donate
 Tags: badge, badges, credit, points, achievement, award, rewards, gamify, engagement, bbpress, buddpress, easy digital downloads, woocommerce
 Requires at least: 4.0
-Tested up to: 4.3
+Tested up to: 4.3.1
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -76,6 +76,7 @@ Other features:
 
 * Option to add assignment of badges and points to member activity streams.
 * Option to add a summary of badges and points assigned to members in member header or new member tab
+* Option to show 3 most recent assignments alongside each member in the members directory list
 	
 ### bbPress (requires bbPress plugin)
 
@@ -247,6 +248,15 @@ e.g. [broo_user_dashboard limit="10" show_filters="false"]
 9. BuddyPress member tab showing badges and points assigned to member. You can change the settings to show assignments in the member header instead.
 
 == Changelog ==
+
+= 1.0.5 (08/11/2015) =
+* New: Added option for BuddyPress to show each member's 3 most recent assignments in the members directory list. Added recent-assignments template as well.
+* Tweak: Updated language files. Updates are only related to wp-admin text.
+* Bug: Fixed API function get_badges() WP_Query usage to set posts_per_page argument to -1 so that it retrieves all badges.
+
+= 1.0.4 (02/11/2015) =
+* Bug: Removed usage of mysql_real_escape_string() in admin tables
+* Bug: Fixed API declaration fatal error
 
 = 1.0.3 (2/10/2015) =
 * Bug: Fixed db tables not gettign created in some cases due to the plugin trying to default the datetime field to CURRENT_TIMESTAMP which only works in MySQL versions 5.6.5 and above.
