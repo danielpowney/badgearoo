@@ -78,7 +78,7 @@ class BROO_Settings {
 		$this->bp_settings = array_merge( array(
 				'broo_bp_assignment_summary_placement'				=> 'tab',
 				'broo_bp_assignments_activity_stream'				=> true,
-				'broo_bp_directory_members_item_recent_assignments'	=> true
+				'broo_bp_directory_members_item_recent_assignments'	=> false
 		), $this->bp_settings );
 		
 		update_option( 'broo_actions_enabled', $this->actions_enabled );

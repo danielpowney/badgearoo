@@ -265,7 +265,10 @@ function broo_badge_list( $atts ) {
 			'after_name' => '',
 			'show_users' => true,
 			'show_users_count' => true,
-			'layout' => 'table'
+			'layout' => 'table',
+			'taxonomy' => null,
+			'terms' => null,
+			'tax_operator' => 'IN'
 	), $atts ) );
 
 	if ( is_string( $show_description ) ) {
@@ -284,7 +287,21 @@ function broo_badge_list( $atts ) {
 		$badge_ids = null;
 	}
 	
-	$badges =  Badgearoo::instance()->api->get_badges( array( 'badge_ids' => $badge_ids ), ( $show_users || $show_users_count ) );
+	$tax_query = array();
+	if ( isset( $taxonomy ) && is_string( $taxonomy ) ) {
+		$tax_query = array( array(
+					'taxonomy' => $taxonomy,
+					'field' => 'slug',
+					'operator' => $tax_operator,
+					'terms' => isset( $terms ) && strlen( trim( $terms ) ) > 0 ? explode( ',', $terms ) : wp_list_pluck( get_terms( 'category' ), 'slug' )
+		) );
+	}
+	
+	$badges =  Badgearoo::instance()->api->get_badges( array( 
+			'badge_ids' => $badge_ids, 
+			'tax_query' => $tax_query ), 
+			( $show_users || $show_users_count ) 
+	);
 
 	$general_settings = (array) get_option( 'broo_general_settings' );
 	

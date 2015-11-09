@@ -940,7 +940,7 @@ class BROO_API_Impl implements BROO_API {
 	 * (non-PHPdoc)
 	 * @see BROO_API::get_badges()
 	 */
-	public function get_badges( $filters = array( 'badge_ids' => array() ), $load_users = false ) {
+	public function get_badges( $filters = array( 'badge_ids' => array(), 'tax_query' => array() ), $load_users = false ) {
 		
 		$wpml_current_language = apply_filters( 'wpml_current_language', null ); // if this return null, WPML is not active
 		
@@ -961,8 +961,10 @@ class BROO_API_Impl implements BROO_API {
 				'posts_per_page' => -1,
 				'post_type' => 'badge',
 				'post__in' => ( isset( $filters['badge_ids'] ) && count( $filters['badge_ids'] ) > 0 ) ? $filters['badge_ids'] : null,
-				'suppress_filters' => false
+				'suppress_filters' => false,
+				'tax_query' => isset( $filters['tax_query'] ) && is_array( $filters['tax_query'] ) ? $filters['tax_query'] : null
 		) );
+		
 		
 		$posts = $query->get_posts();
 		

@@ -205,8 +205,13 @@ Attributes:
 * show_users - show users who have been assigned this bade. true or false. Default is true.
 * show_users_count - show count of users who have been assigned this badge. Default is true.
 * layout - Layout for displaying badges. summary or table. Default is table.
+* taxonomy - Taxonomy slug to filter badges.
+* terms - comma separated of taxonomy term slugs to filter badges. Default is empty which means all terms.
+* terms_operator - Taxonomy query operator to test. Possible values are "IN", "NOT IN", "AND", "EXISTS" and "NOT EXISTS". Default value is "IN".
 
 e.g. [broo_badge_list layout="table" show_users="false" badge_ids="10,11,12"]
+
+e.g. [broo_badge_list taxonomy="category" terms="test2,test3" tax_operator="NOT IN"]
 
 = [broo_condition] - Shows condition details =
 
@@ -248,6 +253,11 @@ e.g. [broo_user_dashboard limit="10" show_filters="false"]
 9. BuddyPress member tab showing badges and points assigned to member. You can change the settings to show assignments in the member header instead.
 
 == Changelog ==
+
+= 1.0.6 (09/11/2015) =
+* Tweak: Changed default showing each member's 3 most recent assignments in members directory list to false
+* New: Added WP_Query tax_query support to get_badges() API function. See https://codex.wordpress.org/Class_Reference/WP_Query.
+* New: Added taxonony, terms and tax_operator shortcode attributes to the [broo_get_badges] shortcode.
 
 = 1.0.5 (08/11/2015) =
 * New: Added option for BuddyPress to show each member's 3 most recent assignments in the members directory list. Added recent-assignments template as well.
