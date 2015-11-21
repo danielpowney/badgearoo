@@ -761,7 +761,7 @@ function broo_bp_init() {
 		}
 	}
 }
-add_action( 'init', 'broo_bp_init' );
+add_action( 'bp_init', 'broo_bp_init' );
 
 
 /**

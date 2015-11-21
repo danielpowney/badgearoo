@@ -254,6 +254,9 @@ e.g. [broo_user_dashboard limit="10" show_filters="false"]
 
 == Changelog ==
 
+= 1.0.7 (20/11/2015) =
+* Bug: Fixed [broo_badge] shortcode show_users and show_users_count attributes not working
+
 = 1.0.6 (09/11/2015) =
 * Tweak: Changed default showing each member's 3 most recent assignments in members directory list to false
 * New: Added WP_Query tax_query support to get_badges() API function. See https://codex.wordpress.org/Class_Reference/WP_Query.
