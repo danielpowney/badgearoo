@@ -72,7 +72,8 @@ class BROO_Settings {
 				'broo_show_user_assignment_modal'					=> true,
 				'broo_enable_badge_permalink'						=> true,
 				'broo_badge_theme'									=> 'light',
-				'broo_user_permalinks'								=> 'author_posts_url'
+				'broo_user_permalinks'								=> 'author_posts_url',
+				'broo_show_badges_inline'							=> false
 		), $this->general_settings );
 		
 		$this->bp_settings = array_merge( array(
@@ -164,7 +165,18 @@ class BROO_Settings {
 								'label' 		=> __( 'Choose a user permalink.', 'badgearoo' ),
 								'select_options' => $user_permalinks_options
 						)
-				)
+				),
+				'broo_show_badges_inline' => array(
+						'title' 	=> __( 'Show Badges Inline', 'badgearoo' ),
+						'callback' 	=> 'field_checkbox',
+						'page' 		=> 'broo_general_settings',
+						'section' 	=> 'section_general',
+						'args' => array(
+								'option_name' 	=> 'broo_general_settings',
+								'setting_id' 	=> 'broo_show_badges_inline',
+								'label' 		=> __( 'Check this box if you want to show badges inline i.e. horizontal', 'badgearoo' )
+						)	
+				),
 			
 		);
 
@@ -470,6 +482,12 @@ class BROO_Settings {
 			$input['broo_assignment_auto_approve'] = true;
 		} else {
 			$input['broo_assignment_auto_approve'] = false;
+		}
+		
+		if ( isset( $input['broo_show_badges_inline'] ) && $input['broo_show_badges_inline'] == 'true' ) {
+			$input['broo_show_badges_inline'] = true;
+		} else {
+			$input['broo_show_badges_inline'] = false;
 		}
 		
 		return $input;

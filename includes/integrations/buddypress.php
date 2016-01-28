@@ -744,10 +744,6 @@ function broo_bp_init() {
 			add_action( 'broo_add_user_assignment', 'broo_bp_add_activity', 10, 7 );
 		}
 		
-		if ( $broo_bp_settings['broo_bp_assignment_summary_placement'] == 'tab' ) {
-			add_action( 'bp_setup_nav', 'broo_bp_add_assignments_tab', 50 );
-		}
-		
 		if ( $broo_bp_settings['broo_bp_assignment_summary_placement'] == 'header' ) {
 			add_action( 'bp_before_member_header_meta', 'broo_bp_before_member_header_meta' );
 		}
@@ -762,6 +758,14 @@ function broo_bp_init() {
 	}
 }
 add_action( 'bp_init', 'broo_bp_init' );
+
+function broo_after_bp_init() {
+	$broo_bp_settings = (array) get_option( 'broo_bp_settings' );
+	if ( $broo_bp_settings['broo_bp_assignment_summary_placement'] == 'tab' ) {
+		add_action( 'bp_setup_nav', 'broo_bp_add_assignments_tab', 10, 1 );
+	}
+}
+add_action ( 'plugins_loaded', 'broo_after_bp_init' );
 
 
 /**

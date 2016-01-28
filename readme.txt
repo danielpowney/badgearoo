@@ -3,7 +3,7 @@ Contributors: dpowney
 Donate link: http://danielpowney.com/donate
 Tags: badge, badges, credit, points, achievement, award, rewards, gamify, engagement, bbpress, buddpress, easy digital downloads, woocommerce
 Requires at least: 4.0
-Tested up to: 4.3.1
+Tested up to: 4.4
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -253,6 +253,9 @@ e.g. [broo_user_dashboard limit="10" show_filters="false"]
 9. BuddyPress member tab showing badges and points assigned to member. You can change the settings to show assignments in the member header instead.
 
 == Changelog ==
+
+= 1.0.8 (28/01/2016) =
+* New: Added option to display badges inline (i.e. horizontally)
 
 = 1.0.7 (20/11/2015) =
 * Bug: Fixed [broo_badge] shortcode show_users and show_users_count attributes not working
