@@ -34,7 +34,12 @@ function broo_conditions_page() {
 		}
 		$total_count = $enabled_count + $disabled_count;
 		
-		$enabled = isset( $_REQUEST['broo-enabled'] ) ? boolval( $_REQUEST['broo-enabled'] ) : null;
+		$enabled = null;
+		if ( isset( $_REQUEST['broo-enabled'] ) && $_REQUEST['broo-enabled'] == "1" ) {
+			$enabled = true;
+		} else if ( isset( $_REQUEST['broo-enabled'] ) && $_REQUEST['broo-enabled'] == "0" ) {
+			$enabled = false;
+		}
 		?>
 			
 		<ul class="subsubsub">
@@ -60,7 +65,7 @@ function broo_conditions_page() {
 									}
 									
 									$is_closed = false;
-									if ( count( $conditions ) > 1 ) {
+									if ( count( $conditions ) > 6 ) {
 										$is_closed = true;
 									}
 									
@@ -170,6 +175,7 @@ function broo_display_condition_meta_box( $condition, $is_closed = false ) {
 											<p class="description"><?php _e( 'Allocate points to users.', 'badgearoo' ); ?></p>
 										</td>
 									</tr>
+									<?php do_action( 'broo_condition_other_assignment', $condition ); ?>
 									<tr>
 										<th scope="row"><?php _e( 'Recurring', 'badgearoo' ); ?></th>
 										<td>

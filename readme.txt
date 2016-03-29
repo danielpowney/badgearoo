@@ -254,6 +254,10 @@ e.g. [broo_user_dashboard limit="10" show_filters="false"]
 
 == Changelog ==
 
+* 1.0.9 (29/03/2016) =
+* Bug: Fixed type in recent assignments widget
+* Bug: Removed usage of boolval() as this was added in PHP 5.5 and causing issues for older versions of PHP
+
 = 1.0.8 (28/01/2016) =
 * New: Added option to display badges inline (i.e. horizontally)
 

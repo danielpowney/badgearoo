@@ -261,10 +261,10 @@ class BROO_Recent_Assignments_Widget extends WP_Widget {
 		) );
 
 		$header = $instance['header'];
-		$type = $instance['type'];
 		$limit = intval( $instance['limit'] );
+		$type = $instance['type'];
 		
-		$current_user = empty( $instance['current_user'] ) ? false : boolval( $instance['current_user'] );
+		$current_user = empty( $instance['current_user'] ) ? false : ( $instance['current_user'] == 'true' );
 
 		?>
 		<p>
@@ -279,7 +279,7 @@ class BROO_Recent_Assignments_Widget extends WP_Widget {
 			<label for="<?php echo $this->get_field_id( 'type' ); ?>"><?php _e( 'Type', 'badgearoo' ); ?></label>
 			<select class="widefat" name="<?php echo $this->get_field_name( 'type' ); ?>" id="<?php echo $this->get_field_id( 'type' ); ?>">
 				<option value=""<?php if ( $type == null ) echo ' selected'; ?>><?php _e( 'All types', 'badgearoo' ); ?></option>
-				<option value="badge"<?php if ( $type == 'badges' ) echo ' selected'; ?>><?php _e( 'Badge', 'badgearoo' ); ?></option>
+				<option value="badge"<?php if ( $type == 'badge' ) echo ' selected'; ?>><?php _e( 'Badge', 'badgearoo' ); ?></option>
 				<option value="points"<?php if ( $type == 'points' ) echo ' selected'; ?>><?php _e( 'Points', 'badgearoo' ); ?></option>
 			</select>
 		</p>	

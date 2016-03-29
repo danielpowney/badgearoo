@@ -2,7 +2,7 @@ jQuery(document).ready(function($) {
 	
 	// Metabox toggle
 	jQuery(".if-js-closed").removeClass("if-js-closed").addClass("closed");
-	postboxes.add_postbox_toggles( 'badgearoo');
+	postboxes.add_postbox_toggles('badgearoo');
 	
 	jQuery(".broo-step-list").sortable({
 		items: '.broo-step',
