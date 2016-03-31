@@ -129,7 +129,7 @@ function broo_add_bp_actions( $actions = array() ) {
 	}
 	
 	if ( isset( $actions[BP_ACTIVITY_POST_TYPE_PUBLISHED_ACTION] ) && $actions[BP_ACTIVITY_POST_TYPE_PUBLISHED_ACTION]['enabled'] == true ) {
-		add_action( 'bp_activity_post_type_published', 'broo_bp_activity_post_type_published', 10, 2 );
+		add_action( 'bp_activity_post_type_published', 'broo_bp_activity_post_type_published', 10, 3 );
 		add_filter( 'broo_condition_step_check_bp_activity_post_type_published', 'broo_condition_step_check_bp_action_count', 10, 4 );
 	}
 	

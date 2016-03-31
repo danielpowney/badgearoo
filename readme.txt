@@ -254,7 +254,10 @@ e.g. [broo_user_dashboard limit="10" show_filters="false"]
 
 == Changelog ==
 
-* 1.0.10 (31/03/2016) =
+= 1.0.11 (31/03/2016) =
+* Bug: Fixed missing argument to bp_activity_post_type_published
+
+= 1.0.10 (31/03/2016) =
 * Bug: Fixed incorrect assignment points/badges to wrong user for BuddyPress activity comments
 * Bug: Fixed conditions page postbox toggle
 
