@@ -254,7 +254,12 @@ e.g. [broo_user_dashboard limit="10" show_filters="false"]
 
 == Changelog ==
 
+* 1.0.10 (31/03/2016) =
+* Bug: Fixed incorrect assignment points/badges to wrong user for BuddyPress activity comments
+* Bug: Fixed conditions page postbox toggle
+
 * 1.0.9 (29/03/2016) =
+* New: Added action broo_condition_other_assignment in conditions page
 * Bug: Fixed type in recent assignments widget
 * Bug: Removed usage of boolval() as this was added in PHP 5.5 and causing issues for older versions of PHP
 

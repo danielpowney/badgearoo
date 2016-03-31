@@ -2,7 +2,6 @@ jQuery(document).ready(function($) {
 	
 	// Metabox toggle
 	jQuery(".if-js-closed").removeClass("if-js-closed").addClass("closed");
-	postboxes.add_postbox_toggles('badgearoo');
 	
 	jQuery(".broo-step-list").sortable({
 		items: '.broo-step',
@@ -559,5 +558,11 @@ jQuery(document).ready(function($) {
 	    hide: true,
 	    palettes: true
 	});
+	
+});
+
+jQuery(window).load(function() {
+	jQuery(".postbox .hndle, .postbox .handlediv , .postbox a.dismiss, .hide-postbox-tog").unbind("click.postboxes");
+	postboxes.add_postbox_toggles('badgearoo');
 
 });

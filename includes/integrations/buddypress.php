@@ -237,7 +237,7 @@ function broo_condition_step_check_bp_action_count( $step_result, $step, $user_i
  */
 function broo_bp_activity_comment_posted( $comment_id, $r, $activity ) {
 	
-	$user_id = $activity->user_id;
+	$user_id = $r['user_id'];
 		
 	Badgearoo::instance()->api->add_user_action( BP_ACTIVITY_COMMENT_POSTED_ACTION, $user_id, array(
 			'activity_id' => $activity->id,

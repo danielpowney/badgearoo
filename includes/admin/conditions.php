@@ -65,7 +65,7 @@ function broo_conditions_page() {
 									}
 									
 									$is_closed = false;
-									if ( count( $conditions ) > 6 ) {
+									if ( count( $conditions ) > 1 ) {
 										$is_closed = true;
 									}
 									

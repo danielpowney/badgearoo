@@ -3,7 +3,7 @@
  Plugin Name: Badgearoo
  Plugin URI: http://wordpress.org/plugins/badgearoo/
  Description: Create your own badges and points system for WordPress users. You can configure automatic assignment or manually assign badges and points to users.
- Version: 1.0.9
+ Version: 1.0.10
  Author: Daniel Powney
  Author URI: http://danielpowney.com
  License: GPL2
@@ -48,7 +48,7 @@ class Badgearoo {
 	 * Constants
 	 */
 	const
-	VERSION = '1.0.9',
+	VERSION = '1.0.10',
 	ID = 'badgearoo',
 	
 	// options
