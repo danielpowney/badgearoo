@@ -23,7 +23,6 @@ jQuery(document).ready(function($) {
 
 	    }
 	});
-	jQuery(".broo-step-list").disableSelection();
 	
 	/**
 	 * Click Save Changes

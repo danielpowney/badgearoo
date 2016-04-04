@@ -254,6 +254,9 @@ e.g. [broo_user_dashboard limit="10" show_filters="false"]
 
 == Changelog ==
 
+= 1.0.12 (05/04/2016) =
+* Bug: Removed deprecated jQuery disableSelection() to steps causing issues in some browsers
+
 = 1.0.11 (31/03/2016) =
 * Bug: Fixed missing argument to bp_activity_post_type_published
 
