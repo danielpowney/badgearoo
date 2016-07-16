@@ -8,6 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 define( 'BP_ACTIVITY_COMMENT_POSTED_ACTION', 'bp_activity_comment_posted' );
 define( 'BP_ACTIVITY_ADD_USER_FAVORITE_ACTION', 'bp_activity_add_user_favorite' ); 
+define( 'BP_ACTIVITY_POSTED_UPDATE', 'bp_activity_posted_update' );
 define( 'BP_ACTIVITY_POST_TYPE_PUBLISHED_ACTION', 'bp_activity_post_type_published' );
 define( 'BP_FRIENDS_FRIENDSHIP_ACCEPTED_ACTION', 'friends_friendship_accepted' );
 define( 'BP_FRIENDS_FRIENDSHIP_REQUESTED_ACTION', 'friends_friendship_requested' );
@@ -24,6 +25,7 @@ define( 'BP_SEND_REPLY_PRIVATE_MESSAGE', 'messages_message_sent' );
 // do_action( 'bp_activity_comment_posted', $comment_id, $r, $activity );
 // do_action( 'bp_activity_add_user_favorite', $activity_id, $user_id );
 // do_action( 'bp_activity_post_type_published', $activity_id, $post, $activity_args );
+// do_action( 'bp_activity_posted_update', $r['content'], $r['user_id'], $activity_id );
 // do_action( 'friends_friendship_' . $action, $friendship->id, $friendship->initiator_user_id, $friendship->friend_user_id, $friendship );
 // do_action( 'groups_create_group', $group->id, $member, $group );
 // do_action( 'groups_join_group', $group_id, $user_id ); and groups_accept_invite
@@ -48,6 +50,11 @@ function broo_init_bp_actions( $broo_actions = array()) {
 	
 	$broo_actions[BP_ACTIVITY_POST_TYPE_PUBLISHED_ACTION] = array(
 			'description' => __( 'Post activity.', 'badgearoo' ),
+			'source' =>	__( 'BuddyPress', 'badgearoo' )
+	);
+	
+	$broo_actions[BP_ACTIVITY_POSTED_UPDATE] = array(
+			'description' => __( 'Post activity update.', 'badgearoo' ),
 			'source' =>	__( 'BuddyPress', 'badgearoo' )
 	);
 	
@@ -130,6 +137,11 @@ function broo_add_bp_actions( $actions = array() ) {
 	
 	if ( isset( $actions[BP_ACTIVITY_POST_TYPE_PUBLISHED_ACTION] ) && $actions[BP_ACTIVITY_POST_TYPE_PUBLISHED_ACTION]['enabled'] == true ) {
 		add_action( 'bp_activity_post_type_published', 'broo_bp_activity_post_type_published', 10, 3 );
+		add_filter( 'broo_condition_step_check_bp_activity_post_type_published', 'broo_condition_step_check_bp_action_count', 10, 4 );
+	}
+	
+	if ( isset( $actions[BP_ACTIVITY_POSTED_UPDATE] ) && $actions[BP_ACTIVITY_POSTED_UPDATE]['enabled'] == true ) {
+		add_action( 'bp_activity_posted_update', 'broo_bp_activity_posted_update', 10, 3 );
 		add_filter( 'broo_condition_step_check_bp_activity_post_type_published', 'broo_condition_step_check_bp_action_count', 10, 4 );
 	}
 	
@@ -293,8 +305,21 @@ function broo_bp_activity_add_user_favorite( $activity_id, $user_id ) {
  */
 function broo_bp_activity_post_type_published( $activity_id, $post, $activity_args ) {
 	
-	Badgearoo::instance()->api->add_user_action( BP_FRIENDS_FRIENDSHIP_REQUESTED_ACTION, $activity_args['user_id'], array() );
-	
+	Badgearoo::instance()->api->add_user_action( BP_ACTIVITY_POST_TYPE_PUBLISHED_ACTION, $activity_args['user_id'], array() );
+
+}
+
+
+/**
+ *
+ * @param unknown $content
+ * @param unknown $user_id
+ * @param unknown $activity_id
+ */
+function broo_bp_activity_posted_update( $content, $user_id, $activity_id ) {
+
+	Badgearoo::instance()->api->add_user_action( BP_ACTIVITY_POSTED_UPDATE, $user_id, array() );
+
 }
 
 
@@ -445,6 +470,7 @@ function broo_default_bp_actions_enabled( $actions_enabled ) {
 			BP_ACTIVITY_COMMENT_POSTED_ACTION			=> true,
 			BP_ACTIVITY_ADD_USER_FAVORITE_ACTION		=> true,
 			BP_ACTIVITY_POST_TYPE_PUBLISHED_ACTION		=> true,
+			BP_ACTIVITY_POSTED_UPDATE					=> true,
 			BP_FRIENDS_FRIENDSHIP_ACCEPTED_ACTION		=> true,
 			BP_FRIENDS_FRIENDSHIP_REQUESTED_ACTION		=> true,
 			BP_GROUPS_CREATE_GROUP_ACTION				=> true,
@@ -552,7 +578,8 @@ function broo_step_meta_count_enabled_bp( $enabled, $action ) {
 			|| $action == BP_FRIENDS_FRIENDSHIP_REQUESTED_ACTION || $action == BP_GROUPS_CREATE_GROUP_ACTION
 			|| $action == BP_GROUPS_JOIN_GROUP_ACTION || $action == BP_GROUPS_INVITE_USER 
 			|| $action == BP_GROUPS_PROMOTE_MEMBER || $action == BP_MEMBER_CHANGE_PROFILE_AVATAR
-			|| $action == BP_MEMBER_UPDATE_PROFILE || $action == BP_SEND_REPLY_PRIVATE_MESSAGE ) {
+			|| $action == BP_MEMBER_UPDATE_PROFILE || $action == BP_SEND_REPLY_PRIVATE_MESSAGE 
+			|| $action == BP_ACTIVITY_POSTED_UPDATE ) {
 		return true;
 	}
 

@@ -218,7 +218,7 @@ class Badgearoo {
 	 */
 	public static function activate_plugin() {
 	
-		global $wpdb;
+		global $wpdb, $charset_collate;
 		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 		
 		$action_query = 'CREATE TABLE ' . $wpdb->prefix . BROO_ACTION_TABLE_NAME . ' (
@@ -227,7 +227,7 @@ class Badgearoo {
 				source varchar(100) NOT NULL,
 				created_dt datetime,
 				PRIMARY KEY  (name)
-		) ENGINE=InnoDB AUTO_INCREMENT=1;';
+		) ' . $charset_collate;
 		
 		dbDelta( $action_query );
 		
@@ -242,7 +242,7 @@ class Badgearoo {
 				expiry_dt datetime DEFAULT NULL,
 				status varchar(20) NOT NULL DEFAULT "approved",
 				PRIMARY KEY  (id)
-		) ENGINE=InnoDB AUTO_INCREMENT=1;';
+		) ' . $charset_collate;
 		
 		dbDelta( $user_assignment_query );
 		
@@ -252,7 +252,7 @@ class Badgearoo {
 				action_name varchar(50) NOT NULL,
 				created_dt datetime,
 				PRIMARY KEY  (id)
-		) ENGINE=InnoDB AUTO_INCREMENT=1;';
+		) ' . $charset_collate;
 		
 		dbDelta( $user_action_query );
 			
@@ -267,7 +267,7 @@ class Badgearoo {
 				expiry_unit varchar(20),
 				recurring tinyint(1) DEFAULT 1,
 				PRIMARY KEY  (condition_id)
-		) ENGINE=InnoDB AUTO_INCREMENT=1;';
+		) ' . $charset_collate;
 		
 		dbDelta( $condition_query );
 		
@@ -278,7 +278,7 @@ class Badgearoo {
 				action_name varchar(50) NOT NULL,
 				created_dt datetime,
 				PRIMARY KEY  (step_id)
-		) ENGINE=InnoDB AUTO_INCREMENT=1;';
+		) ' . $charset_collate;
 		
 		dbDelta( $condition_step_query );
 		
@@ -288,7 +288,7 @@ class Badgearoo {
 				meta_key varchar(255),
 				meta_value longtext,
 				PRIMARY KEY  (meta_id)
-		) ENGINE=InnoDB AUTO_INCREMENT=1;';
+		) ' . $charset_collate;
 		
 		dbDelta( $condition_step_meta_query );
 		
@@ -298,7 +298,7 @@ class Badgearoo {
 				meta_key varchar(255),
 				meta_value longtext,
 				PRIMARY KEY  (meta_id)
-		) ENGINE=InnoDB AUTO_INCREMENT=1;';
+		) ' . $charset_collate;
 		
 		dbDelta( $user_actions_meta_query );
 	}

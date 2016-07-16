@@ -3,7 +3,7 @@ Contributors: dpowney
 Donate link: http://danielpowney.com/donate
 Tags: badge, badges, credit, points, achievement, award, rewards, gamify, engagement, bbpress, buddpress, easy digital downloads, woocommerce
 Requires at least: 4.0
-Tested up to: 4.4
+Tested up to: 4.5
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -253,6 +253,12 @@ e.g. [broo_user_dashboard limit="10" show_filters="false"]
 9. BuddyPress member tab showing badges and points assigned to member. You can change the settings to show assignments in the member header instead.
 
 == Changelog ==
+
+= 1.0.13 (16/07/2016) =
+* Bug: Fixed pagination with filters on assignments page
+* Bug: Fixed user action for publishing a BuddyPress activity not being recorded
+* Bug: Fixed db charset collate not sing WP config
+* New: Added new action for BuddyPress post updates since publishing a new activity post does not seem to register for updates
 
 = 1.0.12 (05/04/2016) =
 * Bug: Removed deprecated jQuery disableSelection() to steps causing issues in some browsers
