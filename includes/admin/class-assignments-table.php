@@ -236,7 +236,7 @@ class BROO_Assignments_Table extends WP_List_Table {
 		
 		// pagination
 		$items_per_page = 25;
-		$page_num = ! empty( $_GET["paged"] ) ? mysql_real_escape_string( $_GET["paged"] ) : '';
+		$page_num = ! empty( $_GET['paged'] ) ? $_GET['paged'] : '';
 		if ( empty( $page_num ) || ! is_numeric( $page_num ) || $page_num <= 0 ) {
 			$page_num = 1;
 		}

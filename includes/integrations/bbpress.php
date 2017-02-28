@@ -27,7 +27,7 @@ define( 'BBP_NEW_TOPIC_ACTION', 'bbp_new_topic' );
 define( 'BBP_CLOSED_TOPIC_ACTION', 'bbp_closed_topic' );
 
 
-function broo_init_bbp_actions( $broo_actions ) {
+function broo_init_bbp_actions( $broo_actions = array() ) {
 
 	$broo_actions[BBP_NEW_FORUM_ACTION] = array(
 			'description' => __( 'Creates a new forum (outside wp-admin).', 'badgearoo' ),

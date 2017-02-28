@@ -64,3 +64,20 @@ function broo_user_permalink( $user_permalink, $user_id ) {
 	return $user_permalink;
 }
 add_filter( 'broo_user_permalink', 'broo_user_permalink', 10, 2 );
+
+
+
+/**
+ * Delete all assignments by user id
+ *
+ * @param $user_id
+ * @param $reassign user id
+ */
+function broo_delete_user( $user_id, $reassign ) {
+
+	//if ( $reassign == null ) { // do not reassign assignments to anyone ...
+		Badgearoo::instance()->api->delete_user_assignments( array( 'user_id' => $user_id ) );
+	//} else {
+		// TODO
+	//}
+}

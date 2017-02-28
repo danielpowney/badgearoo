@@ -2,8 +2,8 @@
 /*
  Plugin Name: Badgearoo
  Plugin URI: http://wordpress.org/plugins/badgearoo/
- Description: Create your own badges for WordPress users. You can manually assign badges or configure automatic assignment of predefined badges to to users.
- Version: 1.0
+ Description: Create your own badges and points system for WordPress users. You can configure automatic assignment or manually assign badges and points to users.
+ Version: 1.0.14
  Author: Daniel Powney
  Author URI: http://danielpowney.com
  License: GPL2
@@ -42,13 +42,13 @@ class Badgearoo {
 	
 	public $api = null;
 	
-	public $actions = null;
+	public $actions = array();
 	
 	/**
 	 * Constants
 	 */
 	const
-	VERSION = '1.0',
+	VERSION = '1.0.14',
 	ID = 'badgearoo',
 	
 	// options
@@ -82,6 +82,8 @@ class Badgearoo {
 				add_action( 'admin_menu', array(self::$instance, 'add_admin_menus') );
 				add_action( 'admin_enqueue_scripts', array( self::$instance, 'admin_assets' ) );
 				add_action( 'admin_init', array( self::$instance, 'redirect_about_page' ) );
+				
+				add_action( 'delete_user', 'broo_delete_user', 11, 2 );
 	
 			} else {
 				add_action( 'wp_enqueue_scripts', array( self::$instance, 'assets' ) );
@@ -101,6 +103,10 @@ class Badgearoo {
 		return Badgearoo::$instance;
 	}
 	
+	
+	/**
+	 * Setup actions
+	 */
 	function setup_actions() {
 		
 		self::$instance->actions = (array) apply_filters( 'broo_init_actions', self::$instance->actions );
@@ -121,19 +127,21 @@ class Badgearoo {
 				array_push( $saved_actions, $row->name );
 			}
 			
+			$created_dt = current_time( 'mysql' );
+			
 			$missing_rows = array();
 			foreach ( self::$instance->actions as $action_name => $action_data ) {
 				
 				if ( ! in_array( $action_name, $saved_actions ) ) {		
 					array_push( $missing_rows, ' ( "' . esc_sql( $action_name ) . '", "' . esc_sql( $action_data['description'] ) 
-							. '", "' . esc_sql( $action_data['source'] ) . '" )' );
+							. '", "' . esc_sql( $action_data['source'] ) . '", "' . $created_dt . '" )' );
 				}
 			}
 			
 			$count_missing = count( $missing_rows );
 			if ( $count_missing > 0 ) {
 				
-				$query = 'INSERT INTO ' . $wpdb->prefix . BROO_ACTION_TABLE_NAME . ' ( name, description, source ) VALUES';
+				$query = 'INSERT INTO ' . $wpdb->prefix . BROO_ACTION_TABLE_NAME . ' ( name, description, source, created_dt ) VALUES';
 			
 				$index = 0;
 				foreach ( $missing_rows as $missing_row ) {
@@ -212,16 +220,16 @@ class Badgearoo {
 	 */
 	public static function activate_plugin() {
 	
-		global $wpdb;
+		global $wpdb, $charset_collate;
 		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 		
 		$action_query = 'CREATE TABLE ' . $wpdb->prefix . BROO_ACTION_TABLE_NAME . ' (
 				name varchar(50) NOT NULL,
-				description varchar(50) NOT NULL,
+				description varchar(200) NOT NULL,
 				source varchar(100) NOT NULL,
-				created_dt datetime DEFAULT CURRENT_TIMESTAMP,
+				created_dt datetime,
 				PRIMARY KEY  (name)
-		) ENGINE=InnoDB AUTO_INCREMENT=1;';
+		) ' . $charset_collate;
 		
 		dbDelta( $action_query );
 		
@@ -231,12 +239,12 @@ class Badgearoo {
 				condition_id bigint(20),
 				type varchar(20) NOT NULL,
 				value bigint(20) NOT NULL,
-				created_dt datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-				last_updated_dt datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+				created_dt datetime,
+				last_updated_dt datetime,
 				expiry_dt datetime DEFAULT NULL,
 				status varchar(20) NOT NULL DEFAULT "approved",
 				PRIMARY KEY  (id)
-		) ENGINE=InnoDB AUTO_INCREMENT=1;';
+		) ' . $charset_collate;
 		
 		dbDelta( $user_assignment_query );
 		
@@ -244,9 +252,9 @@ class Badgearoo {
 				id  bigint(20) NOT NULL AUTO_INCREMENT,
 				user_id bigint(20) NOT NULL,
 				action_name varchar(50) NOT NULL,
-				created_dt datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+				created_dt datetime,
 				PRIMARY KEY  (id)
-		) ENGINE=InnoDB AUTO_INCREMENT=1;';
+		) ' . $charset_collate;
 		
 		dbDelta( $user_action_query );
 			
@@ -255,15 +263,13 @@ class Badgearoo {
 				name varchar(255) NOT NULL,
 				points bigint(20) DEFAULT 0,
 				badges longtext,
-				created_dt datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+				created_dt datetime,
 				enabled tinyint(1) DEFAULT 1,
 				expiry_value smallint(20) DEFAULT 0,
 				expiry_unit varchar(20),
 				recurring tinyint(1) DEFAULT 1,
 				PRIMARY KEY  (condition_id)
-		) ENGINE=InnoDB AUTO_INCREMENT=1;';
-		
-		// TODO expiry? e.g. 1 year, 1 month
+		) ' . $charset_collate;
 		
 		dbDelta( $condition_query );
 		
@@ -272,9 +278,9 @@ class Badgearoo {
 				condition_id bigint(20) NOT NULL,
 				label varchar(50),
 				action_name varchar(50) NOT NULL,
-				created_dt datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+				created_dt datetime,
 				PRIMARY KEY  (step_id)
-		) ENGINE=InnoDB AUTO_INCREMENT=1;';
+		) ' . $charset_collate;
 		
 		dbDelta( $condition_step_query );
 		
@@ -284,7 +290,7 @@ class Badgearoo {
 				meta_key varchar(255),
 				meta_value longtext,
 				PRIMARY KEY  (meta_id)
-		) ENGINE=InnoDB AUTO_INCREMENT=1;';
+		) ' . $charset_collate;
 		
 		dbDelta( $condition_step_meta_query );
 		
@@ -294,7 +300,7 @@ class Badgearoo {
 				meta_key varchar(255),
 				meta_value longtext,
 				PRIMARY KEY  (meta_id)
-		) ENGINE=InnoDB AUTO_INCREMENT=1;';
+		) ' . $charset_collate;
 		
 		dbDelta( $user_actions_meta_query );
 	}
@@ -430,6 +436,17 @@ class Badgearoo {
 	
 	function add_custom_css() {
 		
+		$general_settings = (array) get_option( 'broo_general_settings' );
+		
+		if ( $general_settings['broo_show_badges_inline'] == true ) {
+			?>
+			<style type="text/css">
+				.broo-badge-container {
+					display: inline-block;
+				}
+			</style>
+			<?php 
+		}
 	}
 	
 	/**

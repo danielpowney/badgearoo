@@ -10,6 +10,14 @@ jQuery(document).ready(function() {
 				"sort-by" :  jQuery(this).find("select[name=sort-by]").find("option:selected").val(),
 				"from-date" : jQuery(this).find("input[name=from-date]").val(),
 				"to-date" : jQuery(this).find("input[name=to-date]").val(),
+				"limit" : jQuery(this).find("input[name=limit]").val(),
+				"offset" : jQuery(this).find("input[name=offset]").val(),
+				"show_avatar" : jQuery(this).find("input[name=show_avatar]").val(),
+				"before_name" : jQuery(this).find("input[name=before_name]").val(),
+				"after_name" : jQuery(this).find("input[name=after_name]").val(),
+				"show_badges" : jQuery(this).find("input[name=show_badges]").val(),
+				"show_points" : jQuery(this).find("input[name=show_points]").val(),
+				"include_no_assignments" : jQuery(this).find("input[name=include_no_assignments]").val()
 		};
 		
 		jQuery.post(broo_frontend_data.ajax_url, data, function(response) {

@@ -54,13 +54,15 @@ function broo_assignments_page() {
 			<?php 
 		} else { ?>
 			<h2><?php _e( 'Assignments', 'badgearoo' ); ?><a class="add-new-h2" href="edit.php?post_type=badge&page=<?php echo Badgearoo::ASSIGNMENTS_PAGE_SLUG; ?>&add-new=true"><?php _e( 'Add New', 'badgearoo' ); ?></a></h2>
-			<form method="post" id="assignments-table-form">
+			<form method="get" id="assignments-table-form" action="<?php echo admin_url( 'edit.php?post_type=badge&page=' . Badgearoo::ASSIGNMENTS_PAGE_SLUG ); ?>">
 				<?php 
 				$assignments_table = new BROO_Assignments_Table();
 				$assignments_table->prepare_items();
 				$assignments_table->views();
 				$assignments_table->display();
 				?>
+				<input type="hidden" name="post_type" value="badge" />
+				<input type="hidden" name="page" value="<?php echo Badgearoo::ASSIGNMENTS_PAGE_SLUG; ?>" />
 			</form>
 		<?php } ?>
 	</div>

@@ -1,7 +1,7 @@
 # Badgearoo
 
 Create your own badges and points system for WordPress users. You can configure automatic assignment or manually assign 
-badges and points to users. 
+badges and points to users. Upload your own badge icons, use a badge theme inspired by Stack Overflow or use custom HTML.
 
 * Setup conditions and steps that need to be satisfied for automatic assignment of badges and points to users
 * BuddyPress, bbPress, WooCommerce and Easy Digital Downloads plugins supported with predefined actions that can be used in condition steps
@@ -40,6 +40,7 @@ The following step actions are available out-of-the-box:
 * Register user.
 * User submits a comment.
 * Minimum points.
+* Views post.
 	
 ## BuddyPress (requires BuddyPress plugin)
 
@@ -51,13 +52,13 @@ Step actions:
 * Request a friend.
 * Create Group.
 * Join Group.
-* Invite someone to join a group. (coming soon)
-* Get promoted to group moderator/administrator. (coming soon)
-* Promote another group member to group moderator/administrator. (coming soon)
-* Activate your account. (coming soon)
-* Change your profile avatar. (coming soon)
-* Update your profile information. (coming soon)
-* Send/reply to a private message. (coming soon)
+* Invite someone to join a group.
+* Get promoted to group moderator/administrator.
+* Promote another group member to group moderator/administrator.
+* Activate your account.
+* Change your profile avatar.
+* Update your profile information.
+* Send/reply to a private message.
 
 Other features:
 * Option to add assignment of badges and points to member activity streams.

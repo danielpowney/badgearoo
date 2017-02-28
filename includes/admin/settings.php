@@ -106,9 +106,25 @@ function broo_settings_page() {
 					<table class="form-table">
 						<tbody>
 							<?php 
-							foreach ( $action_sources as $source ) {?>
+							foreach ( $action_sources as $source ) {
+								
+								$disabled = false;
+								
+								if ( ( ! class_exists( 'BuddyPress' ) && $source == 'BuddyPress' ) 
+										|| ( ! class_exists( 'bbPress' ) && $source == 'bbPress' )
+										|| ( ! class_exists( 'Easy_Digital_Downloads' ) && $source == 'Easy Digital Downloads' )
+										|| ( ! class_exists( 'WooCommerce' ) && $source == 'WooCommerce' ) ) {
+									$disabled = true;
+								}
+								?>
 								<tr>
-									<th scope="row"><?php echo $source; ?></th>
+									<th scope="row">
+										<?php 
+										echo $source; 
+										if ( $disabled ) {
+											?>&nbsp;<span style="color: grey; font-weight: normal;">(<?php _e( 'inactive', 'badgearoo' ); ?>)</span><?php
+										} ?>
+									</th>
 									<td>
 										<?php
 										$actions = $wpdb->get_results( 'SELECT * FROM ' . $wpdb->prefix . BROO_ACTION_TABLE_NAME . ' WHERE source = "' . $source . '"' );
@@ -124,7 +140,7 @@ function broo_settings_page() {
 											}
 											
 											?>
-											<input type="checkbox" name="actions-enabled[]" value="<?php echo $action->name; ?>"<?php if ( $enabled ) { echo ' checked'; } ?> />
+											<input <?php if ( $disabled ) echo 'disabled'; ?> type="checkbox" name="actions-enabled[]" value="<?php echo $action->name; ?>"<?php if ( $enabled ) { echo ' checked'; } ?> />
 											<label for="actions-enabled[]"><?php echo $action->description; ?></label>
 											<?php
 											

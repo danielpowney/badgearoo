@@ -20,7 +20,7 @@ interface BROO_API {
 	 * @param int $value
 	 * @param date $expiry_dt
 	 */
-	public function add_user_assignment( $condition_id, $user_id = 0, $type = 'badge', $value = 0, $expiry_dt = null );
+	public function add_user_assignment( $condition_id = null, $user_id = 0, $type = 'badge', $value = 0, $expiry_dt = null );
 	
 	/**
 	 * Deletes assignment (e.g. badge, points) from a user
@@ -623,7 +623,7 @@ class BROO_API_Impl implements BROO_API {
 
 		global $wpdb;
 	
-		$query .= 'SELECT a.*, u.user_login FROM ' . $wpdb->prefix . BROO_USER_ASSIGNMENT_TABLE_NAME . ' a, ' . $wpdb->users . ' u'
+		$query = 'SELECT a.*, u.user_login FROM ' . $wpdb->prefix . BROO_USER_ASSIGNMENT_TABLE_NAME . ' a, ' . $wpdb->users . ' u'
 				. ' WHERE       a.id = %d AND u.ID = a.user_id';
 	
 		$row = $wpdb->get_row( $wpdb->prepare( $query, $assignment_id ) );
@@ -822,7 +822,13 @@ class BROO_API_Impl implements BROO_API {
 		
 		global $wpdb;
 		
-		$wpdb->insert( $wpdb->prefix . BROO_USER_ACTION_TABLE_NAME, array( 'user_id' => $user_id, 'action_name' => $action_name ), array( '%d', '%s') );	
+		$created_dt = current_time( 'mysql' );
+		
+		$wpdb->insert( $wpdb->prefix . BROO_USER_ACTION_TABLE_NAME, 
+				array( 'user_id' => $user_id, 'action_name' => $action_name, 'created_dt' => $created_dt ),
+				array( '%d', '%s', '%s' )
+		);	
+		
 		$user_action_id = $wpdb->insert_id;
 		
 		foreach ( $meta as $meta_key => $meta_value )  {
@@ -934,7 +940,7 @@ class BROO_API_Impl implements BROO_API {
 	 * (non-PHPdoc)
 	 * @see BROO_API::get_badges()
 	 */
-	public function get_badges( $filters = array( 'badge_ids' => array() ), $load_users = false ) {
+	public function get_badges( $filters = array( 'badge_ids' => array(), 'tax_query' => array() ), $load_users = false ) {
 		
 		$wpml_current_language = apply_filters( 'wpml_current_language', null ); // if this return null, WPML is not active
 		
@@ -952,10 +958,13 @@ class BROO_API_Impl implements BROO_API {
 		}
 		
 		$query = new WP_Query( array(
+				'posts_per_page' => -1,
 				'post_type' => 'badge',
 				'post__in' => ( isset( $filters['badge_ids'] ) && count( $filters['badge_ids'] ) > 0 ) ? $filters['badge_ids'] : null,
-				'suppress_filters' => false
+				'suppress_filters' => false,
+				'tax_query' => isset( $filters['tax_query'] ) && is_array( $filters['tax_query'] ) ? $filters['tax_query'] : null
 		) );
+		
 		
 		$posts = $query->get_posts();
 		

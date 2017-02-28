@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 define( 'WOOCOMMERCE_CHECKOUT_ORDER_PROCESSED_ACTION', 'woocommerce_checkout_order_processed' );
 
 
-function broo_init_woocommerce_actions( $broo_actions ) {
+function broo_init_woocommerce_actions( $broo_actions = array() ) {
 
 	$broo_actions[WOOCOMMERCE_CHECKOUT_ORDER_PROCESSED_ACTION] = array(
 			'description' => __( 'Checkout order processed.', 'badgearoo' ),
@@ -84,5 +84,7 @@ function broo_woocommerce_checkout_order_processed( $order_id, $posted ) {
 	// TODO total amount
 	// TODO count items
 	
-	Badgearoo::instance()->api->add_user_action( WOOCOMMERCE_CHECKOUT_ORDER_PROCESSED_ACTION, $user_id );
+	Badgearoo::instance()->api->add_user_action( WOOCOMMERCE_CHECKOUT_ORDER_PROCESSED_ACTION, $user_id, array(
+			'order_id' => $order_id
+	) );
 }

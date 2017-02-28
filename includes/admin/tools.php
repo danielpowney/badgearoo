@@ -28,9 +28,9 @@ function broo_tools_page() {
 								<input type="text" class="date-picker" autocomplete="off" name="to-date1" placeholder="To - yyyy-MM-dd">
 								
 								<select name="type1" id="type1">
-									<option value=""<?php if ( $type == null ) echo ' selected'; ?>><?php _e( 'All types', 'badgearoo' ); ?></option>
-									<option value="badge"<?php if ( $type == 'badges' ) echo ' selected'; ?>><?php _e( 'Badge', 'badgearoo' ); ?></option>
-									<option value="points"<?php if ( $type == 'points' ) echo ' selected'; ?>><?php _e( 'Points', 'badgearoo' ); ?></option>
+									<option value=""><?php _e( 'All types', 'badgearoo' ); ?></option>
+									<option value="badge"><?php _e( 'Badge', 'badgearoo' ); ?></option>
+									<option value="points"><?php _e( 'Points', 'badgearoo' ); ?></option>
 								</select>
 																
 								<?php
@@ -64,9 +64,9 @@ function broo_tools_page() {
 								<input type="text" class="date-picker" autocomplete="off" name="to-date2" placeholder="To - yyyy-MM-dd">
 								
 								<select name="type2" id="type2">
-									<option value=""<?php if ( $type == null ) echo ' selected'; ?>><?php _e( 'All types', 'badgearoo' ); ?></option>
-									<option value="badge"<?php if ( $type == 'badges' ) echo ' selected'; ?>><?php _e( 'Badge', 'badgearoo' ); ?></option>
-									<option value="points"<?php if ( $type == 'points' ) echo ' selected'; ?>><?php _e( 'Points', 'badgearoo' ); ?></option>
+									<option value=""><?php _e( 'All types', 'badgearoo' ); ?></option>
+									<option value="badge"><?php _e( 'Badge', 'badgearoo' ); ?></option>
+									<option value="points"><?php _e( 'Points', 'badgearoo' ); ?></option>
 								</select>
 																
 								<?php
