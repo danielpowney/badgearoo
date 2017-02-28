@@ -630,6 +630,7 @@ function broo_bp_assignments_tab_content() {
 		$badges = Badgearoo::instance()->api->get_user_badges( $user_id );
 		
 		// count badges by id
+		$badge_count_lookup = array();
 		foreach ( $badges as $index => $badge ) {
 			if ( ! isset( $badge_count_lookup[$badge->id] ) ) {
 				$badge_count_lookup[$badge->id] = 1;

@@ -3,7 +3,7 @@ Contributors: dpowney
 Donate link: http://danielpowney.com/donate
 Tags: badge, badges, credit, points, achievement, award, rewards, gamify, engagement, bbpress, buddpress, easy digital downloads, woocommerce
 Requires at least: 4.0
-Tested up to: 4.5
+Tested up to: 4.7
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -54,6 +54,7 @@ badges and points to users. Upload your own badge icons, use a badge theme inspi
 * User submits a comment.
 * Minimum points.
 * Views post.
+* User edits a post.
 	
 ### BuddyPress (requires BuddyPress plugin)
 
@@ -178,6 +179,9 @@ Attributes:
 * show_filters - Show leaderboard filters i.e. sort by, type, date range etc... true or false. Default is true.
 * from_date - yyyy-mm-dd format. Default empty.
 * to_date - yyyy-mm-dd format. Default empty.
+* include_no_assignments - whether to include users who do not have any assignments (i.e. points or badges)
+* limit - How many users to limit in the leaderboard. Default is null which means show all.
+* offset - Start offset for user leaderboard. This can be used for paging. Default is 0.
 
 e.g. [broo_leaderboard show_filters="false" show_avatar="false"]
 
@@ -253,6 +257,17 @@ e.g. [broo_user_dashboard limit="10" show_filters="false"]
 9. BuddyPress member tab showing badges and points assigned to member. You can change the settings to show assignments in the member header instead.
 
 == Changelog ==
+
+= 1.0.14 (28/02/2017)
+* New: Added user edits a post action
+* New: Added offset and limit shortcode attributes to [broo_leaderboard] shortcode
+* New: When users are deleted, delete their associated user assignments
+* Bug: If a user has been deleted, fixed SQL query to not include their assignments in the leaderboard
+* Bug: Fixed show_avatar, before_name, after_name, show_badges and show_points not persisting when filtering the user leaderboard
+* New: Added include_no_assignments shortcode attribute to the [broo_leaderboard] shortcode. This allows you to includes users without points or badges.
+* Bug: Fixed fatal error on BuddyPress assignments tab for badges summary
+* Tweak: Updated about page
+* Tweak: Updated language translation files
 
 = 1.0.13 (16/07/2016) =
 * Bug: Fixed pagination with filters on assignments page

@@ -104,7 +104,10 @@ function broo_leaderboard( $atts) {
 			'sort_by' => 'points',
 			'show_filters' => true,
 			'from_date' => null,
-			'to_date' => null
+			'to_date' => null,
+			'limit' => null,
+			'offset' => 0,
+			'include_no_assignments' => false
 	), $atts ) );
 	
 	if ( is_string( $show_avatar ) ) {
@@ -118,6 +121,9 @@ function broo_leaderboard( $atts) {
 	}
 	if ( is_string( $show_filters ) ) {
 		$show_filters = $show_filters == 'true' ? true : false;
+	}
+	if ( is_string( $include_no_assignments ) ) {
+		$include_no_assignments = $include_no_assignments == 'true' ? true : false;
 	}
 	
 	if ( $sort_by != 'badges' && $sort_by != 'points' ) {
@@ -138,12 +144,18 @@ function broo_leaderboard( $atts) {
 		}
 	}
 	
+	$limit = isset( $limit ) && is_numeric( $limit ) && intval( $limit ) >= 0 ? intval( $limit ) : null;
+	$offset = isset( $offset ) && is_numeric( $offset ) && intval( $offset ) >= 0 ? intval( $offset ) : 0;
+		
 	global $wpdb;
 	
 	$user_rows = broo_get_user_leaderboard( array(
 			'sort_by' => $sort_by,
 			'from_date' => $from_date,
-			'to_date' => $to_date
+			'to_date' => $to_date,
+			'limit' => $limit,
+			'offset' => $offset,
+			'include_no_assignments' => $include_no_assignments
 	) );
 	
 	$html = '';
@@ -159,7 +171,10 @@ function broo_leaderboard( $atts) {
 			'sort_by' => $sort_by,
 			'show_filters' => $show_filters,
 			'from_date' => $from_date,
-			'to_date' => $to_date
+			'to_date' => $to_date,
+			'limit' => $limit,
+			'offset' => $offset,
+			'include_no_assignments' => $include_no_assignments
 	) );
 	$html .= ob_get_contents();
 	ob_end_clean();
@@ -408,15 +423,18 @@ function broo_user_leaderboard_filter() {
 		
 		$filters = array();
 		
-		$show_avatar = false;
-		$before_name = '';
-		$after_name = '';
-		$show_badges = true;
-		$show_points = true;
-		
 		$sort_by = isset( $_POST['sort-by'] ) ? $_POST['sort-by'] : null;
 		$from_date = isset( $_POST['from-date'] ) ? $_POST['from-date'] : null;
 		$to_date = isset( $_POST['to-date'] ) ? $_POST['to-date'] : null;
+		$limit = isset( $_POST['limit'] ) ? intval( $_POST['limit'] ) : null;
+		$offset = isset( $_POST['offset'] ) ? intval( $_POST['offset'] ) : 0;
+		
+		$show_avatar = isset( $_POST['show_avatar'] ) && $_POST['show_avatar'] == 'true' ? true : false;
+		$show_badges = isset( $_POST['show_badges'] ) && $_POST['show_badges'] == 'true' ? true : false;
+		$show_points = isset( $_POST['show_points'] ) && $_POST['show_points'] == 'true' ? true : false;
+		$before_name = isset( $_POST['before_name'] ) ? $before_name : '';
+		$after_name = isset( $_POST['before_name'] ) ? $after_name : '';
+		$include_no_assignments = isset( $_POST['include_no_assignments'] ) && $_POST['include_no_assignments'] == 'true' ? true : false;
 		
 		if ( $sort_by != 'badges' && $sort_by != 'points' ) {
 			$sort_by = null;
@@ -439,7 +457,10 @@ function broo_user_leaderboard_filter() {
 		$user_rows = broo_get_user_leaderboard( array(
 				'sort_by' => $sort_by,
 				'from_date' => $from_date,
-				'to_date' => $to_date
+				'to_date' => $to_date,
+				'offset' => $offset,
+				'limit' => $limit,
+				'include_no_assignments' => $include_no_assignments
 		) );
 		
 		$html = '';
@@ -471,11 +492,20 @@ function broo_user_leaderboard_filter() {
 	
 }
 
+/**
+ * Gets user leaderboard data
+ * 
+ * @param unknown $filters
+ * @return unknown
+ */
 function broo_get_user_leaderboard( $filters = array() ) {
 	
 	$sort_by = isset( $filters['sort_by'] ) ? $filters['sort_by'] : 'points';
 	$from_date = isset( $filters['from_date'] ) ? $filters['from_date'] : null;
 	$to_date = isset( $filters['to_date'] ) ? $filters['to_date'] : null;
+	$limit = isset( $filters['limit'] ) && is_numeric( $filters['limit'] ) && intval( $filters['limit'] ) >= 0 ? intval( $filters['limit'] ) : null;
+	$offset = isset( $filters['offset'] ) && is_numeric( $filters['offset'] ) && intval( $filters['offset'] ) >= 0 ? intval( $filters['offset'] ) : 0;
+	$include_no_assignments = isset( $filters['include_no_assignments'] ) && $filters['include_no_assignments'] == true ? true : false;
 	
 	global $wpdb;
 	
@@ -484,34 +514,71 @@ function broo_get_user_leaderboard( $filters = array() ) {
 		$order_by = 'count_badges';
 	}
 	
-	$query = 'SELECT a.user_id, u.display_name, SUM(CASE WHEN a.type = "badge" THEN 1 ELSE 0 END) AS count_badges, '
-			. 'SUM(CASE WHEN a.type = "points" THEN a.value ELSE 0 END) AS points FROM ' 
-			. $wpdb->prefix . BROO_USER_ASSIGNMENT_TABLE_NAME . ' a LEFT JOIN ' . $wpdb->posts . ' p'
-			. ' ON ( a.type = "badge" AND a.value = p.ID AND p.post_status = "publish" ) LEFT JOIN ' 
-			. $wpdb->users . ' u ON a.user_id = u.ID WHERE ( ( a.type = "badge" AND p.post_status = "publish" )'
-			. ' OR ( a.type = "points" ) ) AND a.status = "approved" AND ( NOW() <= expiry_dt OR expiry_dt IS NULL )';
+	if ( ! $include_no_assignments ) { // only shows users who have assignments: badges and points
 	
-	$added_to_query = true;
-	
-	if ( $to_date ) {
-		if ( $added_to_query ) {
-			$query .= ' AND';
+		$query = 'SELECT a.user_id, u.display_name, SUM(CASE WHEN a.type = "badge" THEN 1 ELSE 0 END) AS count_badges, '
+				. 'SUM(CASE WHEN a.type = "points" THEN a.value ELSE 0 END) AS points FROM '
+				. $wpdb->prefix . BROO_USER_ASSIGNMENT_TABLE_NAME . ' a LEFT JOIN ' . $wpdb->posts . ' p'
+				. ' ON ( a.type = "badge" AND a.value = p.ID AND p.post_status = "publish" ) INNER JOIN '
+				. $wpdb->users . ' u ON a.user_id = u.ID WHERE ( ( a.type = "badge" AND p.post_status = "publish" )'
+				. ' OR ( a.type = "points" ) ) AND a.status = "approved" AND ( NOW() <= expiry_dt OR expiry_dt IS NULL )';
+		
+		$added_to_query = true;
+		if ( $to_date ) {
+			if ( $added_to_query ) {
+				$query .= ' AND';
+			}
+		
+			$query .= ' created_dt <= "' . esc_sql( $to_date ) . '"';
+			$added_to_query = true;
 		}
 		
-		$query .= ' created_dt <= "' . esc_sql( $to_date ) . '"';
-		$added_to_query = true;
-	}
+		if ( $from_date ) {
+			if ( $added_to_query ) {
+				$query .= ' AND';
+			}
 		
-	if ( $from_date ) {
-		if ( $added_to_query ) {
-			$query .= ' AND';
+			$query .= ' created_dt >= "' . esc_sql( $from_date ) . '"';
+			$added_to_query = true;
 		}
-	
-		$query .= ' created_dt >= "' . esc_sql( $from_date ) . '"';
-		$added_to_query = true;
-	}
+		
+		$query .= ' GROUP BY user_id ORDER BY ' . $order_by . ' DESC';
+		
+	} else { // show all users, even if they have not earned any badges or points
+		
+		$query = 'SELECT u.ID as user_id, u.display_name, SUM(CASE WHEN a.type = "badge" THEN 1 ELSE 0 END) AS count_badges, '
+				. 'SUM(CASE WHEN a.type = "points" THEN a.value ELSE 0 END) AS points FROM ' . $wpdb->users . ' u'
+				. ' LEFT JOIN ' . $wpdb->prefix . BROO_USER_ASSIGNMENT_TABLE_NAME . ' a ON u.ID = a.user_id'
+				. ' AND a.status = "approved" AND( NOW() <= a.expiry_dt OR a.expiry_dt IS NULL )';
 
-	$query .= ' GROUP BY user_id ORDER BY ' . $order_by . ' DESC';
+		$added_to_query = true;
+		if ( $to_date ) {
+			if ( $added_to_query ) {
+				$query .= ' AND';
+			}
+		
+			$query .= ' created_dt <= "' . esc_sql( $to_date ) . '"';
+			$added_to_query = true;
+		}
+		
+		if ( $from_date ) {
+			if ( $added_to_query ) {
+				$query .= ' AND';
+			}
+		
+			$query .= ' created_dt >= "' . esc_sql( $from_date ) . '"';
+			$added_to_query = true;
+		}
+				 
+		$query .= ' LEFT JOIN ' . $wpdb->posts . ' p ON ( a.type = "badge" AND a.value = p.ID AND p.post_status = "publish"'
+				. ' AND ( ( a.type = "badge" AND p.post_status = "publish" ) OR ( a.type = "points" ) ) )';
+		
+		$query .= ' GROUP BY u.ID ORDER BY ' . $order_by . ' DESC';
+	}
+	
+	if ( $limit && $limit > 0 ) {
+		$query .= ' LIMIT ' . $offset . ', ' . $limit;
+	}
 	
 	$rows = $wpdb->get_results( $query, ARRAY_A );
 	

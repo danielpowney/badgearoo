@@ -21,9 +21,17 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 		
 		if ( $show_filters == true ) { 
 			broo_get_template_part( 'user-leaderboard', 'filters', true, array( 
+					'show_avatar' => $show_avatar,
+					'before_name' => $before_name,
+					'after_name' => $after_name,
+					'show_badges' => $show_badges,
+					'show_points' => $show_points,
 					'sort_by' => $sort_by,
 					'from_date' => $from_date,
-					'to_date' => $to_date
+					'to_date' => $to_date,
+					'limit' => $limit,
+					'offset' => $offset,
+					'include_no_assignments' => $include_no_assignments
 			 ) );
 		}
 		

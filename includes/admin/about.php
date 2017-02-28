@@ -89,17 +89,17 @@ function broo_about_page() {
 					<h3><?php _e( 'Moderation', 'badgearoo' ); ?></h3>
 					<p><?php _e( 'You can turn on moderation of new user assignments. E-mail notifications can be setup to notify moderations to approve or unapprove new user assignments', 'badgearoo' ); ?></p>
 				</div>
-			
+				
 			</div>
 
 			<div class="feature-section under-the-hood three-col">
 				
 				<h3><?php _e( 'Steps Actions', 'badgearoo' ); ?></h3>
-				<p><?php _e( 'The following actions are available out-of-the-box and can be used in condition steps. It\'s easy to add more actions through add-ons.', 'badgearoo' ); ?>
+				<p style="margin-left: 0px"><?php _e( 'The following actions are available out-of-the-box and can be used in condition steps. It\'s easy to add more actions through add-ons.', 'badgearoo' ); ?>
 				
-				<div class="col">	
-					<h3><?php _e( 'BuddyPress', 'badgearoo' ); ?></h3>
-					<ul>
+				<div class="col" style="margin-top: 0px">	
+					<h4><?php _e( 'BuddyPress', 'badgearoo' ); ?></h4>
+					<ul style="list-style: disc; padding-left: 30px;">
 						<li><?php _e( 'Add favorite.', 'badgearoo' ); ?></li>
 						<li><?php _e( 'Comment on an activity. ', 'badgearoo' ); ?></li>
 						<li><?php _e( 'Post activity. ', 'badgearoo' ); ?></li>
@@ -118,44 +118,58 @@ function broo_about_page() {
 					
 				</div>
 				
-				<div class="col">
-					<h3><?php _e( 'bbPress', 'badgearoo' ); ?></h3>
-					<ul>
+				<div class="col" style="margin-top: 0px">
+					<h4><?php _e( 'bbPress', 'badgearoo' ); ?></h4>
+					<ul style="list-style: disc; padding-left: 30px;">
 						<li><?php _e( 'Closes a forum topic.', 'badgearoo' ); ?></li>
 						<li><?php _e( 'Creates a new forum (outside wp-admin). ', 'badgearoo' ); ?></li>
 						<li><?php _e( 'Replies to forum topic (outside wp-admin). ', 'badgearoo' ); ?></li>
 						<li><?php _e( 'Adds a new forum topic (outside wp-admin).', 'badgearoo' ); ?></li>
 					</ul>
 					
-					<h3><?php _e( 'WooCommerce', 'badgearoo' ); ?></h3>
-					<ul>
+					<h4><?php _e( 'WooCommerce', 'badgearoo' ); ?></h4>
+					<ul style="list-style: disc; padding-left: 30px;">
 						<li><?php _e( 'Checkout order processed.', 'badgearoo' ); ?></li>
 						
 						</ul>
 					
-					<h3><?php _e( 'Easy Digital Downloads', 'badgearoo' ); ?></h3>
-					<ul>
+					<h4><?php _e( 'Easy Digital Downloads', 'badgearoo' ); ?></h4>
+					<ul style="list-style: disc; padding-left: 30px;">
 						<li><?php _e( 'User completed purchase.', 'badgearoo' ); ?></li>
 					</ul>
 					
 				</div>
-				<div class="col">	
-					<h3><?php _e( 'WordPress', 'badgearoo' ); ?></h3>
-					<ul>
+				
+				<div class="col" style="margin-top: 0px">	
+					<h4><?php _e( 'WordPress', 'badgearoo' ); ?></h4>
+					<ul style="list-style: disc; padding-left: 30px;">
 						<li><?php _e( 'User publishes a post.', 'badgearoo' ); ?></li>
+						<li><?php _e( 'User edits a post.', 'badgearoo' ); ?></li>
 						<li><?php _e( 'User logs in.', 'badgearoo' ); ?></li>
 						<li><?php _e( 'User updates their profile. ', 'badgearoo' ); ?></li>
 						<li><?php _e( 'Register user.', 'badgearoo' ); ?></li>
 						<li><?php _e( 'User submits a comment.', 'badgearoo' ); ?></li>
 					</ul>
 					
-					<h3><?php _e( 'Custom', 'badgearoo' ); ?></h3>
-					<ul>
+					<h4><?php _e( 'Custom', 'badgearoo' ); ?></h4>
+					<ul style="list-style: disc; padding-left: 30px;">
 						<li><?php _e( 'Minimum points.', 'badgearoo' ); ?></li>
 						<li><?php _e( 'Views post.', 'badgearoo' ); ?></li>
 					</ul>
 									
 				</div>
+			</div>
+			
+			<div class="feature-section">
+				<h3><?php _e( 'Developers', 'badgearoo' ); ?></h3>
+				<p style="margin-left: 0px"><?php _e( 'Sample code and developer notes are documented in the plugin-sample.php file. The API function add_user_assignment() can be used to assign badges or points using PHP code. See the class-api.php file.', 'badgearoo' ); ?></p>
+						
+<code>$user_id = get_current_user_id(); <br />
+$condition_id = null; // optional to have a condition otherwise null<br />
+$expiry_dt = null; // date format "Y-m-d H:i:s" or null<br />
+$points = 100;<br />
+Badgearoo::instance()->api->add_user_assignment( $condition_id, $user_id, 'points', $points, $expiry_dt );` ', 'badgearoo' );</code>
+
 			</div>
 			
 		<?php } ?>
