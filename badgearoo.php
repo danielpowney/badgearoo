@@ -316,7 +316,7 @@ class Badgearoo {
 	 * Redirects to about page on activation
 	 */
 	function redirect_about_page() {
-		if ( get_option( Badgearoo::DO_ACTIVATION_REDIRECT_OPTION, false ) ) {
+		if ( ! is_network_admin() && get_option( Badgearoo::DO_ACTIVATION_REDIRECT_OPTION, false ) ) {
 			delete_option( Badgearoo::DO_ACTIVATION_REDIRECT_OPTION );
 			wp_redirect( 'admin.php?page=' . Badgearoo::ABOUT_PAGE_SLUG );
 		}
@@ -511,7 +511,9 @@ class Badgearoo {
 function broo_activate_plugin() {
 
 	if ( is_admin() && ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) ) {
-		add_option(Badgearoo::DO_ACTIVATION_REDIRECT_OPTION, true);
+		if ( ! is_network_admin() ) { // is network admin request?
+			add_option( Badgearoo::DO_ACTIVATION_REDIRECT_OPTION, true );
+		}
 		Badgearoo::activate_plugin();
 	}
 

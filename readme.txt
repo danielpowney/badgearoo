@@ -3,7 +3,7 @@ Contributors: dpowney
 Donate link: http://danielpowney.com/donate
 Tags: badge, badges, credit, points, achievement, award, rewards, gamify, engagement, bbpress, buddpress, easy digital downloads, woocommerce
 Requires at least: 4.0
-Tested up to: 4.7
+Tested up to: 4.8
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -257,6 +257,9 @@ e.g. [broo_user_dashboard limit="10" show_filters="false"]
 9. BuddyPress member tab showing badges and points assigned to member. You can change the settings to show assignments in the member header instead.
 
 == Changelog ==
+
+= 1.0.15 =
+* Bug: Upon plugin activation, do not redirect to about page if network admin
 
 = 1.0.14 (28/02/2017)
 * New: Added user edits a post action
