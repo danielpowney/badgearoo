@@ -729,7 +729,7 @@ class BROO_API_Impl implements BROO_API {
 		
 		global $wpdb;
 		
-		$query = 'SELECT SUM(CASE WHEN type = "points" THEN value ELSE 0 END) AS points FROM wp_broo_user_assignment WHERE user_id = ' 
+		$query = 'SELECT SUM(CASE WHEN type = "points" THEN value ELSE 0 END) AS points FROM ' . $wpdb->prefix . BROO_USER_ASSIGNMENT_TABLE_NAME . ' WHERE user_id = ' 
 				. $user_id . ' AND ( NOW() <= expiry_dt OR expiry_dt IS NULL ) AND status = "approved"';
 		
 		$added_to_query = true;
